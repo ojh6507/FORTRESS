@@ -30,6 +30,9 @@
 #pragma comment(lib, "d3d11")
 #pragma comment(lib, "d3dcompiler")
 
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
+
 // D3D 사용에 필요한 헤더파일들을 포함합니다.
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -37,6 +40,8 @@
 #include "FVector3.h"
 #include "VertexData.h"
 #include "Transform.h"
+
+#include "Input.h"
 
 // wrapper
 #include "Graphics.h"

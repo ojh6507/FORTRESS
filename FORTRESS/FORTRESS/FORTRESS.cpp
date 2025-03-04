@@ -87,10 +87,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	if (!hMainWnd) return(FALSE);
 
-	gGameFramework.OnCreate(hInstance, hMainWnd);
-
 	::ShowWindow(hMainWnd, nCmdShow);
 	::UpdateWindow(hMainWnd);
+
+	gGameFramework.OnCreate(hInstance, hMainWnd);
 
 	return(TRUE);
 }
@@ -135,6 +135,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		::PostQuitMessage(0);
 		break;
+	case WM_ACTIVATE:
+		if (wParam != WA_INACTIVE) {
+			Input::Instance()->Initialize(ghAppInstance, hWnd, 800, 600);
+		}
 	default:
 		return(::DefWindowProc(hWnd, message, wParam, lParam));
 	}

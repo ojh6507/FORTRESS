@@ -23,5 +23,6 @@ private:
 	RasterizerState* _rasterizerState;
 	SamplerState* _samplerState;
 	
+	Transform _tf;
 	ConstantBuffer<Transform>* _constantBuffer;
 };
