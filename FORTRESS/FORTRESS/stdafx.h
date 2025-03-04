@@ -16,6 +16,7 @@
 #include <string>
 #include <wrl.h>
 #include <shellapi.h>
+#include <assert.h>
 
 #include <fstream>
 #include <vector>
@@ -32,4 +33,4 @@
 // D3D 사용에 필요한 헤더파일들을 포함합니다.
 #include <d3d11.h>
 #include <d3dcompiler.h>
-
+#include <DirectXTex/DirectXTex.h>
