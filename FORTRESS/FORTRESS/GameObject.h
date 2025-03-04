@@ -23,5 +23,5 @@ private:
 	RasterizerState* _rasterizerState;
 	SamplerState* _samplerState;
 	
-	ConstantBuffer<FVector3>* _constantBuffer;
+	ConstantBuffer<Transform>* _constantBuffer;
 };

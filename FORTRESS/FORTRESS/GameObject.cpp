@@ -62,7 +62,7 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_inputLayout = new InputLayout(device);
 	_inputLayout->Create(FVertexSimple::descs, _vertexShader->GetBlob());
 
-	_constantBuffer = new ConstantBuffer<FVector3>(device, deviceContext);
+	_constantBuffer = new ConstantBuffer<Transform>(device, deviceContext);
 	_constantBuffer->Create();
 
 	_rasterizerState = new RasterizerState(device);
