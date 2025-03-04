@@ -33,4 +33,14 @@
 // D3D 사용에 필요한 헤더파일들을 포함합니다.
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include <DirectXTex/DirectXTex.h>
+
+#include "FVector3.h"
+#include "VertexData.h"
+#include "Transform.h"
+
+// wrapper
+#include "Graphics.h"
+#include "Buffer.h"
+#include "InputLayout.h"
+#include "Shader.h"
+#include "States.h"

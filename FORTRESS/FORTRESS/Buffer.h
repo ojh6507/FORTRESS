@@ -29,7 +29,7 @@ public:
 	VertexBuffer(ID3D11Device* device) : Super(device) {};
 	~VertexBuffer() {};
 
-	void Create(const std::vector<T>& vertices);
+	void Create(const std::vector<T>& vertices) override;
 };
 
 template <typename T>
@@ -54,7 +54,7 @@ public:
 	using Super = Buffer<UINT32>;
 	IndexBuffer(ID3D11Device* device) : Super(device) {};
 	~IndexBuffer() {};
-	void Create(const std::vector<UINT32>& indices);
+	void Create(const std::vector<UINT32>& indices) override;
 };
 
 inline void IndexBuffer::Create(const std::vector<UINT32>& indices) {
@@ -75,16 +75,34 @@ inline void IndexBuffer::Create(const std::vector<UINT32>& indices) {
 
 template <typename T>
 class ConstantBuffer : public Buffer<T> {
+public:
 	using Super = Buffer<T>;
 	ConstantBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : Super(device), _deviceContext(deviceContext) {};
 	~ConstantBuffer() {};
 
+	void Create(const std::vector<T>&);
 	void Create();
 	void CopyData(const T& data);
 
 protected:
 	ID3D11DeviceContext* _deviceContext;
 };
+
+template<typename T>
+inline void ConstantBuffer<T>::Create(const std::vector<T>&)
+{
+	this->_stride = sizeof(T);
+	this->_offset = 0;
+	this->_count = 0;
+
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = this->_stride;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
+}
 
 template<typename T>
 inline void ConstantBuffer<T>::Create()
