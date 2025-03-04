@@ -72,6 +72,12 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FORTRESS.cpp">
@@ -107,6 +113,12 @@
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FORTRESS.rc">
@@ -125,5 +137,8 @@
     <FxCompile Include="Shader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

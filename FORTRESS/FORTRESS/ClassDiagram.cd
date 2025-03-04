@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameObject" Collapsed="true">
+    <Position X="5.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBQQAAAAAAAAAAAAAAAAAAAgQgEAksAAABgIAAIAAAA=</HashCode>
+      <FileName>GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="1.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAABAAAgAAAAAAAQABAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuScene" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScene" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="12" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAQACAAAAAAEAAAAAAAAAAAAIIAAAAAAAAAAAAAhQ=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform" Collapsed="true">
+    <Position X="13.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACCAAAAQAAAAAAAAAAAAAggAIAAAggAAACA=</HashCode>
+      <FileName>Transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Buffer&lt;T&gt;" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAgAAAAAAhAIAAAAQAAAAAAgEAAAAGAAAAQQAA=</HashCode>
+      <FileName>Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VertexBuffer&lt;T&gt;" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAEAA=</HashCode>
+      <FileName>Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IndexBuffer" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAABAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConstantBuffer&lt;T&gt;" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAIAQAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Graphics" Collapsed="true">
+    <Position X="12" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACQBAEAAACAIAAAAEEAAAAAaJAAgAiAAABAQAYCAAE=</HashCode>
+      <FileName>Graphics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputLayout" Collapsed="true">
+    <Position X="10.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAIAAAAAAAAAgEAAAAAAAgAAAAA=</HashCode>
+      <FileName>InputLayout.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader" Collapsed="true">
+    <Position X="6.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAAIAQAAAACAAAAAAAAAAAAAAAAgEAABAAAAAAAAAQ=</HashCode>
+      <FileName>Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VertexShader" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAABAAEAAAAAAAAAAAEAAAAAIAAAAAAA=</HashCode>
+      <FileName>Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PixelShader" Collapsed="true">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAABAAAAAABAAAAgAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="State" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAABBAAAAA=</HashCode>
+      <FileName>States.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SamplerState" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAEEAAAAAgAAEAAAA=</HashCode>
+      <FileName>States.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RasterizerState" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAABAAAAgAAAAAAAAAEAAAAAAACAAAAA=</HashCode>
+      <FileName>States.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameFramework" Collapsed="true">
+    <Position X="10.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAACAAAAAAAAAgAAAAACAAABgAAAAABIAAAAA=</HashCode>
+      <FileName>GameFramework.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Input" Collapsed="true">
+    <Position X="13.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAJAAAAAwAAAQABARAAUQIgAAAAQGAgAAAIGAE=</HashCode>
+      <FileName>Input.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Terrain" Collapsed="true">
+    <Position X="5.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQQCAAEpBACggAAAAIAgEIAABKAAACAAFCAAAAAAAA=</HashCode>
+      <FileName>Terrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="FVector3" Collapsed="true">
+    <Position X="10.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAQAAAAAAAAAAAABgAQAAAAA=</HashCode>
+      <FileName>FVector3.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="FVertexSimple" Collapsed="true">
+    <Position X="12" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAoAQBhAQAAAAA=</HashCode>
+      <FileName>VertexData.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MapCoord" Collapsed="true">
+    <Position X="13.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Terrain.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vertex" Collapsed="true">
+    <Position X="10.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABJgAQAAAAA=</HashCode>
+      <FileName>Terrain.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

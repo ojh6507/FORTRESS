@@ -5,9 +5,74 @@
 #include <random>
 const float PI = 3.14159265358979;
 
-Terrain::Terrain(unsigned int width, unsigned int height, float scale) : Width(width), Height(height), Scale(scale)
+Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, unsigned int width, unsigned int height, float scale)
+    : GameObject(device, deviceContext), Width(width), Height(height), Scale(scale)
 {
-    Map = new bool[width, height];
+    Map = new byte[width, height];
+
+    GeneratePlain();
+
+    //D3D11_SUBRESOURCE_DATA initData = {};
+    //initData.pSysMem = Map;
+    //initData.SysMemPitch = width * sizeof(byte); // texture에서 한 줄 크기
+    //initData.SysMemSlicePitch = 0;
+
+    //D3D11_TEXTURE2D_DESC textureDesc = {};
+    //textureDesc.Width = width;
+    //textureDesc.Height = height;
+    //textureDesc.MipLevels = 1;
+    //textureDesc.ArraySize = 1;
+    //textureDesc.Format = DXGI_FORMAT_R8_UINT;
+    //textureDesc.SampleDesc.Count = 1;
+    //textureDesc.Usage = D3D11_USAGE_DEFAULT; // 수정해야할수도있음
+    //textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    //device->CreateTexture2D(&textureDesc, &initData, &MapTexture);
+
+    //D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    //srvDesc.Format = DXGI_FORMAT_R8_UINT;
+    //srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    //srvDesc.Texture2D.MostDetailedMip = 0;
+    //srvDesc.Texture2D.MipLevels = 1;
+
+    //_device->CreateShaderResourceView(MapTexture, &srvDesc, &MapTextureRSV);
+
+    //D3D11_BUFFER_DESC vertexDesc = {};
+    //vertexDesc.Usage = D3D11_USAGE_DEFAULT;
+    //vertexDesc.ByteWidth = sizeof(quadVertices);
+    //vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    //D3D11_SUBRESOURCE_DATA vertexData = { quadVertices };
+    //_device->CreateBuffer(&vertexDesc, &vertexData, &vertexBuffer);
+
+    //// ? 4. 인덱스 버퍼 생성
+    //D3D11_BUFFER_DESC indexDesc = {};
+    //indexDesc.Usage = D3D11_USAGE_DEFAULT;
+    //indexDesc.ByteWidth = sizeof(quadIndices);
+    //indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+    //D3D11_SUBRESOURCE_DATA indexData = { quadIndices };
+    //_device->CreateBuffer(&indexDesc, &indexData, &indexBuffer);
+}
+
+Terrain::~Terrain()
+{
+    if (MapTextureRSV) MapTextureRSV->Release();
+    if (MapTexture) MapTexture->Release();
+    delete Map;
+}
+
+void Terrain::Update()
+{
+}
+
+void Terrain::Render()
+{
+    //UINT stride = sizeof(Vertex);
+    //UINT offset = 0;
+    //_deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+    //_deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    //_deviceContext->DrawIndexed(6, 0, 0);  // ? 6개의 인덱스로 Quad 렌더링
 }
 
 //void Terrain::SetOffset(float x, float y)
@@ -16,7 +81,7 @@ Terrain::Terrain(unsigned int width, unsigned int height, float scale) : Width(w
 //}
 
 
-inline bool Terrain::GetValue(unsigned int x, unsigned int y) const
+inline byte Terrain::GetValue(unsigned int x, unsigned int y) const
 {
     return Map[y * Width + x];
 }
@@ -171,18 +236,29 @@ float Terrain::GetNormal(float x, float y, float scanInterval = 1)
 bool Terrain::CheckCollisionCircle(float _posX, float _posY, float _radius)
 {
     // SIMD 사용?
-    DirectX::XMFLOAT2 pos(_posX, _posY);
+    //DirectX::XMFLOAT2 pos(_posX, _posY);
     //DirectX::
+    return false;
 }
 
 bool Terrain::CheckCollisionAABB(float xMin, float Ymin, float xMax, float yMax, float xPos, float yPos)
 {
     // terrain 좌표 기준으로 scale down해서 계산함 (collision box의 크기를 terrain 좌표계와 일치시킴)
-    DirectX::XMFLOAT2 TopRight = { static_cast<int>(xMax / Scale), static_cast<int>(yMax / Scale) };
-    DirectX::XMFLOAT2 BottomLeft = { static_cast<int>(xMin / Scale), static_cast<int>(Ymin / Scale) };
+    //DirectX::XMFLOAT2 TopRight = { static_cast<int>(xMax / Scale), static_cast<int>(yMax / Scale) };
+    //DirectX::XMFLOAT2 BottomLeft = { static_cast<int>(xMin / Scale), static_cast<int>(Ymin / Scale) };
 
-    std::pair<unsigned int, unsigned int> TopRightInt = { static_cast<int>(xMax / Scale), static_cast<int>(yMax / Scale) };
+    //std::pair<unsigned int, unsigned int> TopRightInt = { static_cast<int>(xMax / Scale), static_cast<int>(yMax / Scale) };
+    return false;
+}
 
+void Terrain::UpdateMapTexture()
+{
+
+}
+
+void Terrain::GetMapTexture()
+{
+    //return MapTexture;
 }
 
 //bool Terrain::CheckCollisionOBB(float _posX, float _posY, float rotation)
@@ -191,11 +267,22 @@ bool Terrain::CheckCollisionAABB(float xMin, float Ymin, float xMax, float yMax,
 //}
 
 
-void GeneratePlain(int* heightMap, unsigned int length)
+void Terrain::GeneratePlain()
 {
-    for (size_t i = 0; i < length; i++)
+    int halfHeight = Height / 2;
+    for (int y = 0; y < halfHeight; y++)
     {
-        heightMap[i] = 0;
+        for (int x = 0; x < Width; x++)
+        {
+            SetValue(x, y, 1);
+        }
+    }
+    for (int y = halfHeight; y < Height; y++)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            SetValue(x, y, 0);
+        }
     }
 }
 
