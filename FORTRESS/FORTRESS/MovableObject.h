@@ -9,6 +9,7 @@ public:
     DirectX::XMFLOAT2 position;
     DirectX::XMFLOAT2 rotation;
 
+
     MovableObject() : position(0.0f, 0.0f);
 };
 
