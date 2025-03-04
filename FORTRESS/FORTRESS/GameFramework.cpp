@@ -2,6 +2,8 @@
 
 void GameFramework::FrameAdvance()
 {
+	Input::Instance()->Frame();
+	sceneManager->Top()->Update();
 	graphics->RenderBegin();
 	sceneManager->Top()->Render();
 	graphics->RenderEnd();

@@ -22,6 +22,7 @@ protected:
 	UINT32 _count = 0;
 };
 
+
 template <typename T>
 class VertexBuffer : public Buffer<T> {
 public:
@@ -49,6 +50,7 @@ inline void VertexBuffer<T>::Create(const std::vector<T>& vertices) {
 	assert(SUCCEEDED(hr));
 }
 
+
 class IndexBuffer : public Buffer<UINT32> {
 public:
 	using Super = Buffer<UINT32>;
@@ -72,6 +74,7 @@ inline void IndexBuffer::Create(const std::vector<UINT32>& indices) {
 
 	HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
 }
+
 
 template <typename T>
 class ConstantBuffer : public Buffer<T> {
@@ -98,7 +101,7 @@ inline void ConstantBuffer<T>::Create(const std::vector<T>&)
 	D3D11_BUFFER_DESC desc = {};
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = this->_stride;
+	desc.ByteWidth = (this->_stride + 15) & ~15; // 16의 배수 보정
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
@@ -114,7 +117,7 @@ inline void ConstantBuffer<T>::Create()
 	D3D11_BUFFER_DESC desc = {};
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = this->_stride;
+	desc.ByteWidth = (this->_stride + 15) & ~15; // 16의 배수 보정
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
