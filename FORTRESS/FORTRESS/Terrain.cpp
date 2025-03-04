@@ -1,5 +1,8 @@
 #include "Terrain.h"
+#include <vector>
+#include <algorithm>
 #include <DirectXMath.h>
+#include <random>
 const float PI = 3.14159265358979;
 
 Terrain::Terrain(unsigned int width, unsigned int height, float scale) : Width(width), Height(height), Scale(scale)
@@ -13,7 +16,7 @@ Terrain::Terrain(unsigned int width, unsigned int height, float scale) : Width(w
 //}
 
 
-inline bool Terrain::GetValue(unsigned int x, unsigned int y)
+inline bool Terrain::GetValue(unsigned int x, unsigned int y) const
 {
     return Map[y * Width + x];
 }
@@ -33,54 +36,52 @@ float Terrain::GetNormal(float x, float y, float scanInterval = 1)
 {
 #if defined(_DEBUG)
     assert(x < Width && y < Height);
-    assert(x >= 0 0 && y >= 0);
+    assert(x >= 00 && y >= 0);
 #endif
     // map의 스케일로 변경
     x = x / Scale;
     y = y / Scale;
 
-    int xMin = static_cast<int>ceil(x - scanInterval);
-    int xMax = static_cast<int>floor(x + scanInterval);
-    
-    // map 안에 들어오도록 조정
-    xMax = xMax > Width - 1 ? Width - 1 : xMax;
-    xMin = xMin < 0 ? 0 : xMin;
-    yMax = yMax > Height - 1 ? Height - 1 : yMax;
-    yMin = yMin < 0 ? 0 : yMin;
+    int xMin = static_cast<int>(floor(x - scanInterval));
+    int xMax = static_cast<int>(ceil(x + scanInterval));
 
-    float xCenter = (static_cast<float>xMax + static_cast<float>xMin) / 2.f;
+    // map 안에 들어오도록 조정
+    xMax = xMax > static_cast<int>(Width - 1) ? static_cast<int>(Width - 1) : xMax;
+    xMin = xMin < 0 ? 0 : xMin;
+
+
+    float xCenter = (static_cast<float>(xMax) + static_cast<float>(xMin)) / 2.f;
     int numRay = xMax - xMin + 1;
     if (numRay <= 1)
     {
         return 0.f;
     }
 
-    std::array<std::pair<unsigned int, unsigned int>, numRay> heightScanned{};
+    std::vector<MapCoord> heightScanned;
     for (int i = 0; i < numRay; i++)
     {
         unsigned int scanPoint = xMin + i;
-        heightScanned[i].first = scanPoint;
+        unsigned int scanHeight = FindSurfaceDownward(scanPoint, y);
 
-        // 높이 y로부터 ray 쏘기
-        heightScanned[i].second = FindSurfaceDownward(scanPoint, y);
+        heightScanned.push_back({ scanPoint, scanHeight });
     }
 
     // 가장 높은 순서대로 나열
     std::sort(heightScanned.begin(), heightScanned.end(),
-        [](const auto& a, const auto& b) {
-            return a.second > b.second;
+        [](const MapCoord& a, const MapCoord& b) {
+            return a.y > b.y;
         });
 
     // 위에서 떨어졌을때 무게중심 양옆으로 지면이 맞닿아있음
-    std::pair<unsigned int, unsigned int>firstHighest = heightScanned[0];
-    std::pair<unsigned int, unsigned int>secondHighest = firstHighest;
+    MapCoord firstHighest = heightScanned[0];
+    MapCoord secondHighest = firstHighest;
     // 무게중심이 받힘점 왼쪽에 있음
-    if (firstHighest.first > xCenter)
+    if (firstHighest.x > xCenter)
     {
         // 다음 높은 위치 찾음 (단 왼쪽으로만)
         for (int i = 1; i < numRay; i++)
         {
-            if (heightScanned[i].first < firstHighest.first)
+            if (heightScanned[i].x < firstHighest.x)
             {
                 secondHighest = heightScanned[i];
             }
@@ -93,7 +94,7 @@ float Terrain::GetNormal(float x, float y, float scanInterval = 1)
         // 다음 높은 위치 찾음 (단 오른쪽으로만)
         for (int i = 1; i < numRay; i++)
         {
-            if (heightScanned[i].first > firstHighest.first)
+            if (heightScanned[i].x > firstHighest.x)
             {
                 secondHighest = heightScanned[i];
             }
@@ -102,14 +103,69 @@ float Terrain::GetNormal(float x, float y, float scanInterval = 1)
     }
 
     // 기울기 구함
-    float dx = firstHighest.first - secondHighest.first;
-    float dy = firstHighest.second - secondHighest.second;
+    float dx = firstHighest.x - secondHighest.x;
+    float dy = firstHighest.y - secondHighest.y;
 
     // 기울기의 -역수 = 노말
     float normal = atan(-dx / dy);
     // -pi/2 ~ pi/2 에서 0 ~ pi/2 범위로 수정
-    normal = normal > 0 ? : normal : normal + PI;
+    normal = normal > 0 ? normal : normal + PI;
     return normal;
+
+
+    //for (int i = 0; i < numRay; i++)
+    //{
+    //    unsigned int scanPoint = xMin + i;
+    //    unsigned int scanHeight = FindSurfaceDownward(scanPoint, y);
+
+    //    heightScanned.push_back(std::pair<unsigned int, unsigned int>(scanPoint, scanHeight));
+    //}
+
+    //// 가장 높은 순서대로 나열
+    //std::sort(heightScanned.begin(), heightScanned.end(),
+    //    [](const auto& a, const auto& b) {
+    //        return a.second > b.second;
+    //    });
+
+    //// 위에서 떨어졌을때 무게중심 양옆으로 지면이 맞닿아있음
+    //std::pair<unsigned int, unsigned int>firstHighest = heightScanned[0];
+    //std::pair<unsigned int, unsigned int>secondHighest = firstHighest;
+    //// 무게중심이 받힘점 왼쪽에 있음
+    //if (firstHighest.first > xCenter)
+    //{
+    //    // 다음 높은 위치 찾음 (단 왼쪽으로만)
+    //    for (int i = 1; i < numRay; i++)
+    //    {
+    //        if (heightScanned[i].first < firstHighest.first)
+    //        {
+    //            secondHighest = heightScanned[i];
+    //        }
+
+    //    }
+    //}
+    //// 무게중심이 받힘점 오른쪽에 있음
+    //else
+    //{
+    //    // 다음 높은 위치 찾음 (단 오른쪽으로만)
+    //    for (int i = 1; i < numRay; i++)
+    //    {
+    //        if (heightScanned[i].first > firstHighest.first)
+    //        {
+    //            secondHighest = heightScanned[i];
+    //        }
+
+    //    }
+    //}
+
+    //// 기울기 구함
+    //float dx = firstHighest.first - secondHighest.first;
+    //float dy = firstHighest.second - secondHighest.second;
+
+    //// 기울기의 -역수 = 노말
+    //float normal = atan(-dx / dy);
+    //// -pi/2 ~ pi/2 에서 0 ~ pi/2 범위로 수정
+    //normal = normal > 0 ? : normal : normal + PI;
+    //return normal;
 }
 
 bool Terrain::CheckCollisionCircle(float _posX, float _posY, float _radius)
@@ -129,10 +185,10 @@ bool Terrain::CheckCollisionAABB(float xMin, float Ymin, float xMax, float yMax,
 
 }
 
-bool Terrain::CheckCollisionOBB(float _posX, float _posY, float rotation)
-{
-    return false;
-}
+//bool Terrain::CheckCollisionOBB(float _posX, float _posY, float rotation)
+//{
+//    return false;
+//}
 
 
 void GeneratePlain(int* heightMap, unsigned int length)
@@ -164,7 +220,7 @@ void GeneratePerlinNoise1D(size_t frequency, int amplitude, int* heightMap, unsi
 // 윗 방향으로 surface를 찾습니다.
 unsigned int Terrain::FindSurfaceUpward(unsigned int x, float y) const
 {
-    for (unsigned int sampleY = static_cast<unsigned int>ceil(y); sampleY < Height; sampleY++)
+    for (int sampleY = static_cast<int>(ceil(y)); sampleY < Height; sampleY++)
     {
         if (IsSurface(x, sampleY))
         {
@@ -194,7 +250,7 @@ unsigned int Terrain::FindSurfaceUpward(unsigned int x, float y) const
 
 unsigned int Terrain::FindSurfaceDownward(unsigned int x, float y) const
 {
-    for (unsigned int sampleY = static_cast<unsigned int>floor(y); sampleY >= 0; sampleY--)
+    for (int sampleY = static_cast<int>(floor(y)); sampleY >= 0; sampleY--)
     {
         if (IsSurface(x, sampleY))
         {
@@ -225,7 +281,7 @@ unsigned int Terrain::FindSurfaceDownward(unsigned int x, float y) const
 
 
 // 해당 좌표가 땅이고 바로 위가 하늘인지 확인
-inline bool Terrain::IsSurface(unsigned int x, unsigned y) const
+inline bool Terrain::IsSurface(unsigned int x, unsigned int y) const
 {
     if (!GetValue(x, y))
     {
