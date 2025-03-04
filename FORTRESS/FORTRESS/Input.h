@@ -23,7 +23,12 @@ public:
 	void Shutdown();
 	bool Frame();
 
+	bool IsKeyDown(char keycode);
 	bool IsKeyPressed(char keycode);
+	bool IsKeyReleased(char keycode);
+	bool IsMouseButtonDown(char button);
+	bool IsMouseButtonPressed(char button);
+	bool IsMouseButtonReleased(char button);
 	void GetMouseLocation(int& mouse_x, int& mouse_y);
 
 private:
@@ -36,7 +41,9 @@ private:
 	IDirectInputDevice8* m_mouse = nullptr;
 
 	unsigned char m_keyboardState[256];
+	unsigned char m_keyboardStatePrevious[256];
 	DIMOUSESTATE m_mouseState;
+	DIMOUSESTATE m_mouseStatePrevious;
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
