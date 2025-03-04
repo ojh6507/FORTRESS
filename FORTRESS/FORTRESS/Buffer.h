@@ -72,3 +72,42 @@ inline void IndexBuffer::Create(const std::vector<UINT32>& indices) {
 
 	HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
 }
+
+template <typename T>
+class ConstantBuffer : public Buffer<T> {
+	using Super = Buffer<T>;
+	ConstantBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : Super(device), _deviceContext(deviceContext) {};
+	~ConstantBuffer() {};
+
+	void Create();
+	void CopyData(const T& data);
+
+protected:
+	ID3D11DeviceContext* _deviceContext;
+};
+
+template<typename T>
+inline void ConstantBuffer<T>::Create()
+{
+	this->_stride = sizeof(T);
+	this->_offset = 0;
+	this->_count = 0;
+
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = this->_stride;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
+}
+
+template<typename T>
+inline void ConstantBuffer<T>::CopyData(const T& data)
+{
+	D3D11_MAPPED_SUBRESOURCE subResources = {};
+
+	this->_deviceContext->Map(this->_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subResources);
+	memcpy(subResources.pData, &data, sizeof(data));
+	this->_deviceContext->Unmap(this->_buffer, 0);
+}
