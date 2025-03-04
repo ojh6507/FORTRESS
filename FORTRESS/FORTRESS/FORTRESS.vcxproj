@@ -130,6 +130,7 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="FORTRESS.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="FVector3.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graphics.h" />

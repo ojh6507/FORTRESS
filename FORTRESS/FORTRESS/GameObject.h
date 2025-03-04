@@ -1,4 +1,8 @@
 #pragma once
+
+#include <d3d11.h>
+#include <vector>
+
 class GameObject {
 public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
