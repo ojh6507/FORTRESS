@@ -1,14 +1,16 @@
 #pragma once
 class Transform {
 public:
-	FVector3 GetPosition() { return _position; }
+	FVector3 GetPosition() const { return _position; }
 	void SetPosition(FVector3 position) { _position = position; }
 
-	float GetRotation() { return _rotation; }
+	float GetRotation() const { return _rotation; }
 	void SetRotation(float rotation) { _rotation = rotation; }
 
-	FVector3 GetScale() { return _scale; }
+	FVector3 GetScale() const { return _scale; }
 	void SetScale(FVector3 scale) { _scale = scale; }
+
+	
 
 private:
 	FVector3 _position;
