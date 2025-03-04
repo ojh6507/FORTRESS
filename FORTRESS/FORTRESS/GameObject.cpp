@@ -84,7 +84,6 @@ void GameObject::Update() {
 }
 
 void GameObject::Render() {
-	OutputDebugString(L"hh");
 	_deviceContext->IASetInputLayout(_inputLayout->Get());
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_deviceContext->VSSetShader(_vertexShader->Get(), nullptr, 0);
@@ -94,7 +93,7 @@ void GameObject::Render() {
 	UINT32 stride, offset;
 	ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
 	stride = _vertexBuffer->GetStride();
-	stride = _vertexBuffer->GetOffset();
+	offset = _vertexBuffer->GetOffset();
 	_deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
 	_deviceContext->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
