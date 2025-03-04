@@ -15,6 +15,8 @@ public:
 	~SamplerState() { _samplerState->Release(); };
 	ID3D11SamplerState* Get() { return _samplerState; }
 
+	void Create();
+
 private:
 	ID3D11SamplerState* _samplerState;
 };
