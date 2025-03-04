@@ -44,8 +44,8 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_indices[1] = 1;
 	_indices[2] = 2;
 	_indices[3] = 2;
-	_indices[4] = 1;
-	_indices[5] = 3;
+	_indices[4] = 3;
+	_indices[5] = 0;
 
 	_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 	_vertexBuffer->Create(_vertices);
@@ -62,11 +62,12 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_inputLayout = new InputLayout(device);
 	_inputLayout->Create(FVertexSimple::descs, _vertexShader->GetBlob());
 
-	_constantBuffer = new ConstantBuffer<Transform>(device, deviceContext);
+	_constantBuffer = new ConstantBuffer<FVector3>(device, deviceContext);
 	_constantBuffer->Create();
 
 	_rasterizerState = new RasterizerState(device);
 	_rasterizerState->Create();
+	_deviceContext = deviceContext;
 }
 
 GameObject::~GameObject() {
@@ -83,6 +84,7 @@ void GameObject::Update() {
 }
 
 void GameObject::Render() {
+	OutputDebugString(L"hh");
 	_deviceContext->IASetInputLayout(_inputLayout->Get());
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_deviceContext->VSSetShader(_vertexShader->Get(), nullptr, 0);

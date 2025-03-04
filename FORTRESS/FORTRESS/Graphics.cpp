@@ -12,8 +12,8 @@ Graphics::~Graphics() {
 }
 
 void Graphics::RenderBegin() {
-	_deviceContext->OMSetRenderTargets(1, &_renderTargetView, nullptr);
-	//_deviceContext->ClearRenderTargetView(_renderTargetView, _clearColor);
+	//_deviceContext->OMSetRenderTargets(1, &_renderTargetView, nullptr);
+	_deviceContext->ClearRenderTargetView(_renderTargetView, _clearColor);
 	_deviceContext->RSSetViewports(1, &_viewport);
 }
 

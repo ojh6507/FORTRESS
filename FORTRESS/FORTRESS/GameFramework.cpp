@@ -2,15 +2,24 @@
 
 void GameFramework::FrameAdvance()
 {
+	graphics->RenderBegin();
+	sceneManager->Top()->Render();
+	graphics->RenderEnd();
 }
 
 void GameFramework::OnDestroy()
 {
+	delete sceneManager;
+	delete graphics;
 }
 
 bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
-	return false;
+	graphics = new Graphics(hMainWnd);
+	sceneManager = new SceneManager();
+	GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
+	sceneManager->PushScene(gameScene);
+	return true;
 }
 
 LRESULT GameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
