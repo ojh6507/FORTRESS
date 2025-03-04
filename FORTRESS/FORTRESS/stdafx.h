@@ -16,6 +16,7 @@
 #include <string>
 #include <wrl.h>
 #include <shellapi.h>
+#include <assert.h>
 
 #include <fstream>
 #include <vector>

@@ -1,2 +1,2 @@
-#include "common.h"
+#include "stdafx.h"
 #include "Buffer.h"

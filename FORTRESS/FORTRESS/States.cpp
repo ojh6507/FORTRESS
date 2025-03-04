@@ -1,4 +1,4 @@
-#include "common.h"
+#include "stdafx.h"
 #include "States.h"
 
 void RasterizerState::Create() {

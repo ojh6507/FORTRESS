@@ -1,7 +1,7 @@
-#include "common.h"
+#include "stdafx.h"
 #include "Shader.h"
 
-void Shader::LoadShaderFromFile(const wstring& path, const string& name, const string& version) {
+void Shader::LoadShaderFromFile(const std::wstring& path, const std::string& name, const std::string& version) {
 	_path = path;
 	_name = name;
 	const UINT32 compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
@@ -20,13 +20,13 @@ void Shader::LoadShaderFromFile(const wstring& path, const string& name, const s
 	assert(SUCCEEDED(hr));
 }
 
-void VertexShader::Create(const wstring& path, const string& name, const string& version) {
+void VertexShader::Create(const std::wstring& path, const std::string& name, const std::string& version) {
 	LoadShaderFromFile(path, name, version);
 	HRESULT hr = _device->CreateVertexShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, &_vertexShader);
 	assert(SUCCEEDED(hr));
 }
 
-void PixelShader::Create(const wstring& path, const string& name, const string& version) {
+void PixelShader::Create(const std::wstring& path, const std::string& name, const std::string& version) {
 	LoadShaderFromFile(path, name, version);
 	HRESULT hr = _device->CreatePixelShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, &_pixelShader);
 	assert(SUCCEEDED(hr));

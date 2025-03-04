@@ -1,4 +1,5 @@
 #pragma once
+
 template <typename T>
 class Buffer {
 public:
@@ -10,7 +11,7 @@ public:
 	UINT32 GetOffset() { return _offset; }
 	UINT32 GetCount() { return _count; }
 
-	virtual void Create(const vector<T>&) abstract;
+	virtual void Create(const std::vector<T>&) abstract;
 
 protected:
 	ID3D11Device* _device;
@@ -28,11 +29,11 @@ public:
 	VertexBuffer(ID3D11Device* device) : Super(device) {};
 	~VertexBuffer() {};
 
-	void Create(const vector<T>& vertices);
+	void Create(const std::vector<T>& vertices);
 };
 
 template <typename T>
-inline void VertexBuffer<T>::Create(const vector<T>& vertices) {
+inline void VertexBuffer<T>::Create(const std::vector<T>& vertices) {
 	this->_stride = sizeof(T);
 	this->_count = static_cast<UINT32>(vertices.size());
 
@@ -53,10 +54,10 @@ public:
 	using Super = Buffer<UINT32>;
 	IndexBuffer(ID3D11Device* device) : Super(device) {};
 	~IndexBuffer() {};
-	void Create(const vector<UINT32>& indices);
+	void Create(const std::vector<UINT32>& indices);
 };
 
-inline void IndexBuffer::Create(const vector<UINT32>& indices) {
+inline void IndexBuffer::Create(const std::vector<UINT32>& indices) {
 	this->_stride = sizeof(UINT32);
 	this->_offset = 0;
 	this->_count = static_cast<UINT32>(indices.size());

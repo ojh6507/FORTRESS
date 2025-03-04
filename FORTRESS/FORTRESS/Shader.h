@@ -4,15 +4,15 @@ public:
 	Shader(ID3D11Device* device) : _device(device) {};
 	virtual ~Shader() {};
 
-	virtual void Create(const wstring& path, const string& name, const string& version) abstract;
+	virtual void Create(const std::wstring& path, const std::string& name, const std::string& version) abstract;
 	ID3DBlob* GetBlob() { return _blob; }
 
 protected:
-	void LoadShaderFromFile(const wstring& path, const string& name, const string& version);
+	void LoadShaderFromFile(const std::wstring& path, const std::string& name, const std::string& version);
 
 protected:
-	wstring _path;
-	string _name;
+	std::wstring _path;
+	std::string _name;
 	ID3D11Device* _device;
 	ID3DBlob* _blob;
 };
@@ -23,7 +23,7 @@ public:
 	VertexShader(ID3D11Device* device) : Super(device) {};
 	~VertexShader() {};
 
-	void Create(const wstring& path, const string& name, const string& version) override;
+	void Create(const std::wstring& path, const std::string& name, const std::string& version) override;
 	ID3D11VertexShader* Get() { return _vertexShader; }
 
 private:
@@ -36,7 +36,7 @@ public:
 	PixelShader(ID3D11Device* device) : Super(device) {};
 	~PixelShader() {};
 
-	void Create(const wstring& path, const string& name, const string& version) override;
+	void Create(const std::wstring& path, const std::string& name, const std::string& version) override;
 	ID3D11PixelShader* Get() { return _pixelShader; }
 
 private:
