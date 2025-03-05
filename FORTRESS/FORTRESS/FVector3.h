@@ -46,6 +46,7 @@ struct FVector3
 	FVector3 Normalized() const
 	{
 		float length = Magnitude();
+
 		if (length != 0)
 			return *this / length;
 
