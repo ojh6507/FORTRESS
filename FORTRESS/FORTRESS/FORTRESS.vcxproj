@@ -142,8 +142,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputLayout.h" />
-    <ClInclude Include="Missile.h" />
-    <ClInclude Include="MovableObject.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -163,8 +162,7 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputLayout.cpp" />
-    <ClCompile Include="Missile.cpp" />
-    <ClCompile Include="MovableObject.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="States.cpp" />
