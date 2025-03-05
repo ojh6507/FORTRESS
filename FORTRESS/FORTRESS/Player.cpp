@@ -12,18 +12,19 @@ void Player::Update(double deltaTime)
 
 	bIsGround = false;
 	ComputeIsGround();
+
 	UpdateBoundingBox();
+	
 	if (!bIsGround) {
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
 			Move(FVector3(0.0f, velocity.y, 0.0f) * deltaTime);
-
 		}
 	}
 	else
 		velocity.y = 0.0f;
 
-	// **�˹� (���� ���� ����)**
+	// **Knockback**
 	if (knockbackVelocity.MagnitudeSquared() > 0.01f)
 	{
 		Move(knockbackVelocity * deltaTime);
@@ -45,7 +46,6 @@ void Player::Update(double deltaTime)
 		if (Input::Instance()->IsMouseButtonDown(1))
 			RotateZ(deltaTime);
 	}		
-
 	
 	if (Input::Instance()->IsMouseButtonPressed(0) && _shooter && isMoveMode) {
 		_shooter->UpdateFirePoint();
@@ -53,8 +53,10 @@ void Player::Update(double deltaTime)
 		SetMoveMode(false);
 	}
 
-	if (Input::Instance()->IsMouseButtonDown(1))
-		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+	//if (Input::Instance()->IsKeyPressed(DIK_L))
+	//	TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+	//if (Input::Instance()->IsKeyPressed(DIK_K))
+	//	SuccessHitEnemy();
 
 	if (_child) {
 		_child->UpdateOffset();
@@ -79,16 +81,16 @@ void PlayerBarrel::RotateZ(double deltaTime)
 	float newAngle = currentAngle + angleChange;
 
 	float headAngle = _parent->GetRotation().z;
-	bool isFacingRight = cos(XMConvertToRadians(headAngle)) > 0;
-
+	
 	float minAngle, maxAngle;
-	if (isFacingRight) {
+	if (dir != -1) {
+
 		minAngle = -2.0f;
 		maxAngle = 45.0f;
 	}
 	else {
-		minAngle = 135.0f;
-		maxAngle = 225.0f;
+		minAngle = 180.f - 40.0f;
+		maxAngle = 180.f + 2.0f;
 	}
 
 	// ���� ������ �ִ밪 �̻��� ��� �ڵ����� ������
@@ -123,7 +125,7 @@ void PlayerBarrel::UpdateOffset()
 	if (_parent) {
 		FVector3 parentPos = _parent->GetPosition();
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
-
+		
 		float cosA = cosf(parentAngle);
 		float sinA = sinf(parentAngle);
 
@@ -171,8 +173,11 @@ void PlayerFirePoint::UpdateOffset()
 {
     if (_parent) {
         FVector3 parentPos = _parent->GetPosition();
-        float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
+		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
 
+		if (dir == -1) {
+			parentAngle += XMConvertToRadians(180.0f);
+		}
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);
 

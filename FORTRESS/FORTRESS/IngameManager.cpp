@@ -60,7 +60,7 @@ void InitReadyState::Reserve() {
 
 void InitReadyState::Update()
 {
-	ImGui::Begin("test");
+	ImGui::Begin("status");
 	ImGui::Text("Ready");
 	ImGui::End();
 
@@ -80,7 +80,7 @@ void MoveAndShotState::Reserve() {
 
 void MoveAndShotState::Update()
 {
-	ImGui::Begin("test");
+	ImGui::Begin("status");
 	ImGui::Text("Move&Shot");
 	ImGui::Text((std::to_string(_context->GetTimerTime() / 1000.0) + "s").c_str());
 	ImGui::End();
@@ -103,7 +103,7 @@ void WaitingAfterShotState::Reserve() {
 
 void WaitingAfterShotState::Update()
 {
-	ImGui::Begin("test");
+	ImGui::Begin("status");
 	ImGui::Text("Waiting");
 	ImGui::End();
 
@@ -118,12 +118,16 @@ void WaitingAfterShotState::Update()
 
 
 void GameOverState::Reserve() {
-	//
+	_context->StartTimer();
 }
 
 void GameOverState::Update()
 {
-	ImGui::Begin("test");
+	ImGui::Begin("status");
 	ImGui::Text("GameOver");
+	
+	char s[256];
+	sprintf_s(s, 256, "player%d Win", 0);
+	ImGui::Text(s);
 	ImGui::End();
 }

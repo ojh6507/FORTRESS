@@ -93,9 +93,25 @@ public:
 };
 class CubeObject : public GameObject
 {
+private:
+	FVector3 myColor;
 public:
 	CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color = FVector3(0,0,0));
 	void Update(double deltaTime) {};
+
+	FVector3 GetColor() const { return myColor; }
+	void Setcolor(FVector3 newColor)
+	{
+		myColor = newColor;
+
+		for (auto& vertex : _vertices)
+		{
+			vertex.r = myColor.x;
+			vertex.g = myColor.y;
+			vertex.b = myColor.z;
+			vertex.a = 1.f;
+		}
+	}
 	
 };
 class Projectile : public GameObject 

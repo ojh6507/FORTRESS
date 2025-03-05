@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Terrain.h"
+#include "PlayerUI.h"
 #include <stack>
 
 class Camera;
@@ -55,6 +56,8 @@ public:
     Player* player1;
     Player* player2;
     Terrain* terrain;
+    PlayerUI* player1_UI;
+    PlayerUI* player2_UI;
     bool turn = true;
 };
 

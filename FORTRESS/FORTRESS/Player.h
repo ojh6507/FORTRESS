@@ -16,20 +16,18 @@ private:
 
     Projectile* projectile;
     PlayerFirePoint* firePoint;
-    bool isMoveMode;
-    bool bIsDead;
-    bool bIsGround;
+    bool isMoveMode = false;
+    bool bIsDead = false;
+    bool bIsGround = false;
 
-    const float gravityAcceleration = -80.0f;
-    float hp;
-    float powerUpGage;
+    const float gravityAcceleration = -150.0f;
+    float hp = 100;
+    float powerUpGage = 0;
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
     Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
-        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f),
-        isMoveMode(false), bIsDead(false), hp(100), powerUpGage(0) {}
-
+        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f) {}
 
     virtual ~Player() {
         if (_child) delete _child;
@@ -70,7 +68,7 @@ public:
     void Move(FVector3 velocity);
 
     virtual void RotateZ(double deltaTime = 1);
-    void Fire(int projectileType, float direction, float power);
+    void Fire(int projectileType, float angle, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
     void SetChild(Player* child) {
@@ -94,7 +92,13 @@ public:
         _tf.SetPosition(pos);
         if (_child) _child->SetPosition(pos);
     };
-
+    virtual void SetDir(short d) {
+        dir = d;
+        if (_child) {
+            _child->SetDir(d);
+            _child->UpdateOffset();
+        }
+    }
     Player* _parent;
     Player* _shooter;
 protected:
@@ -102,6 +106,7 @@ protected:
     float angle;
     Player* _child;
     float anglePerSecond = 10;
+    short dir = 1;
 };
 
 inline void Player::ComputeIsGround()
@@ -124,15 +129,15 @@ inline void Player::Move(FVector3 velocity)
 {
     //if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
-
 }
 
-inline void Player::Fire(int projectileType, float direction, float power)
+inline void Player::Fire(int projectileType,float angle, float power)
 {
-    // ï¿½ß»ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
-    if (projectile)
-        projectile->FireProjectile(firePosition, direction, power);
-    // ï¿½ß»ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú±ï¿½ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ß»ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ Playerï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ¹ß»çÃ¼ »ý¼º
+    if(projectile)
+        projectile->FireProjectile(firePosition, angle, power);
+    // ¹ß»çÃ¼ ÇÑÅ× ÀÚ±âÀÚ½Å Àü´Þ, ¹ß»çÃ¼°¡ ÀûÀ» ¸ÂÃè´ÂÁö È®ÀÎÈÄ ÀÚ½ÅÀ» ¹ß»çÇÑ Player¿¡°Ô °á°ú Àü´Þ
+
 }
 
 inline void Player::SuccessHitEnemy()
@@ -147,9 +152,9 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
 
     SetHP(GetHP() - damage);
 
-    // ï¿½Ë¹ï¿½
     knockbackDirection = knockbackDirection.Normalized();
-    knockbackVelocity = knockbackDirection * 50.0f * damage; // ï¿½Ë¹ï¿½ ï¿½Ê±ï¿½ ï¿½Óµï¿½ (Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    knockbackVelocity = knockbackDirection * 50.0f * damage;
+    if (_child) _child->TakeDamage(damage, knockbackDirection);
 }
 
 

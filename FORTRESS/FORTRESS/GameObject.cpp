@@ -198,6 +198,8 @@ CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 	_indexBuffer = new IndexBuffer(device);
 	_indexBuffer->Create(_indices);
+
+	myColor = color;
 }
 
 
