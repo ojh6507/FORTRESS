@@ -1,6 +1,6 @@
 #pragma once
+//#include "FVector3.h"
 #include "GameObject.h"
-#include "FVector3.h"
 
 class Projectile;
 class PlayerFirePoint;
@@ -126,7 +126,7 @@ inline void Player::Move(FVector3 velocity)
 inline void Player::Fire(int projectileType, float direction, float power)
 {
     if (projectile)
-        projectile->FireProjectile(firePosition, direction, power);
+        projectile->FireProjectile(*this, firePosition, direction, power);
 }
 
 inline void Player::SuccessHitEnemy()

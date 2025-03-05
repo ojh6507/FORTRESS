@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
-#include <DirectXCollision.h>
+
+class Player;
 
 struct VS_CB_GAMEOBJECT_INFO {
 	XMFLOAT4X4 m_xmf4x4World;
@@ -127,10 +128,13 @@ public:
 	BoundingSphere collisionBound;
 	float basicRadius;
 
+	Player* motherPlayer;
+
 	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
 
-	void FireProjectile(FVector3& firePosition, float angle, float speed) {
+	void FireProjectile(Player& player, FVector3& firePosition, float angle, float speed) {
 		_isFired = true;
+		motherPlayer = &player;
 
 		// 초기 발사 위치 (예제: 현재 오브젝트 위치)
 		if (!&_tf) return;
