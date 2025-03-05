@@ -94,6 +94,7 @@ public:
     };
 
     Player* _parent;
+    Player* _shooter;
 protected:
     FVector3 firePosition;
     float angle;
