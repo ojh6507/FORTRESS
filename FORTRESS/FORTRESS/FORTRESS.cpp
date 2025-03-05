@@ -36,14 +36,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	const int TARGET_FPS = 60;
 	const double TARGET_FRAMETIME = 1000.0 / TARGET_FPS;
-	LARGE_INTEGER frequency, frameStartTime, frameEndTime;
+	LARGE_INTEGER frequency, frameStartTime, frameUpdateTime, frameEndTime;
 	
-	double frameElapsedTime;	// milisecond
+	double frameElapsedTime = 0, gameElapsedTime = 0;	// milisecond
 	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&frameStartTime);
 
 	while (1)
 	{
-		QueryPerformanceCounter(&frameStartTime);
+		QueryPerformanceCounter(&frameUpdateTime);
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -53,18 +54,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::DispatchMessage(&msg);
 			}
 		}
-		else
-		{
-			gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
-			std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
-			debugstr += '\n';
-			
-		}
+		gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
+		std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
+		debugstr += '\n';
 
 		do {
 			Sleep(0);
 			QueryPerformanceCounter(&frameEndTime);
-			frameElapsedTime = (frameEndTime.QuadPart - frameStartTime.QuadPart) * 1000.0 / frequency.QuadPart;
+			frameElapsedTime = (frameEndTime.QuadPart - frameUpdateTime.QuadPart) * 1000.0 / frequency.QuadPart;
+			gameElapsedTime = (frameEndTime.QuadPart - frameStartTime.QuadPart) * 1000.0 / frequency.QuadPart;
 		} while (frameElapsedTime < TARGET_FRAMETIME);
 	}
 	gGameFramework.OnDestroy();

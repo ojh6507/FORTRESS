@@ -122,4 +122,11 @@ void _test_concrete_GameObject::Update(double deltaTime) {
 	if (Input::Instance()->IsMouseButtonReleased(1)) {
 		_tf.SetPosition(_tf.GetPosition() + FVector3(10.05f, 0.f, 0.f));
 	}
+
+
+	ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Hello world");
+	ImGui::Text("test");
+	ImGui::End();
 }

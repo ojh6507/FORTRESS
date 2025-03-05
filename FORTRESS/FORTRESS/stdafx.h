@@ -55,6 +55,10 @@ using namespace DirectX::PackedVector;
 #include "Shader.h"
 #include "States.h"
 
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+#include "GuiController.h"
 
 namespace MathVector3
 {
