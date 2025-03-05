@@ -41,18 +41,18 @@ MenuScene::~MenuScene()
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	Projectile* ProjectileObject1 = new Projectile(device, deviceContext);
+    Projectile* ProjectileObject1 = new Projectile(device, deviceContext);
     ProjectileObject1->OutOfScreen();
 
     gameObjects.push_back(ProjectileObject1);
-    
+
     FVector3 playerColor = { 1.f, 0.4f, 0.4f };
     player1 = new Player(device, deviceContext, { 0,0,0 }, playerColor);
     Player* playerBody = new Player(device, deviceContext, { 2.3, 0.7, 1 }, playerColor);
-    PlayerHead* playerHead = new PlayerHead(device, deviceContext, {1.4, 1, 1}, FVector3(0.0f, 30.0f, 0.0f), playerColor);
-    PlayerBarrel* playerBarrel = new PlayerBarrel(device, deviceContext, {2.4f, .3, 1}, FVector3(50.0f, 15.0f, 0.0f), playerColor);
-    PlayerFirePoint* playerFirePoint = new PlayerFirePoint(device, deviceContext, {0.2f, .4, 1}, FVector3(80.0f, 0.0f, 0.0f), playerColor);
-    
+    PlayerHead* playerHead = new PlayerHead(device, deviceContext, { 1.4, 1, 1 }, FVector3(0.0f, 30.0f, 0.0f), playerColor);
+    PlayerBarrel* playerBarrel = new PlayerBarrel(device, deviceContext, { 2.4f, .3, 1 }, FVector3(50.0f, 15.0f, 0.0f), playerColor);
+    PlayerFirePoint* playerFirePoint = new PlayerFirePoint(device, deviceContext, { 0.2f, .4, 1 }, FVector3(80.0f, 0.0f, 0.0f), playerColor);
+
     playerBody->SetChild(playerHead);
     playerBarrel->SetParent(playerHead);
 
@@ -64,26 +64,26 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerFirePoint->SetParent(playerBarrel);
     player1->Reload(ProjectileObject1);
     player1->SetFirePoint(playerFirePoint);
-    player1->SetPosition({-500,0, 1});
-    
-    
-    
+    player1->SetPosition({ -500,0, 1 });
+
+
+
     FVector3 player2Color = { 0.f, 1.f, 0.0f };
-    player2 = new Player(device, deviceContext, { 0, 0, 0 },player2Color);
+    player2 = new Player(device, deviceContext, { 0, 0, 0 }, player2Color);
 
     // 바디, 헤드, 배럴, 파이어포인트 등 세부 부위 생성
-    Player* player2Body = new Player(device, deviceContext, { 2.3f, 0.7f, 1.0f }, 
-                                                             player2Color);
-    PlayerHead* player2Head = new PlayerHead(device, deviceContext, { 1.4f, 1.0f, 1.0f }, 
-                                                                    FVector3(0.0f, 30.0f, 0.0f),
-                                                                    player2Color);
+    Player* player2Body = new Player(device, deviceContext, { 2.3f, 0.7f, 1.0f },
+        player2Color);
+    PlayerHead* player2Head = new PlayerHead(device, deviceContext, { 1.4f, 1.0f, 1.0f },
+        FVector3(0.0f, 30.0f, 0.0f),
+        player2Color);
     PlayerBarrel* player2Barrel = new PlayerBarrel(device, deviceContext, { 2.4f, 0.3f, 1.0f },
-                                                                           FVector3(50.0f, 15.0f, 0.0f),
-                                                                           player2Color);
-    PlayerFirePoint* player2FirePoint = new PlayerFirePoint(device, deviceContext, { 0.2f, 0.4f, 1.0f }, 
-                                                                                    FVector3(80.0f, 0.0f, 0.0f), 
-                                                                                    player2Color);
-    
+        FVector3(-70.0f, 15.0f, 0.0f),
+        player2Color);
+    PlayerFirePoint* player2FirePoint = new PlayerFirePoint(device, deviceContext, { 0.2f, 0.4f, 1.0f },
+        FVector3(-95.0f, 0.0f, 0.0f),
+        player2Color);
+
     Projectile* ProjectileObject2 = new Projectile(device, deviceContext);
     ProjectileObject2->OutOfScreen();
 
@@ -102,8 +102,8 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2FirePoint->SetParent(player2Barrel);
     player2->Reload(ProjectileObject2);
     player2->SetFirePoint(player2FirePoint);
-    player2->SetPosition({500,0, 1});
-    
+    player2->SetPosition({ 500,0, 1 });
+    player2->SetDir(-1);
     
     
     

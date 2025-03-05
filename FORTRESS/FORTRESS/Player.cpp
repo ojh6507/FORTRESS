@@ -45,7 +45,7 @@ void Player::Update(double deltaTime)
 		RotateZ(deltaTime);
 	if (Input::Instance()->IsMouseButtonPressed(0)) {
 		UpdateFirePoint();
-		Fire(0, angle, 500);
+		Fire(0, angle,dir, 500);
 	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))
@@ -75,16 +75,15 @@ void PlayerBarrel::RotateZ(double deltaTime)
 	float newAngle = currentAngle + angleChange;
 
 	float headAngle = _parent->GetRotation().z;
-	bool isFacingRight = cos(XMConvertToRadians(headAngle)) > 0;
-
+	
 	float minAngle, maxAngle;
-	if (isFacingRight) {
+	if (dir != -1) {
 		minAngle = -2.0f;
 		maxAngle = 45.0f;
 	}
 	else {
-		minAngle = 135.0f;
-		maxAngle = 225.0f;
+		minAngle = 900.f;
+		maxAngle = 270.0f;
 	}
 
 	// 현재 각도가 최대값 이상일 경우 자동으로 내려감
