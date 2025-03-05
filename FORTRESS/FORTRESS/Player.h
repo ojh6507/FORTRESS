@@ -1,6 +1,6 @@
 #pragma once
+//#include "FVector3.h"
 #include "GameObject.h"
-#include "FVector3.h"
 
 class Projectile;
 class PlayerFirePoint;
@@ -118,7 +118,6 @@ inline void Player::ComputeIsGround()
         //if (magnitude * sin(_tf.GetRotation().z) + _tf.GetPosition().y < -FRAME_BUFFER_HEIGHT / 2)
         if ((vertexLocalPosition.y * _tf.GetScale().y) + _tf.GetPosition().y < - FRAME_BUFFER_HEIGHT / 2)
         {
-
             bIsGround = true;
             return;
         }
@@ -133,11 +132,8 @@ inline void Player::Move(FVector3 velocity)
 
 inline void Player::Fire(int projectileType,float angle, float power)
 {
-    // 발사체 생성
-    if(projectile)
-        projectile->FireProjectile(firePosition, angle, power);
-    // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
-
+    if (projectile)
+        projectile->FireProjectile(*this, firePosition, direction, power);
 }
 
 inline void Player::SuccessHitEnemy()
