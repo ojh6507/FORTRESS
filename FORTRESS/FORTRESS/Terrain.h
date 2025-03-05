@@ -72,9 +72,6 @@ protected:
 
     ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
 
-    BoundingOrientedBox _boundingBox;
-    BoundingOrientedBox _originBoundingBox;
-
 private:
     ID3D11Device* _device;
     ID3D11DeviceContext* _deviceContext;

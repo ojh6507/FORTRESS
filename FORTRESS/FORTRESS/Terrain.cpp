@@ -12,15 +12,16 @@ void GeneratePerlinNoise1D(size_t numPoints, size_t numSameplePoints, float* hei
 
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT width, UINT height, float scale, FVector3 pos)
     //: GameObject(device, deviceContext), 
-    : Width(width), Height(height), Scale(scale), 
+    : _device(device), _deviceContext(deviceContext), Width(width), Height(height), Scale(scale),
     WidthMinusDelta(nextafterf(static_cast<float>(width), static_cast<float>(width-1))), HeightMinusDelta(nextafterf(static_cast<float>(height), static_cast<float>(height - 1)))
 {
     // Scale은 1로 고정.
     assert(Scale == 1.f);
 
-
-
     if (device == nullptr)
+        return;
+
+    if (deviceContext == nullptr)
         return;
 
     _vertexShader = new VertexShader(device);
@@ -37,7 +38,6 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT 
 
     _rasterizerState = new RasterizerState(device);
     _rasterizerState->Create();
-
 
 
     // stick to leftbottom corner
@@ -95,9 +95,13 @@ void Terrain::Update(double deltaTime)
 void Terrain::Render()
 {
     if (_vertexBuffer == nullptr)
+    {
         return;
+    }
     if (_deviceContext == nullptr)
+    {
         return;
+    }
 
     _deviceContext->IASetInputLayout(_inputLayout->Get());
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
