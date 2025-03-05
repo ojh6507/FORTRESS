@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include "GameFramework.h"
+#include "Player.h"
 //#include "sphere.h"
 
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -20,6 +21,8 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ObjObject* arrowObject = new ObjObject(device, deviceContext, L"arrow.obj");
     arrowObject->SetPostion({ -250,-200,0 });
     arrowObject->SetRotation({ 90,0,0 });
+	//GameObject* gameObject = new _test_concrete_GameObject(device, deviceContext);
+	//gameObjects.push_back(gameObject);
 
     ObjObject* arrowObject2 = new ObjObject(device, deviceContext, L"arrow.obj");
     arrowObject2->SetPostion({ 250,-200,0 });
@@ -32,8 +35,9 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-    //CubeObject* gameObject = new CubeObject(device, deviceContext);
-    Projectile* ProjectileObject = new Projectile(device, deviceContext);
+	Projectile* ProjectileObject = new Projectile(device, deviceContext);
+    ProjectileObject->OutOfScreen();
+
     gameObjects.push_back(ProjectileObject);
     player = new Player(device, deviceContext, { 0,0,0 });
     Player* playerBody = new Player(device, deviceContext, { 3, 1, 1 });
@@ -44,10 +48,13 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerBarrel->SetParent(playerHead);
 
     player->SetChild(playerBody);
-    
+
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
 
+    
+    player->Reload(ProjectileObject);
+    
 }
 
 void GameScene::Update(double deltaTime)

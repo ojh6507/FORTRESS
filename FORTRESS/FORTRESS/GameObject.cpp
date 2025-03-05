@@ -99,6 +99,8 @@ Projectile::Projectile(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	constexpr float radius = 20.0f; // 원 반지름
 	constexpr float PI = 3.1415926f;
 
+	basicRadius = radius;
+
 	_vertices.resize(segments + 1);
 	_vertices[0] = { 0.0f, 0.0f, 0.0f, 1.f, 1.f, 1.f, 1.f }; // 중심점
 
@@ -120,15 +122,20 @@ Projectile::Projectile(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_indexBuffer = new IndexBuffer(device);
 	_indexBuffer->Create(_indices);
 	_tf.SetPosition({-300, -100, 0});
-	
+	_tf.SetScale({ 0.5f, 0.5f, 0.5f });
 }
 
 void Projectile::Update(double deltaTime)
 {
-	if (Input::Instance()->IsMouseButtonDown(0)) {
-
-		FireProjectile();
+	if (!_isOutOfScreen)
+	{
+		collisionBound.Center = {_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z };
+		collisionBound.Radius = _tf.GetScale().x * basicRadius;
 	}
+	//if (Input::Instance()->IsMouseButtonDown(0)) {
+
+	//	FireProjectile();
+	//}
 	if(_isFired)
 		UpdateProjectile(deltaTime);
 }
