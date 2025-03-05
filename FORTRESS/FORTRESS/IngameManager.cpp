@@ -106,8 +106,10 @@ void MoveAndShotState::Update()
 		ImGui::Text("%s", text);
 		};
 
-	CenterText("Move&Shot");
-
+	char s[256];
+	sprintf_s(s, 256, "Player %d", _turnedPlayerIdx + 1);
+	CenterText(s);
+	//CenterText("Move&Shot");
 	std::string timerText = std::to_string(_context->GetTimerTime() / 1000.0) + "s";
 	CenterText(timerText.c_str());
 

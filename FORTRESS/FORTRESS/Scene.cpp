@@ -98,8 +98,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2->UpdatAllBoundingBox(XMMatrixIdentity());
    
     
-    IngameManager* ingameManager = IngameManager::Instance();
-
+    IngameManager* ingameManager = new IngameManager();
     gameObjects.push_back(ingameManager);
     ingameManager->players.push_back(playerBody);
     ingameManager->players.push_back(player2Body);
