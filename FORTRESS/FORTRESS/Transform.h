@@ -6,7 +6,7 @@ public:
 	void SetPosition(FVector3 position) { _position = position; }
 
     FVector3 GetRotation() const { return _rotation; }
-	void SetRotation(float rotation) { _rotation = rotation; }
+	void SetRotation(FVector3 rotation) { _rotation = rotation; }
 
 	FVector3 GetScale() const { return _scale; }
 	void SetScale(FVector3 scale) { _scale = scale; }
