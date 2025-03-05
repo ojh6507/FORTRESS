@@ -80,6 +80,11 @@ public:
     void Fire(int projectileType, float angle, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
+    void Knockback(FVector3 knockbackDirection) {
+        knockbackDirection = knockbackDirection.Normalized();
+        knockbackVelocity = knockbackDirection * 100;
+        if (_child) _child->Knockback(knockbackDirection);
+    }
     void SetChild(Player* child) {
         _child = child;
     }
@@ -141,8 +146,10 @@ inline void Player::Move(FVector3 velocity)
 
 inline void Player::Fire(int projectileType,float angle, float power)
 {
-    if (projectile)
+    if (projectile) {
         projectile->FireProjectile(*this, firePosition, angle, power);
+        Knockback({-10,5,0});
+    }
 }
 
 inline void Player::SuccessHitEnemy()
@@ -190,39 +197,7 @@ public:
     }
 
     virtual void RotateZ(double deltaTime = 1);
-    virtual void UpdateOffset();
-    void InitFirePointRotation_Rev()
-    {
-        if (_parent) {
-            FVector3 parentPos = _parent->GetPosition();
-            float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
-
-            
-            parentAngle += XMConvertToRadians(360.0f);
-            float cosA = cosf(parentAngle);
-            float sinA = sinf(parentAngle);
-
-            FVector3 rotatedOffset = {
-                offset.x * cosA - offset.y * sinA,
-                offset.x * sinA + offset.y * cosA,
-                0
-            };
-
-            FVector3 pivotOffset = { 10.0f, 0.0f, 0.0f };
-            FVector3 rotatedPivotOffset = {
-                pivotOffset.x * cosA - pivotOffset.y * sinA,
-                pivotOffset.x * sinA + pivotOffset.y * cosA,
-                0
-            };
-
-            _tf.SetPosition(parentPos + rotatedOffset + rotatedPivotOffset);
-        }
-    }
-
-    virtual void SetDir(short d) {
-        dir = d;
-       // InitFirePointRotation_Rev();
-    }
+    virtual void UpdateOffset(); 
 };
 
 class PlayerHead : public Player {
