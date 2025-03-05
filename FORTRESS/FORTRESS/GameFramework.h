@@ -10,7 +10,7 @@ public:
 
 	}
 	~GameFramework(){}
-	void FrameAdvance();
+	void FrameAdvance(double deltaTime);
 	void OnDestroy();
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

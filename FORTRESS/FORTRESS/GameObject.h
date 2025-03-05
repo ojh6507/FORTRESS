@@ -6,7 +6,7 @@ public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~GameObject();
 
-	void Update();
+	virtual void Update(double deltaTime);
 	void Render();
 
 private:

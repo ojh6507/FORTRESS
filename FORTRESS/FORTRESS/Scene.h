@@ -24,9 +24,9 @@ public:
         }
     }
 
-    virtual void Update() {
+    virtual void Update(double deltaTime) {
         for (auto& obj : gameObjects) {
-            obj->Update();
+            obj->Update(deltaTime);
         }
     }
 

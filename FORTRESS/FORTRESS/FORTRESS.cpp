@@ -34,8 +34,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_FORTRESS));
 
+	const int TARGET_FPS = 60;
+	const double TARGET_FRAMETIME = 1000.0 / TARGET_FPS;
+	LARGE_INTEGER frequency, frameStartTime, frameEndTime;
+	
+	double frameElapsedTime;	// milisecond
+	QueryPerformanceFrequency(&frequency);
+
 	while (1)
 	{
+		QueryPerformanceCounter(&frameStartTime);
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -47,8 +55,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		}
 		else
 		{
-			gGameFramework.FrameAdvance();
+			gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
+			std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
+			debugstr += '\n';
+			
 		}
+
+		do {
+			Sleep(0);
+			QueryPerformanceCounter(&frameEndTime);
+			frameElapsedTime = (frameEndTime.QuadPart - frameStartTime.QuadPart) * 1000.0 / frequency.QuadPart;
+		} while (frameElapsedTime < TARGET_FRAMETIME);
 	}
 	gGameFramework.OnDestroy();
 
@@ -135,6 +152,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		::PostQuitMessage(0);
 		break;
+	// 윈도우 생성 직후에 Input 초기화
+	// https://linkmemo.tistory.com/4
 	case WM_ACTIVATE:
 		if (wParam != WA_INACTIVE) {
 			Input::Instance()->Initialize(ghAppInstance, hWnd, 800, 600);
