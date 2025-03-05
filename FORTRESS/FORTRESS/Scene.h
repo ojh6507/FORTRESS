@@ -51,7 +51,9 @@ public:
     virtual ~GameScene();
     virtual void Update(double deltaTime);
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
-    Player* player;
+    Player* player1;
+    Player* player2;
+    bool turn = true;
 };
 
 class SceneManager {

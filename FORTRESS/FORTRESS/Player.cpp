@@ -11,7 +11,7 @@ void Player::Update(double deltaTime)
 {
 	bIsGround = false;
 	ComputeIsGround();
-
+	UpdateBoundingBox();
 	if (!bIsGround) {
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
@@ -43,8 +43,10 @@ void Player::Update(double deltaTime)
 	
 	if (Input::Instance()->IsMouseButtonDown(1))
 		RotateZ(deltaTime);
-	if (Input::Instance()->IsMouseButtonPressed(0))
-		Fire(0, _tf.GetRotation().z, 500);
+	if (Input::Instance()->IsMouseButtonPressed(0)) {
+		UpdateFirePoint();
+		Fire(0, angle, 500);
+	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))
 		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
@@ -99,6 +101,18 @@ void PlayerBarrel::RotateZ(double deltaTime)
 	if (_child) _child->RotateZ(deltaTime);
 }
 
+void Player::SetFirePoint(PlayerFirePoint* pfire)
+{
+	firePoint = pfire;
+}
+
+void Player::UpdateFirePoint()
+{
+	if (firePoint) {
+		angle = firePoint->_parent->GetRotation().z;
+		firePosition = firePoint->GetPosition();
+	}
+}
 
 void PlayerBarrel::UpdateOffset()
 {
@@ -117,6 +131,7 @@ void PlayerBarrel::UpdateOffset()
 
 		_tf.SetPosition(parentPos + rotatedOffset);
 	}
+	if (_child) _child->UpdateOffset();
 }
 
 void PlayerHead::UpdateOffset()
@@ -138,4 +153,40 @@ void PlayerHead::UpdateOffset()
 
 		_tf.SetPosition(parentPos + rotatedOffset);
 	}
+}
+
+void PlayerFirePoint::RotateZ(double deltaTime)
+{
+	if (_parent) {
+		float parentAngle = _parent->GetRotation().z; // Barrel의 현재 각도
+		_tf.SetRotation(FVector3(0, 0, parentAngle)); // FirePoint의 회전을 Barrel과 동기화
+	}
+}
+
+void PlayerFirePoint::UpdateOffset()
+{
+    if (_parent) {
+        FVector3 parentPos = _parent->GetPosition();
+        float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
+
+        float cosA = cosf(parentAngle);
+        float sinA = sinf(parentAngle);
+
+        // 기존 offset 변환
+        FVector3 rotatedOffset = {
+            offset.x * cosA - offset.y * sinA,
+            offset.x * sinA + offset.y * cosA,
+            0
+        };
+
+        // 피봇 위치 조정 (예: 중앙에서 오른쪽 끝으로 이동)
+        FVector3 pivotOffset = {10.0f, 0.0f, 0.0f};  // 원하는 피봇 이동 위치
+        FVector3 rotatedPivotOffset = {
+            pivotOffset.x * cosA - pivotOffset.y * sinA,
+            pivotOffset.x * sinA + pivotOffset.y * cosA,
+            0
+        };
+
+        _tf.SetPosition(parentPos + rotatedOffset + rotatedPivotOffset);
+    }
 }

@@ -29,6 +29,6 @@ public:
 private:
     FVector3 _position{1,1,0};
     FVector3 _rotation{0,0,0};
-    FVector3 _scale{1,0.5f,0.5f};
+    FVector3 _scale{1,1,1};
 };  
 

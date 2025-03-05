@@ -2,6 +2,9 @@
 #include "GameObject.h"
 #include "FVector3.h"
 
+class Projectile;
+class PlayerFirePoint;
+
 class Player :
     public CubeObject
 {
@@ -12,7 +15,7 @@ private:
     float knockbackDamping = 0.9f;
 
     Projectile* projectile;
-
+    PlayerFirePoint* firePoint;
     bool isMoveMode;
     bool bIsDead;
     bool bIsGround;
@@ -22,8 +25,8 @@ private:
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
-    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
-        : CubeObject(device, deviceContext, scale), velocity(0.0f, 0.0f, 0.0f),
+    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
+        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f),
         isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
 
     virtual ~Player() {
@@ -71,6 +74,9 @@ public:
     void SetChild(Player* child) {
         _child = child;
     }
+    void SetFirePoint(PlayerFirePoint* pfire);
+    void UpdateFirePoint();
+  
     void SetParent(Player* parent) {
         _parent = parent;
     }
@@ -81,8 +87,15 @@ public:
     void Reload(Projectile* newProjectTile) {
         projectile = newProjectTile;
     }
-protected:
+    void SetPosition(const FVector3& pos) {
+    
+        _tf.SetPosition(pos);
+        if (_child) _child->SetPosition(pos);
+    };
     Player* _parent;
+protected:
+    FVector3 firePosition;
+    float angle;
     Player* _child;
     float anglePerSecond = 10;
 };
@@ -114,7 +127,7 @@ inline void Player::Fire(int projectileType, float direction, float power)
 {
     // 발사체 생성
     if(projectile)
-        projectile->FireProjectile(GetFirePosition(), direction, power);
+        projectile->FireProjectile(firePosition, direction, power);
     // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
 }
 
@@ -136,12 +149,13 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
 }
 
 
+
 class PlayerBarrel : public Player {
 private:
     FVector3 offset;
 public:
-    PlayerBarrel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
-        : Player(device, deviceContext, scale), offset{ relativeOffset } {
+    PlayerBarrel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset, FVector3 color)
+        : Player(device, deviceContext, scale, color), offset{ relativeOffset } {
     }
     virtual ~PlayerBarrel() {
         if (_child) delete _child;
@@ -149,12 +163,27 @@ public:
     virtual void RotateZ(double deltaTime = 1);
     virtual void UpdateOffset();
 };
+
+class PlayerFirePoint : public Player {
+private:
+    FVector3 offset;
+public:
+    PlayerFirePoint(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset, FVector3 color)
+        : Player(device, deviceContext, scale, color), offset{ relativeOffset } {
+    }
+    virtual ~PlayerFirePoint() {
+        if (_child) delete _child;
+    }
+    virtual void RotateZ(double deltaTime = 1);
+    virtual void UpdateOffset();
+};
+
 class PlayerHead : public Player {
 private:
     FVector3 offset;
 public:
-    PlayerHead(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
-        : Player(device, deviceContext, scale), offset{ relativeOffset } {
+    PlayerHead(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset, FVector3 color)
+        : Player(device, deviceContext, scale, color), offset{ relativeOffset } {
     }
     virtual ~PlayerHead() {
         if (_child) delete _child;
