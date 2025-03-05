@@ -1,11 +1,11 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "GameFramework.h"
 #include "PlayerUI.h"
 
 
 extern GameFramework gGameFramework;
 
-// »ý¼ºÀÚ
+// ìƒì„±ìž
 
 PlayerUI::PlayerUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float scale, int id, Player* p)
     : CubeObject(device, deviceContext, scale),
@@ -14,7 +14,7 @@ PlayerUI::PlayerUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, flo
     profileColor = ImVec4(player->GetColor().x, player->GetColor().y, player->GetColor().z, 1.0f);
 }
 
-// UI Ç¥½Ã ÇÔ¼ö
+// UI í‘œì‹œ í•¨ìˆ˜
 
 inline void PlayerUI::ShowPlayerUI()
 {
@@ -28,7 +28,7 @@ inline void PlayerUI::ShowPlayerUI()
     ImVec2 windowPos = (playerID == 1) ? ImVec2(10, 10) : ImVec2(ImGui::GetIO().DisplaySize.x - windowSize.x - 10, 10);
     ImGui::SetWindowPos(windowPos);
 
-    // Player Profile (´Ü»ö »ç°¢Çü)
+    // Player Profile (ë‹¨ìƒ‰ ì‚¬ê°í˜•)
     ImGui::Text("Player %d", playerID);
     ImGui::ColorButton("Profile", profileColor, ImGuiColorEditFlags_NoTooltip, ImVec2(50, 50));
 
@@ -55,14 +55,23 @@ inline void PlayerUI::ShowGameOverUI()
     );
     ImGui::SetWindowPos(windowPos);
 
-    ImGui::Text("Winner is Player %d!!", (playerID == 1) ? 2 : 1);
-    //ImGui::ColorButton("Profile", profileColor, ImGuiColorEditFlags_NoTooltip, ImVec2(50, 50));
+    auto CenterItem = [](float itemWidth, float offset = 8.0f) {
+        float windowWidth = ImGui::GetContentRegionAvail().x;
+        ImGui::SetCursorPosX((windowWidth - itemWidth) * 0.5f + offset);
+    };
+
+    std::string winnerText = "Winner is Player " + std::to_string((playerID == 1) ? 2 : 1) + "!!";
+    CenterItem(ImGui::CalcTextSize(winnerText.c_str()).x);
+    ImGui::Text("%s", winnerText.c_str());
+
+    CenterItem(150);
     if (ImGui::Button("Restart", ImVec2(150, 20)))
     {
         Graphics* graphics = gGameFramework.GetGraphics();
         Scene* scene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
         gGameFramework.GetSceneManager()->ChangeScene(scene);
     }
+
     ImGui::End();
 }
 
