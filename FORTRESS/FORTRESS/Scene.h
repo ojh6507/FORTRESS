@@ -19,9 +19,9 @@ public:
 
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) {};
 
-    virtual void Update(float detaTime) {
+    virtual void Update(double deltaTime) {
         for (auto& obj : gameObjects) {
-            obj->Update(detaTime);
+            obj->Update(deltaTime);
         }
     }
 

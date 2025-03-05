@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 
-GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext) {
+GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext): _device(device), _deviceContext(deviceContext) {
 
 	_vertices.resize(4);
 
@@ -68,7 +68,6 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 	_rasterizerState = new RasterizerState(device);
 	_rasterizerState->Create();
-	_deviceContext = deviceContext;
 }
 
 GameObject::~GameObject() {
@@ -79,22 +78,6 @@ GameObject::~GameObject() {
 	delete _inputLayout;
 	delete _constantBuffer;
 	delete _rasterizerState;
-}
-
-void GameObject::Update(float deltaTime) {
-
-	if (Input::Instance()->IsKeyPressed(DIK_W)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 10.0f, 0.f));	
-	}
-	if (Input::Instance()->IsKeyPressed(DIK_A)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(-10.0f, 0.f, 0.f));
-	}
-	if (Input::Instance()->IsKeyPressed(DIK_S)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -10.0f, 0.f));
-	}
-	if (Input::Instance()->IsKeyPressed(DIK_D)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(10.0f, 0.f, 0.f));
-	}
 }
 
 void GameObject::Render() {
@@ -117,4 +100,26 @@ void GameObject::Render() {
 	_deviceContext->VSSetConstantBuffers(2, 1, &constantBuffer);
 
 	_deviceContext->DrawIndexed(_indexBuffer->GetCount(), 0, 0);
+}
+
+void _test_concrete_GameObject::Update(double deltaTime) {
+	if (Input::Instance()->IsKeyDown(DIK_W)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 1.0f, 0.f) * deltaTime);
+	}
+	if (Input::Instance()->IsKeyPressed(DIK_A)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(-0.05f, 0.f, 0.f));
+	}
+	if (Input::Instance()->IsKeyDown(DIK_S)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -1.0f, 0.f) * deltaTime);
+	}
+	if (Input::Instance()->IsKeyPressed(DIK_D)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.05f, 0.f, 0.f));
+	}
+
+	if (Input::Instance()->IsMouseButtonPressed(0)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(-0.05f, 0.f, 0.f));
+	}
+	if (Input::Instance()->IsMouseButtonReleased(1)) {
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.05f, 0.f, 0.f));
+	}
 }

@@ -81,9 +81,42 @@ bool Input::Frame() {
 	return true;
 }
 
-bool Input::IsKeyPressed(char keycode)
+bool Input::IsKeyDown(char keycode)
 {
 	if (m_keyboardState[keycode] & 0x80)
+		return true;
+	return false;
+}
+
+bool Input::IsKeyPressed(char keycode) {
+	if (m_keyboardState[keycode] & 0x80 && !(m_keyboardStatePrevious[keycode] & 0x80))
+		return true;
+	return false;
+}
+
+bool Input::IsKeyReleased(char keycode) {
+	if (!(m_keyboardState[keycode] & 0x80) && m_keyboardStatePrevious[keycode] & 0x80)
+		return true;
+	return false;
+}
+
+bool Input::IsMouseButtonDown(char button)
+{
+	if (m_mouseState.rgbButtons[button] & 0x80)
+		return true;
+	return false;
+}
+
+bool Input::IsMouseButtonPressed(char button)
+{
+	if (m_mouseState.rgbButtons[button] & 0x80 && !(m_mouseStatePrevious.rgbButtons[button] & 0x80))
+		return true;
+	return false;
+}
+
+bool Input::IsMouseButtonReleased(char button)
+{
+	if (!(m_mouseState.rgbButtons[button] & 0x80) && m_mouseStatePrevious.rgbButtons[button] & 0x80)
 		return true;
 	return false;
 }
@@ -95,14 +128,16 @@ void Input::GetMouseLocation(int& mouseX, int& mouseY)
 	return;
 }
 
+
+
 bool Input::ReadKeyboard() {
 	HRESULT result;
 
+	memcpy(m_keyboardStatePrevious, m_keyboardState, sizeof(m_keyboardState));
 	result = m_keyboard->GetDeviceState(sizeof(m_keyboardState), (LPVOID)&m_keyboardState);
 	if (FAILED(result))
 	{
-		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
-		{
+		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED)) {
 			m_keyboard->Acquire();
 		} 
 		else {
@@ -116,12 +151,12 @@ bool Input::ReadKeyboard() {
 bool Input::ReadMouse() {
 	HRESULT result;
 
+	memcpy(&m_mouseStatePrevious, &m_mouseState, sizeof(DIMOUSESTATE));
 	result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
 	if (FAILED(result))
 	{
 		// If the mouse lost focus or was not acquired then try to get control back.
-		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
-		{
+		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED)) {
 			m_mouse->Acquire();
 		} 
 		else {

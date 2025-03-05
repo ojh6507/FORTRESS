@@ -1,9 +1,9 @@
 #include "GameFramework.h"
 
-void GameFramework::FrameAdvance()
+void GameFramework::FrameAdvance(double deltaTime)
 {
 	Input::Instance()->Frame();
-	sceneManager->Top()->Update(0.666666f);
+	sceneManager->Top()->Update(deltaTime);
 	graphics->RenderBegin();
 	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	graphics->RenderEnd();

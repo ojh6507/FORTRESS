@@ -1,5 +1,5 @@
 #pragma once
-
+#include "stdafx.h"
 struct VS_CB_GAMEOBJECT_INFO {
 	XMFLOAT4X4 m_xmf4x4World;
 };
@@ -9,8 +9,12 @@ public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~GameObject();
 
-	void Update(float deltaTime);
+	virtual void Update(double deltaTime) abstract;
+
 	void Render();
+
+protected:
+	Transform _tf;
 
 private:
 	GameObject* child;
@@ -31,4 +35,12 @@ private:
 	
 	Transform _tf;
 	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
+
+};
+
+class _test_concrete_GameObject : public GameObject {
+	using Super = GameObject;
+public:
+	_test_concrete_GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : Super(device, deviceContext) {};
+	void Update(double deltaTime);
 };
