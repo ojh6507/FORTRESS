@@ -2,8 +2,6 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "imgui.h"
-#include <iostream>
-
 
 class PlayerUI : public CubeObject
 {
@@ -51,31 +49,33 @@ public:
         ImGui::End();
     }
 
+    void ShowGameOverUI()
+    {
+        ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+
+        ImGui::Begin("GameOver", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        ImVec2 windowPos = ImVec2(
+            (ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 
+            (ImGui::GetIO().DisplaySize.y - windowSize.y) / 2
+        );
+        ImGui::SetWindowPos(windowPos);
+
+        ImGui::Text("Winner is Player %d!!", (playerID == 1) ? 2 : 1);
+        //ImGui::ColorButton("Profile", profileColor, ImGuiColorEditFlags_NoTooltip, ImVec2(50, 50));
+        if (ImGui::Button("Restart", ImVec2(150, 20)))
+        {
+            
+        }
+        ImGui::End();
+    }
+
     void Update(double deltaTime) 
     {
         ShowPlayerUI();
+
+        if (player->IsDead())
+            ShowGameOverUI();
     }
 };
-
-//class GameUI : public CubeObject
-//{
-//public:
-//    //PlayerUI* player1;
-//    // 
-//    //PlayerUI* player2;
-//
-//    // 생성자 (플레이어 UI 초기화)
-//    GameUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float scale)
-//        :CubeObject(device, deviceContext, scale) { }
-//
-//        //player1(1, 0.8f, 0.5f, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)), // 빨간색
-//        //player2(2, 0.6f, 0.3f, ImVec4(0.0f, 0.0f, 1.0f, 1.0f))  // 파란색
-//
-//    // 전체 UI 표시 함수
-//    void ShowGameUI()
-//    {
-//        //player1.ShowPlayerUI();
-//        //player2.ShowPlayerUI();
-//    }
-//};
 
