@@ -38,6 +38,7 @@ bool Input::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int scre
 	result = m_mouse->Acquire();
 	assert(SUCCEEDED(result));
 
+	m_hWnd = hwnd;
 	return true;
 }
 
@@ -178,4 +179,30 @@ void Input::ProcessInput() {
 	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
 
 	return;
+}
+void Input::GetMouseRay(XMFLOAT3& rayDirection,
+	const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
+{
+
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	ScreenToClient(m_hWnd, &cursorPos);
+
+	
+	float ndcX = ((float)cursorPos.x / m_screenWidth) * 2.0f - 1.0f;
+	float ndcY = 1.0f - ((float)cursorPos.y / m_screenHeight) * 2.0f;
+
+
+	XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 1.0f, 1.0f);
+	XMMATRIX invProj = XMMatrixInverse(nullptr, projectionMatrix);
+	XMVECTOR rayEye = XMVector4Transform(rayClip, invProj);
+	rayEye = XMVectorSetW(rayEye, 0.0f); 
+
+	XMMATRIX invView = XMMatrixInverse(nullptr, viewMatrix);
+	XMVECTOR rayWorld = XMVector3TransformNormal(rayEye, invView);
+	rayWorld = XMVector3Normalize(rayWorld); 
+	
+	XMStoreFloat3(&rayDirection, rayWorld);
+	
 }

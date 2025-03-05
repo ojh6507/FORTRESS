@@ -10,8 +10,43 @@ public:
 	~GameObject();
 
 	virtual void Update(double deltaTime) abstract;
-
 	virtual void Render();
+	
+	FVector3 GetPosition() {
+		return _tf.GetPosition();
+	}
+	FVector3 GetScale() {
+		return _tf.GetScale();
+	}
+	bool IntersectRay(const XMFLOAT3& rayOrigin, const XMFLOAT3& rayDir, float& dist) {
+		return _boundingBox.Intersects(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDir), dist);
+	}
+	void UpdateBoundingBox();
+
+	XMFLOAT4X4 GetWorldMatrix(GameObject* parent = nullptr) {
+		XMMATRIX scaleMatrix = XMMatrixScaling(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z);
+		XMMATRIX rotationX = XMMatrixRotationX(XMConvertToRadians(_tf.GetRotation().x));
+		XMMATRIX rotationY = XMMatrixRotationY(XMConvertToRadians(_tf.GetRotation().y));
+		XMMATRIX rotationZ = XMMatrixRotationZ(XMConvertToRadians(_tf.GetRotation().z));
+		XMMATRIX translationMatrix = XMMatrixTranslation(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
+
+		XMMATRIX localMatrix = scaleMatrix * rotationX * rotationY * rotationZ * translationMatrix;
+		if (parent) {
+			XMFLOAT4X4 parentMatrix = parent->GetWorldMatrix();
+			XMMATRIX parentWorld = XMLoadFloat4x4(&parentMatrix);
+			localMatrix = XMMatrixMultiply(localMatrix, parentWorld);
+		}
+		if (child) {
+
+		}
+
+		localMatrix = XMMatrixTranspose(localMatrix);
+
+		XMFLOAT4X4 worldMatrixFloat4x4;
+		XMStoreFloat4x4(&worldMatrixFloat4x4, localMatrix);
+		return worldMatrixFloat4x4;
+	}
+
 
 protected:
 	Transform _tf;
@@ -23,7 +58,7 @@ protected:
 	
 	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
 	GameObject* child;
-
+	BoundingBox _boundingBox;
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
@@ -52,7 +87,7 @@ public:
 	void Update(double deltaTime) {};
 	
 };
-class  Projectile : public GameObject 
+class Projectile : public GameObject 
 {
 public:
 	Projectile(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
@@ -70,7 +105,7 @@ public:
 		_position = _tf.GetPosition();
 
 		// 초기 발사 속도와 각도 설정
-		float speed = 200.f;  // 발사 속도
+		float speed = 1000.f;  // 발사 속도
 		float angle = 85.0f;  // 발사 각도 (도 단위)
 
 		_velocity.x = speed * cos(XMConvertToRadians(angle)); // X 방향 속도
@@ -93,26 +128,7 @@ class ObjObject : public GameObject
 public:
 	ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::wstring& filepath);
 	void Update(double deltaTime);
-	void DebugVerticesAndIndices()
-	{
-		std::wstring debugStr;
-		debugStr += L"=== Vertex Data ===\n";
 
-		for (size_t i = 0; i < _vertices.size(); i++) {
-			debugStr += L"Vertex " + std::to_wstring(i) + L": (" +
-				std::to_wstring(_vertices[i].x) + L", " +
-				std::to_wstring(_vertices[i].y) + L", " +
-				std::to_wstring(_vertices[i].z) + L")\n";
-		}
-
-		debugStr += L"=== Index Data ===\n";
-		for (size_t i = 0; i < _indices.size(); i++) {
-			debugStr += std::to_wstring(_indices[i]) + L" ";
-			if ((i + 1) % 3 == 0) debugStr += L"\n"; // 삼각형 단위 출력
-		}
-
-		OutputDebugString(debugStr.c_str());
-	}
 	void SetPostion(FVector3 posistion) {
 		_tf.SetPosition(posistion);
 	}

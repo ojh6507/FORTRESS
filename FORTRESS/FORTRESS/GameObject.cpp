@@ -51,7 +51,21 @@ void GameObject::Render() {
 	_deviceContext->DrawIndexed(_indexBuffer->GetCount(), 0, 0);
 }
 
+void GameObject::UpdateBoundingBox()
+{
+	XMMATRIX worldMatrix = XMMatrixScaling(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z) *
+		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
+			_tf.GetRotation().y,
+			_tf.GetRotation().x,
+			_tf.GetRotation().z)) *
+		XMMatrixTranslation(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
+	_boundingBox.Transform(_boundingBox, worldMatrix);
+}
+
+
+
 void _test_concrete_GameObject::Update(double deltaTime) {
+
 	if (Input::Instance()->IsKeyDown(DIK_W)) {
 		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 30.0f, 0.f) * deltaTime);
 	}
@@ -179,8 +193,9 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 	if (objFile) {
 
 		std::string line;
-		while (std::getline(objFile, line))
-		{
+		std::vector<XMFLOAT3> positions;
+
+		while (std::getline(objFile, line)) {
 			std::istringstream lineStream(line);
 			std::string type;
 			lineStream >> type;
@@ -191,28 +206,26 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 				lineStream >> vertex.x >> vertex.y >> vertex.z;
 				FVertexSimple vertexSimple{ vertex.x, vertex.y, vertex.z, 1, 0, 0, 1 };
 				_vertices.push_back(vertexSimple);
+				positions.push_back(vertex);
 			}
 			else if (type == "f") // Face
 			{
 				std::vector<uint32_t> faceIndices;
 				uint32_t index;
 
-				while (lineStream >> index) { // 정점 인덱스만 읽음
-					faceIndices.push_back(index - 1); // 1-based -> 0-based 인덱스 변환
+				while (lineStream >> index) { 
+					faceIndices.push_back(index - 1);
 				}
 
-				
 				for (size_t i = 1; i + 1 < faceIndices.size(); ++i) {
 					_indices.push_back(faceIndices[0]);    // 첫 번째 정점
 					_indices.push_back(faceIndices[i]);    // 두 번째 정점
 					_indices.push_back(faceIndices[i + 1]); // 세 번째 정점
 				}
 			}
-
-			DebugVerticesAndIndices();
 		}
-
-
+		DirectX::BoundingBox::CreateFromPoints(_boundingBox, positions.size(), positions.data(), sizeof(XMFLOAT3));
+		UpdateBoundingBox();
 		_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 		_vertexBuffer->Create(_vertices);
 
@@ -223,5 +236,5 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 
 void ObjObject::Update(double deltaTime)
 {
-
+	//UpdateBoundingBox();
 }

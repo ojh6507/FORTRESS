@@ -153,7 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// https://linkmemo.tistory.com/4
 	case WM_ACTIVATE:
 		if (wParam != WA_INACTIVE) {
-			Input::Instance()->Initialize(ghAppInstance, hWnd, 800, 600);
+			Input::Instance()->Initialize(ghAppInstance, hWnd, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		}
 	default:
 		return(::DefWindowProc(hWnd, message, wParam, lParam));

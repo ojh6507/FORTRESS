@@ -3,7 +3,9 @@
 void GameFramework::FrameAdvance(double deltaTime)
 {
 	Input::Instance()->Frame();
-	
+	if (Input::Instance()->IsMouseButtonReleased(0)) {
+		sceneManager->Top()->PickingObjects(camera);
+	}
 	if (Input::Instance()->IsKeyReleased(DIK_1)) {
 		GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(gameScene);

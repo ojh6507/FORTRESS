@@ -30,6 +30,7 @@ public:
 	bool IsMouseButtonPressed(char button);
 	bool IsMouseButtonReleased(char button);
 	void GetMouseLocation(int& mouse_x, int& mouse_y);
+	void GetMouseRay(XMFLOAT3& rayDirection, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix);
 
 private:
 	bool ReadKeyboard();
@@ -47,4 +48,5 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	HWND m_hWnd;
 };
