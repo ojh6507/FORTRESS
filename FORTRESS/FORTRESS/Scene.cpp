@@ -1,8 +1,8 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
+#include "PlayerUI.h"
 #include "GameFramework.h"
-#include "Player.h"
 //#include "sphere.h"
 #include "MainMenu.h"
 #include "IngameManager.h"
@@ -43,7 +43,6 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     Projectile* ProjectileObject1 = new Projectile(device, deviceContext);
     ProjectileObject1->OutOfScreen();
-
     gameObjects.push_back(ProjectileObject1);
 
     FVector3 playerColor = { 1.f, 0.4f, 0.4f };
@@ -66,10 +65,13 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player1->SetFirePoint(playerFirePoint);
     player1->SetPosition({ -500,0, 1 });
 
+    
+    player1->Reload(ProjectileObject1);
 
-
+    // Spawn Player2
     FVector3 player2Color = { 0.f, 1.f, 0.0f };
     player2 = new Player(device, deviceContext, { 0, 0, 0 }, player2Color);
+
 
     // 바디, 헤드, 배럴, 파이어포인트 등 세부 부위 생성
     Player* player2Body = new Player(device, deviceContext, { 2.3f, 0.7f, 1.0f },
@@ -77,6 +79,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     PlayerHead* player2Head = new PlayerHead(device, deviceContext, { 1.4f, 1.0f, 1.0f },
         FVector3(0.0f, 30.0f, 0.0f),
         player2Color);
+
     PlayerBarrel* player2Barrel = new PlayerBarrel(device, deviceContext, { 2.4f, 0.3f, 1.0f },
         FVector3(-50.0f, 15.0f, 0.0f),
         player2Color);
@@ -88,8 +91,6 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ProjectileObject2->OutOfScreen();
 
     gameObjects.push_back(ProjectileObject2);
-
-
 
     player2Body->SetChild(player2Head);
     player2Barrel->SetParent(player2Head);
@@ -104,16 +105,21 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2->SetFirePoint(player2FirePoint);
     player2->SetPosition({ 500,0, 1 });
     player2->SetDir(-1);
+   
     
-    
-    
-    IngameManager* ingameManager = new IngameManager();
+    IngameManager* ingameManager = IngameManager::Instance();
+
     gameObjects.push_back(ingameManager);
+    ingameManager->players.push_back(playerBody);
+    ingameManager->players.push_back(player2Body);
 
 
     CubeObject* p = new CubeObject(device, deviceContext, { 1,1,1 });
     gameObjects.push_back(p);
 
+    // Player UI
+    player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1);
+    player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, player2);
 }
 
 GameScene::~GameScene()
@@ -126,6 +132,18 @@ void GameScene::Update(double deltaTime)
     Scene::Update(deltaTime);
     player1->Update(deltaTime);
     player2->Update(deltaTime);
+    player1_UI->Update(deltaTime);
+    player2_UI->Update(deltaTime);
+
+    if (Input::Instance()->IsKeyPressed(DIK_O))
+        player1->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+    if (Input::Instance()->IsKeyPressed(DIK_I))
+        player1->SuccessHitEnemy();
+
+    if (Input::Instance()->IsKeyPressed(DIK_L))
+        player2->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+    if (Input::Instance()->IsKeyPressed(DIK_K))
+        player2->SuccessHitEnemy();
 }
 
 void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)

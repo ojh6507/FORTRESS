@@ -16,18 +16,18 @@ private:
 
     Projectile* projectile;
     PlayerFirePoint* firePoint;
-    bool isMoveMode;
-    bool bIsDead;
-    bool bIsGround;
-    const float gravityAcceleration = -80.0f;
-    float hp;
-    float powerUpGage;
+    bool isMoveMode = false;
+    bool bIsDead = false;
+    bool bIsGround = false;
+
+    const float gravityAcceleration = -150.0f;
+    float hp = 100;
+    float powerUpGage = 0;
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
     Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
-        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f),
-        isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
+        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f) {}
 
     virtual ~Player() {
         if (_child) delete _child;
@@ -126,9 +126,8 @@ inline void Player::ComputeIsGround()
 
 inline void Player::Move(FVector3 velocity)
 {
-    if (isMoveMode)
+    //if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
-
 }
 
 inline void Player::Fire(int projectileType,float angle, float power)
@@ -137,6 +136,7 @@ inline void Player::Fire(int projectileType,float angle, float power)
     if(projectile)
         projectile->FireProjectile(firePosition, angle, power);
     // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
+
 }
 
 inline void Player::SuccessHitEnemy()
@@ -151,9 +151,9 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
 
     SetHP(GetHP() - damage);
 
-    // 넉백
     knockbackDirection = knockbackDirection.Normalized();
-    knockbackVelocity = knockbackDirection * 50.0f * damage; // 넉백 초기 속도 (크기 조정 가능)
+    knockbackVelocity = knockbackDirection * 50.0f * damage;
+    if (_child) _child->TakeDamage(damage, knockbackDirection);
 }
 
 

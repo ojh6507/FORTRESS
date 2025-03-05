@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "PlayerUI.h"
 #include <stack>
 
 class Camera;
@@ -53,6 +54,8 @@ public:
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
     Player* player1;
     Player* player2;
+    PlayerUI* player1_UI;
+    PlayerUI* player2_UI;
     bool turn = true;
 };
 

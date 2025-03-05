@@ -16,13 +16,6 @@ void GameFramework::FrameAdvance(double deltaTime)
 		MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(menuScene);
 	}	
-	float moveSpeed = 10.0f;
-	if (Input::Instance()->IsKeyReleased(DIK_LEFT)) {
-		camera->Move(XMFLOAT3(-moveSpeed, 0.0f, 0.0f));
-	}
-	if (Input::Instance()->IsKeyReleased(DIK_RIGHT)) {
-		camera->Move(XMFLOAT3(moveSpeed, 0.0f, 0.0f));
-	}
 
 	graphics->RenderBegin();
 	sceneManager->Top()->Update(deltaTime);

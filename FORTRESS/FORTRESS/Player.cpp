@@ -9,6 +9,8 @@ void Player::Render()
 
 void Player::Update(double deltaTime)
 {
+
+	OutputDebugString((std::to_wstring(_tf.GetPosition().x) + L"\n").c_str());
 	bIsGround = false;
 	ComputeIsGround();
 
@@ -18,13 +20,12 @@ void Player::Update(double deltaTime)
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
 			Move(FVector3(0.0f, velocity.y, 0.0f) * deltaTime);
-
 		}
 	}
 	else
 		velocity.y = 0.0f;
 
-	// **³Ë¹é (°ø±â ÀúÇ× Æ÷ÇÔ)**
+	// **Knockback**
 	if (knockbackVelocity.MagnitudeSquared() > 0.01f)
 	{
 		Move(knockbackVelocity * deltaTime);
@@ -36,23 +37,27 @@ void Player::Update(double deltaTime)
 	}
 
 	// **Player input**
-	if (Input::Instance()->IsKeyDown(DIK_A))
-		Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
-	else if (Input::Instance()->IsKeyDown(DIK_D))
-		Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
+	if (isMoveMode) {
+		if (Input::Instance()->IsKeyDown(DIK_A)) 
+			Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
+			
+		else if (Input::Instance()->IsKeyDown(DIK_D))
+			Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
 
-
+		if (Input::Instance()->IsMouseButtonDown(1))
+			RotateZ(deltaTime);
+	}		
 	
-	if (Input::Instance()->IsMouseButtonDown(1))
-		RotateZ(deltaTime);
-	if (Input::Instance()->IsMouseButtonPressed(0)) {
+	if (Input::Instance()->IsMouseButtonPressed(0) && isMoveMode) {
 		UpdateFirePoint();
 		Fire(0, angle, 500);
+		SetMoveMode(false);
 	}
 
-	if (Input::Instance()->IsMouseButtonDown(1))
-		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
-
+	//if (Input::Instance()->IsKeyPressed(DIK_L))
+	//	TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+	//if (Input::Instance()->IsKeyPressed(DIK_K))
+	//	SuccessHitEnemy();
 
 	if (_child) {
 		_child->UpdateOffset();
@@ -89,7 +94,7 @@ void PlayerBarrel::RotateZ(double deltaTime)
 		maxAngle = 180.f + 2.0f;
 	}
 
-	// ÇöÀç °¢µµ°¡ ÃÖ´ë°ª ÀÌ»óÀÏ °æ¿ì ÀÚµ¿À¸·Î ³»·Á°¨
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ë°ª ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (newAngle > maxAngle) {
 		newAngle = maxAngle;
 		anglePerSecond = -fabs(anglePerSecond);
@@ -138,7 +143,7 @@ void PlayerBarrel::UpdateOffset()
 
 void PlayerHead::UpdateOffset()
 {
-	if (_parent) // ºÎ¸ð´Â PlayerBody
+	if (_parent) // ï¿½Î¸ï¿½ï¿½ PlayerBody
 	{
 		FVector3 parentPos = _parent->GetPosition();
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
@@ -146,7 +151,7 @@ void PlayerHead::UpdateOffset()
 		float cosA = cosf(parentAngle);
 		float sinA = sinf(parentAngle);
 
-		// Â÷Ã¼ ±âÁØÀ¸·Î È¸Àü º¯È¯µÈ offset Àû¿ë
+		// ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ offset ï¿½ï¿½ï¿½ï¿½
 		FVector3 rotatedOffset = {
 			offset.x * cosA - offset.y * sinA,
 			offset.x * sinA + offset.y * cosA,
@@ -160,8 +165,8 @@ void PlayerHead::UpdateOffset()
 void PlayerFirePoint::RotateZ(double deltaTime)
 {
 	if (_parent) {
-		float parentAngle = _parent->GetRotation().z; // BarrelÀÇ ÇöÀç °¢µµ
-		_tf.SetRotation(FVector3(0, 0, parentAngle)); // FirePointÀÇ È¸ÀüÀ» Barrel°ú µ¿±âÈ­
+		float parentAngle = _parent->GetRotation().z; // Barrelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		_tf.SetRotation(FVector3(0, 0, parentAngle)); // FirePointï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ Barrelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 	}
 }
 
@@ -177,15 +182,15 @@ void PlayerFirePoint::UpdateOffset()
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);
 
-        // ±âÁ¸ offset º¯È¯
+        // ï¿½ï¿½ï¿½ï¿½ offset ï¿½ï¿½È¯
         FVector3 rotatedOffset = {
             offset.x * cosA - offset.y * sinA,
             offset.x * sinA + offset.y * cosA,
             0
         };
 
-        // ÇÇº¿ À§Ä¡ Á¶Á¤ (¿¹: Áß¾Ó¿¡¼­ ¿À¸¥ÂÊ ³¡À¸·Î ÀÌµ¿)
-        FVector3 pivotOffset = {10.0f, 0.0f, 0.0f};  // ¿øÇÏ´Â ÇÇº¿ ÀÌµ¿ À§Ä¡
+        // ï¿½Çºï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½: ï¿½ß¾Ó¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½)
+        FVector3 pivotOffset = {10.0f, 0.0f, 0.0f};  // ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Çºï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Ä¡
         FVector3 rotatedPivotOffset = {
             pivotOffset.x * cosA - pivotOffset.y * sinA,
             pivotOffset.x * sinA + pivotOffset.y * cosA,
