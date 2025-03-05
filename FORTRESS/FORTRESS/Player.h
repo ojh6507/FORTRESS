@@ -109,7 +109,6 @@ inline void Player::Move(FVector3 velocity)
 {
     //if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
-        OutputDebugString((std::to_wstring(_tf.GetPosition().x) + L"\n").c_str());
 
 }
 

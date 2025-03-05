@@ -9,6 +9,8 @@ void Player::Render()
 
 void Player::Update(double deltaTime)
 {
+
+	OutputDebugString((std::to_wstring(_tf.GetPosition().x) + L"\n").c_str());
 	bIsGround = false;
 	ComputeIsGround();
 

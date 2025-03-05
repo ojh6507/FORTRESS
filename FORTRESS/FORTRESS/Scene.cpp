@@ -53,16 +53,17 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerBarrel->SetParent(playerHead);
 
     player->SetChild(playerBody);
+    //playerBody->SetParent(player);
 
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
 
     
-    player->Reload(ProjectileObject);
+    playerBody->Reload(ProjectileObject);
     
     IngameManager* ingameManager = IngameManager::Instance();
     gameObjects.push_back(ingameManager);
-    ingameManager->players.push_back(player);
+    ingameManager->players.push_back(playerBody);
 
 }
 
