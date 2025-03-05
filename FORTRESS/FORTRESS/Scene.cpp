@@ -56,6 +56,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerBarrel->SetParent(playerHead);
 
     player1->SetChild(playerBody);
+    playerBody->_shooter = player1;
 
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
@@ -96,6 +97,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2Barrel->SetParent(player2Head);
 
     player2->SetChild(player2Body);
+    player2Body->_shooter = player2;
 
     player2Head->SetParent(player2Body);
     player2Head->SetChild(player2Barrel);
