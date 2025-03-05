@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "GameFramework.h"
 #include "Player.h"
+#include "Terrain.h"
 //#include "sphere.h"
 #include "MainMenu.h"
 #include "IngameManager.h"
@@ -58,7 +59,10 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
 
-    
+
+    Terrain* terrain = new Terrain(device, deviceContext, 2000, 400, 1);
+    gameObjects.push_back(terrain);
+
     player->Reload(ProjectileObject);
     
     IngameManager* ingameManager = new IngameManager();

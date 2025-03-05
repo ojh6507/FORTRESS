@@ -14,11 +14,14 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT 
     : GameObject(device, deviceContext), Width(width), Height(height), Scale(scale), 
     WidthMinusDelta(nextafterf(static_cast<float>(width), static_cast<float>(width-1))), HeightMinusDelta(nextafterf(static_cast<float>(height), static_cast<float>(height - 1)))
 {
+    // Scale은 1로 고정.
+    assert(Scale == 1.f);
     // stick to leftbottom corner
     if (pos.x == 0 && pos.y == 0 && pos.z == 0)
     {
         pos = { -FRAME_BUFFER_WIDTH / 2 , -FRAME_BUFFER_HEIGHT / 2, 0 };
     }
+    
     _tf.SetPosition(pos);
     _tf.SetRotation({ 0,0,0 });
     _tf.SetScale({scale,scale,scale});
@@ -28,18 +31,11 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT 
     //GenerateRandomMap();
     GeneratePerlinMap(Height/4, Width / 4, 10);
 
-    _vertices.clear();
-    _indices.clear();
-
-    GenerateVerticesNaive();
-    GenerateIndicesNaive();
-
     _vertexBuffer = new VertexBuffer<FVertexSimple>(device);
-    _vertexBuffer->Create(_vertices);
 
     _indexBuffer = new IndexBuffer(device);
-    _indexBuffer->Create(_indices);
 
+    UpdateMesh();
 
 }
 
@@ -52,7 +48,9 @@ Terrain::~Terrain()
 
 void Terrain::Update(double deltaTime)
 {
+    DestroyOnClickDebug();
 
+    //UpdateMesh();
 }
 
 //void Terrain::Render()
@@ -199,8 +197,8 @@ void Terrain::GenerateVerticesNaive()
         for (int y = 0; y < Height; y++)
         {
             FVertexSimple v;
-            v.x = x * Scale;
-            v.y = y * Scale;
+            v.x = x;
+            v.y = y;
             v.z = 0.f;
             v.r = v.g = v.b = v.a = 1.f;
 
@@ -502,26 +500,39 @@ void Terrain::Destroy(XMFLOAT3 pos, float radius)
     {
         for (int y = bottomBorder; y < upperBorder; y++)
         {
-            SetValue(x, y, 0);
+            float distanceSquared = (x - xInternal) * (x - xInternal) + (y - yInternal) * (y - yInternal);
+            static const float radiusSquared = radiusInternal * radiusInternal;
+            if (distanceSquared < radiusSquared)
+            {
+                SetValue(x, y, 0);
+            }
         }
     }
+
+    UpdateMesh();
 }
 
-void Terrain::UpdateMapTexture()
-{
 
-}
-
-void Terrain::GetMapTexture()
-{
-    //return MapTexture;
-}
 
 //bool Terrain::CheckCollisionOBB(float _posX, float _posY, float rotation)
 //{
 //    return false;
 //}
 
+
+void Terrain::UpdateMesh()
+{
+    assert(Scale == 1);
+    _vertices.clear();
+    _indices.clear();
+
+    GenerateVerticesNaive();
+    GenerateIndicesNaive();
+
+    _vertexBuffer->Create(_vertices);
+
+    _indexBuffer->Create(_indices);
+}
 
 void Terrain::GeneratePlainMap()
 {
@@ -619,33 +630,33 @@ void Terrain::GeneratePerlinMap(UINT amplitude, UINT period, UINT octaves)
 
 XMFLOAT3 Terrain::RevertToTerrainSpace(XMFLOAT3 worldPos)
 {
-    XMFLOAT4X4 world = _tf.GetWorldMatrix();
-    XMMATRIX mat = XMLoadFloat4x4(&world);
-    
-    XMVECTOR det;
-    XMMATRIX inverse = XMMatrixInverse(&det, mat);
-    
-    if (XMVectorGetX(det) == 0.f)
-    {
-        assert(1);
-        return worldPos;
-    }
-    
-     XMVECTOR modelPos = XMVector3TransformCoord(XMLoadFloat3(&worldPos), inverse);
-     XMFLOAT3 ret;
-     XMStoreFloat3(&ret, modelPos);
+    worldPos.x -= _tf.GetPosition().x;
+    worldPos.y -= _tf.GetPosition().y;
+    worldPos.z -= _tf.GetPosition().z;
 
-     return ret;
+    return worldPos;
+
+    XMFLOAT4X4 worldTransform = _tf.GetWorldMatrix();
+    XMMATRIX world = XMLoadFloat4x4(&worldTransform);
+
+    XMMATRIX worldInv = XMMatrixInverse(nullptr, world);
+
+    XMVECTOR worldPosVector = XMLoadFloat3(&worldPos);
+    XMVECTOR modelPos = XMVector3TransformCoord(worldPosVector, worldInv);
+
+    XMFLOAT3 modelPosFloat;
+    XMStoreFloat3(&modelPosFloat, modelPos);
+    
+    return modelPosFloat;
 }
 
 void Terrain::DestroyOnClickDebug()
 {
+    static int x = -200;
     if (Input::Instance()->IsMouseButtonPressed(0))
     {
-        int x, y;
-        Input::Instance()->GetMouseLocation(x, y);
-        //int xf = x/
-        //int yf
+        Destroy({ (float)x,-200,0 }, 20);
+        x += 100;
     }
 }
 

@@ -2,7 +2,6 @@
 #include "GameObject.h"
 #include <array>
 #include <cstddef>
-#include <DirectXCollision.h>
 
 constexpr byte AIR = 0;
 constexpr byte DIRT = 1;
@@ -52,8 +51,7 @@ public:
     void Destroy(XMFLOAT3 pos, float radius);
 
     // renderings
-    void UpdateMapTexture();
-    void GetMapTexture();
+    void UpdateMesh();
 
     void GeneratePlainMap();
     void GenerateRandomMap();
