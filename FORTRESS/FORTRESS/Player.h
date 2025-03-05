@@ -3,7 +3,7 @@
 #include "FVector3.h"
 
 class Player :
-    public GameObject
+    public CubeObject
 {
 private:
     FVector3 velocity;
@@ -17,12 +17,11 @@ private:
     const float gravityAcceleration = -80.0f;
     float hp;
     float powerUpGage;
-
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
-    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-        : GameObject(device, deviceContext), velocity(0.0f, 0.0f, 0.0f),
+    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
+        : CubeObject(device, deviceContext, scale), velocity(0.0f, 0.0f, 0.0f),
         isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
     ~Player() {}
 
@@ -50,15 +49,29 @@ public:
     }
 
     // Method
-    void Update(double deltaTime);
-
+    virtual void Render() override;
+    virtual void Update(double deltaTime);
     void ComputeIsGround();
 
     void Move(FVector3 velocity);
-    void RotateZ(float anglePerSecond, double deltaTime = 1);
+    virtual void RotateZ(double deltaTime = 1);
     void Fire(int projectileType, FVector3 direction, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
+    void SetChild(Player* child) {
+        _child = child;
+    }
+    void SetParent(Player* parent) {
+        _parent = parent;
+    }
+    virtual void UpdateOffset() {};
+    FVector3 GetRotation() {
+        return _tf.GetRotation();
+    }
+protected:
+    Player* _parent;
+    Player* _child;
+    float anglePerSecond = 10;
 };
 
 inline void Player::ComputeIsGround()
@@ -80,11 +93,7 @@ inline void Player::Move(FVector3 velocity)
 {
     if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
-}
 
-inline void Player::RotateZ(float anglePerSecond, double deltaTime)
-{
-    _tf.SetRotation(_tf.GetRotation() + FVector3(0, 0, anglePerSecond * deltaTime));
 }
 
 inline void Player::Fire(int projectileType, FVector3 direction, float power)
@@ -111,3 +120,25 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
 }
 
 
+class PlayerBarrel : public Player {
+private:
+    FVector3 offset;
+public:
+    PlayerBarrel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
+        : Player(device, deviceContext, scale), offset{ relativeOffset } {
+    }
+
+    virtual void RotateZ(double deltaTime = 1);
+    virtual void UpdateOffset();
+};
+class PlayerHead : public Player {
+private:
+    FVector3 offset;
+public:
+    PlayerHead(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
+        : Player(device, deviceContext, scale), offset{ relativeOffset } {
+    }
+
+    virtual void UpdateOffset();
+    virtual void RotateZ(double deltaTime = 1);
+};

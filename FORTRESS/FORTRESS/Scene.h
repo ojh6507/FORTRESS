@@ -1,8 +1,11 @@
 #pragma once
 #include "GameObject.h"
 #include <stack>
+
 class Camera;
 class GameFramework;
+class Player;
+
 class Scene {
 public:
     Scene() {}
@@ -24,9 +27,6 @@ public:
         }
     }
     virtual void PickingObjects(Camera* pCamera) {}
-    void SetPlayerCount(int cnt) {
-       // playerCount = cnt;
-    }
     
 protected:
     std::vector<GameObject*> gameObjects;
@@ -38,7 +38,7 @@ public:
     
     MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
-    virtual void Update(double deltaTime);
+    virtual void Update(double deltaTime); 
     virtual void PickingObjects(Camera* pCamera);
 private:
     std::vector<GameObject*> numbersObject;
@@ -47,7 +47,9 @@ private:
 class GameScene : public Scene {
 public:
     GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-   
+    virtual void Update(double deltaTime);
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
+    Player* player;
 };
 
 class SceneManager {

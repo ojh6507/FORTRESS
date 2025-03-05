@@ -30,7 +30,7 @@ public:
 	bool IsMouseButtonPressed(char button);
 	bool IsMouseButtonReleased(char button);
 	void GetMouseLocation(int& mouse_x, int& mouse_y);
-	void GetMouseRay(XMFLOAT3& rayDirection, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix);
+	void GetMouseRay(XMFLOAT3& rayOrigin, XMFLOAT3& rayDirection, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix);
 
 private:
 	bool ReadKeyboard();

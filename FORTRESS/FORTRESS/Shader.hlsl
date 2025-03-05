@@ -40,5 +40,6 @@ PS_INPUT VS(VS_INPUT input)
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-    return input.color;
+    float3 gammaCorrectedColor = pow(input.color.rgb, 1.0 / 2.2); // 감마 보정 적용
+    return float4(gammaCorrectedColor, input.color.a);
 }

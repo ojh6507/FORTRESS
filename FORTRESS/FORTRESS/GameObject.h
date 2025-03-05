@@ -18,34 +18,39 @@ public:
 	FVector3 GetScale() {
 		return _tf.GetScale();
 	}
-	bool IntersectRay(const XMFLOAT3& rayOrigin, const XMFLOAT3& rayDir, float& dist) {
-		return _boundingBox.Intersects(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDir), dist);
+	bool IntersectRay2D(const XMFLOAT3& rayOrigin, const XMFLOAT3& rayDir, float& outDist)
+	{
+		UpdateBoundingBox();
+		float distance = FLT_MAX;
+		XMVECTOR rayOriginVec = XMLoadFloat3(&rayOrigin);
+		XMVECTOR rayDirVec = XMVector3Normalize(XMLoadFloat3(&rayDir));
+
+		// **Z 좌표를 무시하고 2D 좌표만 사용**
+		XMFLOAT2 rayOrigin2D = XMFLOAT2(rayOrigin.x, rayOrigin.y);
+		XMFLOAT2 obbCenter2D = XMFLOAT2(_boundingBox.Center.x, _boundingBox.Center.y);
+		XMFLOAT2 obbExtents2D = XMFLOAT2(_boundingBox.Extents.x, _boundingBox.Extents.y);
+
+		
+		if ((abs(rayOrigin2D.x - obbCenter2D.x) <= obbExtents2D.x) &&
+			(abs(rayOrigin2D.y - obbCenter2D.y) <= obbExtents2D.y)) {
+			outDist = 0;
+			return true;
+		}
+
+		// **OBB와의 충돌 검사**
+		BoundingOrientedBox transformedBox;
+		_boundingBox.Transform(transformedBox, XMMatrixIdentity()); // 변환 적용
+
+		// **2D에서 X, Y만 비교하여 충돌 검사**
+		if ((abs(rayOrigin2D.x - transformedBox.Center.x) <= transformedBox.Extents.x) &&
+			(abs(rayOrigin2D.y - transformedBox.Center.y) <= transformedBox.Extents.y)) {
+			outDist = 0;
+			return true;
+		}
+
+		return false;
 	}
 	void UpdateBoundingBox();
-
-	XMFLOAT4X4 GetWorldMatrix(GameObject* parent = nullptr) {
-		XMMATRIX scaleMatrix = XMMatrixScaling(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z);
-		XMMATRIX rotationX = XMMatrixRotationX(XMConvertToRadians(_tf.GetRotation().x));
-		XMMATRIX rotationY = XMMatrixRotationY(XMConvertToRadians(_tf.GetRotation().y));
-		XMMATRIX rotationZ = XMMatrixRotationZ(XMConvertToRadians(_tf.GetRotation().z));
-		XMMATRIX translationMatrix = XMMatrixTranslation(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
-
-		XMMATRIX localMatrix = scaleMatrix * rotationX * rotationY * rotationZ * translationMatrix;
-		if (parent) {
-			XMFLOAT4X4 parentMatrix = parent->GetWorldMatrix();
-			XMMATRIX parentWorld = XMLoadFloat4x4(&parentMatrix);
-			localMatrix = XMMatrixMultiply(localMatrix, parentWorld);
-		}
-		if (child) {
-
-		}
-
-		localMatrix = XMMatrixTranspose(localMatrix);
-
-		XMFLOAT4X4 worldMatrixFloat4x4;
-		XMStoreFloat4x4(&worldMatrixFloat4x4, localMatrix);
-		return worldMatrixFloat4x4;
-	}
 
 
 protected:
@@ -57,8 +62,10 @@ protected:
 	std::vector<UINT32> _indices;
 	
 	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
-	GameObject* child;
-	BoundingBox _boundingBox;
+
+	BoundingOrientedBox _boundingBox;
+	BoundingOrientedBox _originBoundingBox;
+	
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
@@ -83,7 +90,7 @@ public:
 class CubeObject : public GameObject
 {
 public:
-	CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale);
 	void Update(double deltaTime) {};
 	
 };

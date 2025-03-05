@@ -55,11 +55,15 @@ void GameObject::UpdateBoundingBox()
 {
 	XMMATRIX worldMatrix = XMMatrixScaling(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z) *
 		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
-			_tf.GetRotation().y,
-			_tf.GetRotation().x,
-			_tf.GetRotation().z)) *
+			XMConvertToRadians(_tf.GetRotation().x),
+			XMConvertToRadians(_tf.GetRotation().y),
+			XMConvertToRadians(_tf.GetRotation().z))) *
 		XMMatrixTranslation(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
-	_boundingBox.Transform(_boundingBox, worldMatrix);
+
+	BoundingOrientedBox originalBox = _originBoundingBox;
+	BoundingOrientedBox transformedBox;
+	originalBox.Transform(transformedBox, worldMatrix); 
+	_boundingBox = transformedBox; 
 }
 
 
@@ -129,58 +133,45 @@ void Projectile::Update(double deltaTime)
 		UpdateProjectile(deltaTime);
 }
 
-CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : GameObject(device, deviceContext)
+CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
+	: GameObject(device, deviceContext)
 {
 	_vertices.resize(4);
 
-	_vertices[0].x = -40.1f;
-	_vertices[0].y = 40.1f;
-	_vertices[0].z = 40.f;
-	_vertices[0].r = 1.f;
-	_vertices[0].g = 1.f;
-	_vertices[0].b = 1.f;
-	_vertices[0].a = 1.f;
+	_vertices[0].x = -40.1f * scale.x;
+	_vertices[0].y = 40.1f * scale.y;
+	_vertices[0].z = 1;
+	_vertices[1].x = 40.1f * scale.x;
+	_vertices[1].y = 40.1f * scale.y;
+	_vertices[1].z = 1;
 
-	_vertices[1].x = 40.1f;
-	_vertices[1].y = 40.1f;
-	_vertices[1].z = 40.f;
-	_vertices[1].r = 1.f;
-	_vertices[1].g = 1.f;
-	_vertices[1].b = 1.f;
-	_vertices[1].a = 1.f;
+	_vertices[2].x = 40.1f * scale.x;
+	_vertices[2].y = -40.1f * scale.y;
+	_vertices[2].z = 1;
 
-	_vertices[2].x = 40.1f;
-	_vertices[2].y = -40.1f;
-	_vertices[2].z = 40.f;
-	_vertices[2].r = 1.f;
-	_vertices[2].g = 1.f;
-	_vertices[2].b = 1.f;
-	_vertices[2].a = 1.f;
+	_vertices[3].x = -40.1f * scale.x;
+	_vertices[3].y = -40.1f * scale.y;
+	_vertices[3].z = 1;
 
-	_vertices[3].x = -40.1f;
-	_vertices[3].y = -40.1f;
-	_vertices[3].z = 40.f;
-	_vertices[3].r = 1.f;
-	_vertices[3].g = 1.f;
-	_vertices[3].b = 1.f;
-	_vertices[3].a = 1.f;
+	// 색상 설정 (변경 없음)
+	for (auto& vertex : _vertices)
+	{
+		vertex.r = 1.f;
+		vertex.g = 1.f;
+		vertex.b = 1.f;
+		vertex.a = 1.f;
+	}
 
-
+	// 인덱스 설정 (변경 없음)
 	_indices.resize(6);
-
-	_indices[0] = 0;
-	_indices[1] = 1;
-	_indices[2] = 2;
-	_indices[3] = 2;
-	_indices[4] = 3;
-	_indices[5] = 0;
+	_indices[0] = 0; _indices[1] = 1; _indices[2] = 2;
+	_indices[3] = 2; _indices[4] = 3; _indices[5] = 0;
 
 	_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 	_vertexBuffer->Create(_vertices);
 
 	_indexBuffer = new IndexBuffer(device);
 	_indexBuffer->Create(_indices);
-
 }
 
 
@@ -213,7 +204,7 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 				std::vector<uint32_t> faceIndices;
 				uint32_t index;
 
-				while (lineStream >> index) { 
+				while (lineStream >> index) {
 					faceIndices.push_back(index - 1);
 				}
 
@@ -224,7 +215,18 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 				}
 			}
 		}
-		DirectX::BoundingBox::CreateFromPoints(_boundingBox, positions.size(), positions.data(), sizeof(XMFLOAT3));
+		BoundingBox bbox;
+		XMFLOAT4 quaternion;
+		XMStoreFloat4(&quaternion, XMQuaternionRotationRollPitchYaw(
+			_tf.GetRotation().y,
+			_tf.GetRotation().x,
+			_tf.GetRotation().z));
+
+		DirectX::BoundingBox::CreateFromPoints(bbox, positions.size(), positions.data(), sizeof(XMFLOAT3));
+		_boundingBox = BoundingOrientedBox(bbox.Center, bbox.Extents, quaternion);
+		_originBoundingBox = BoundingOrientedBox(bbox.Center, bbox.Extents, XMFLOAT4(0,0,0,1));
+     
+		
 		UpdateBoundingBox();
 		_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 		_vertexBuffer->Create(_vertices);

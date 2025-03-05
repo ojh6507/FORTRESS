@@ -14,12 +14,7 @@ void GameFramework::FrameAdvance(double deltaTime)
 		MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(menuScene);
 	}	
-	if (Input::Instance()->IsKeyReleased(DIK_UPARROW)) {
-		sceneManager->Top()->SetPlayerCount(std::clamp(++playerCount, -1, 3));
-	}
-	if (Input::Instance()->IsKeyReleased(DIK_DOWNARROW)) {
-		sceneManager->Top()->SetPlayerCount(std::clamp(--playerCount, -1, 3));
-	}
+	
 	
 	sceneManager->Top()->Update(deltaTime);
 	graphics->RenderBegin();

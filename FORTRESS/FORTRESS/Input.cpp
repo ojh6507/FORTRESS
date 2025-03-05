@@ -180,29 +180,28 @@ void Input::ProcessInput() {
 
 	return;
 }
-void Input::GetMouseRay(XMFLOAT3& rayDirection,
+void Input::GetMouseRay(XMFLOAT3& rayOrigin, XMFLOAT3& rayDirection,
 	const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
 {
-
 	POINT cursorPos;
 	GetCursorPos(&cursorPos);
-
 	ScreenToClient(m_hWnd, &cursorPos);
 
-	
 	float ndcX = ((float)cursorPos.x / m_screenWidth) * 2.0f - 1.0f;
 	float ndcY = 1.0f - ((float)cursorPos.y / m_screenHeight) * 2.0f;
 
-
-	XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 1.0f, 1.0f);
-	XMMATRIX invProj = XMMatrixInverse(nullptr, projectionMatrix);
-	XMVECTOR rayEye = XMVector4Transform(rayClip, invProj);
-	rayEye = XMVectorSetW(rayEye, 0.0f); 
-
+	// **직교 투영에서는 레이 방향이 항상 카메라의 전방 방향이어야 함**
 	XMMATRIX invView = XMMatrixInverse(nullptr, viewMatrix);
-	XMVECTOR rayWorld = XMVector3TransformNormal(rayEye, invView);
-	rayWorld = XMVector3Normalize(rayWorld); 
-	
-	XMStoreFloat3(&rayDirection, rayWorld);
-	
+	XMFLOAT3 forward;
+	XMStoreFloat3(&forward, invView.r[2]); // Z축 방향 (카메라의 전방 방향)
+
+	rayDirection = forward; // **직교 투영에서는 방향이 항상 일정**
+
+	// **직교 투영에서는 레이 시작점을 마우스 클릭 위치에서 변환해야 함**
+	XMMATRIX invProj = XMMatrixInverse(nullptr, projectionMatrix);
+	XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 0.0f, 1.0f); // z=0으로 설정
+	XMVECTOR rayWorld = XMVector4Transform(rayClip, invProj);
+	rayWorld = XMVector4Transform(rayWorld, invView);
+
+	XMStoreFloat3(&rayOrigin, rayWorld); // 마우스 위치를 `rayOrigin`으로 설정
 }
