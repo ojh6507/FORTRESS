@@ -72,7 +72,7 @@ void Player::Update(double deltaTime)
 			RotateZ(deltaTime);
 	}		
 	
-	if (Input::Instance()->IsMouseButtonPressed(0) && _shooter && isMoveMode) {
+	if (Input::Instance()->IsMouseButtonReleased(1) && _shooter && isMoveMode) {
 		_shooter->UpdateFirePoint();
 		_shooter->Fire(0, _shooter->angle, 500);
 		SetMoveMode(false);
@@ -181,7 +181,7 @@ void PlayerHead::UpdateOffset()
 			offset.x * sinA + offset.y * cosA,
 			0
 		};
-
+		
 		_tf.SetPosition(parentPos + rotatedOffset);
 	}
 }
@@ -200,13 +200,9 @@ void PlayerFirePoint::UpdateOffset()
         FVector3 parentPos = _parent->GetPosition();
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
 
-		if (dir == -1) {
-			parentAngle += XMConvertToRadians(180.0f);
-		}
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);
 
-        // ���� offset ��ȯ
         FVector3 rotatedOffset = {
             offset.x * cosA - offset.y * sinA,
             offset.x * sinA + offset.y * cosA,
