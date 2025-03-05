@@ -5,20 +5,23 @@ class IngameState;
 class IngameManager : public GameObject {
 	using Super = GameObject;
 	static IngameManager* _instance;
-	IngameManager();
-	IngameManager(IngameManager& other): GameObject(nullptr, nullptr) {};
-	IngameManager& operator=(IngameManager& other) {};
-	~IngameManager();
+	
+	//IngameManager(IngameManager& other): GameObject(nullptr, nullptr) {};
+	//IngameManager& operator=(IngameManager& other) {};
+	
 public:
+	IngameManager();
+	~IngameManager();
 	static const double TURNTIME;
-	static IngameManager* Instance() {
-		if (!_instance)
-			_instance = new IngameManager();
-		return _instance;
-	}
+	//static IngameManager* Instance() {
+	//	if (!_instance)
+	//		_instance = new IngameManager();
+	//	return _instance;
+	//}
 	
 	void Update(double deltaTime) override;
 	void ChangeState(IngameState* state);
+	void GameOver(int winPlayerIndex);
 
 	std::vector<Player*> players;
 
@@ -72,7 +75,7 @@ public:
 class GameOverState : public IngameState {
 	using Super = IngameState;
 public:
-	GameOverState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
+	GameOverState(IngameManager* context, int winPlayerIndex) : Super(context, winPlayerIndex) {};
 	void Reserve() override;
 	void Update() override;
 };

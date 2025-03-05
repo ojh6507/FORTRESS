@@ -25,6 +25,11 @@ void IngameManager::ChangeState(IngameState* state) {
 	_state->Reserve();
 }
 
+void IngameManager::GameOver(int winPlayerIndex) {
+	delete _state;
+	_state = new GameOverState(this, winPlayerIndex);
+}
+
 void IngameManager::StartTimer() {
 	_startTimerTime = gGameElapsedTime;
 	_timerState = true;
@@ -106,10 +111,13 @@ void MoveAndShotState::Update()
 		ImGui::Text("%s", text);
 		};
 
-	CenterText("Move&Shot");
-
-	std::string timerText = std::to_string(_context->GetTimerTime() / 1000.0) + "s";
-	CenterText(timerText.c_str());
+	char s[256];
+	sprintf_s(s, 256, "Player %d", _turnedPlayerIdx + 1);
+	CenterText(s);
+	//CenterText("Move&Shot");
+	sprintf_s(s, 256, "%.1fs/10s", _context->GetTimerTime() / 1000.0);
+	//std::string timerText = std::to_string(_context->GetTimerTime() / 1000.0) + "s";
+	CenterText(s);
 
 	ImGui::End();
 
@@ -161,17 +169,19 @@ void GameOverState::Reserve() {
 
 void GameOverState::Update()
 {
-	/*ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
 	ImGui::Begin("status", nullptr,
 		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
 	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
-	ImGui::SetWindowPos(windowPos);
-	ImGui::Text("GameOver");
-	
-	char s[256];
-	sprintf_s(s, 256, "player%d Win", 0);
-	ImGui::Text(s);
-	ImGui::End();*/
+
+	auto CenterText = [](const char* text, float offset = 8.0f) {
+		float textWidth = ImGui::CalcTextSize(text).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f + offset);
+		ImGui::Text("%s", text);
+	};
+	CenterText("Game Over");
+	ImGui::End();
 }

@@ -45,6 +45,8 @@ inline void PlayerUI::ShowPlayerUI()
 
 inline void PlayerUI::ShowGameOverUI()
 {
+    ingameManager->GameOver(playerID + 1);
+
     ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
 
     ImGui::Begin("GameOver", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
@@ -59,7 +61,7 @@ inline void PlayerUI::ShowGameOverUI()
         float windowWidth = ImGui::GetContentRegionAvail().x;
         ImGui::SetCursorPosX((windowWidth - itemWidth) * 0.5f + offset);
     };
-
+    
     std::string winnerText = "Winner is Player " + std::to_string((playerID == 1) ? 2 : 1) + "!!";
     CenterItem(ImGui::CalcTextSize(winnerText.c_str()).x);
     ImGui::Text("%s", winnerText.c_str());
