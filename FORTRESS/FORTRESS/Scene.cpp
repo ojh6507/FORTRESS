@@ -3,6 +3,7 @@
 #include "GameFramework.h"
 //#include "sphere.h"
 #include "MainMenu.h"
+#include "IngameManager.h"
 
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -33,6 +34,9 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     //CubeObject* gameObject = new CubeObject(device, deviceContext);
 	Projectile* ProjectileObject = new Projectile(device, deviceContext);
     gameObjects.push_back(ProjectileObject);
+
+    IngameManager* ingameManager = new IngameManager();
+    gameObjects.push_back(ingameManager);
 
 }
 void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)

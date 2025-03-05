@@ -2,6 +2,8 @@
 #include "GameObject.h"
 
 GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext): _device(device), _deviceContext(deviceContext) {
+	if (device == nullptr)
+		return;
 
 	_vertexShader = new VertexShader(device);
 	_vertexShader->Create(L"Shader.hlsl", "VS", "vs_5_0");
@@ -38,6 +40,8 @@ GameObject::~GameObject() {
 
 void GameObject::Render() {
 	if (_vertexBuffer == nullptr)
+		return;
+	if (_deviceContext == nullptr)
 		return;
 
 	_deviceContext->IASetInputLayout(_inputLayout->Get());
