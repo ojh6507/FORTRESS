@@ -150,7 +150,7 @@ void Projectile::Update(double deltaTime)
 		UpdateProjectile(deltaTime);
 }
 
-CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
+CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
 	: GameObject(device, deviceContext)
 {
 	_vertices.resize(4);
@@ -170,12 +170,11 @@ CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	_vertices[3].y = -40.1f * scale.y;
 	_vertices[3].z = 1;
 
-	// 색상 설정 (변경 없음)
 	for (auto& vertex : _vertices)
 	{
-		vertex.r = 1.f;
-		vertex.g = 1.f;
-		vertex.b = 1.f;
+		vertex.r = color.x;
+		vertex.g = color.y;
+		vertex.b = color.z;
 		vertex.a = 1.f;
 	}
 
@@ -241,10 +240,8 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 			_tf.GetRotation().z));
 
 		DirectX::BoundingBox::CreateFromPoints(bbox, positions.size(), positions.data(), sizeof(XMFLOAT3));
-		_boundingBox = BoundingOrientedBox(bbox.Center, bbox.Extents, quaternion);
-		_originBoundingBox = BoundingOrientedBox(bbox.Center, bbox.Extents, XMFLOAT4(0,0,0,1));
-     
-		
+		BoundingOrientedBox::CreateFromBoundingBox(_boundingBox, bbox);
+		_originBoundingBox = _boundingBox;
 		UpdateBoundingBox();
 		_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 		_vertexBuffer->Create(_vertices);
@@ -252,6 +249,17 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 		_indexBuffer = new IndexBuffer(device);
 		_indexBuffer->Create(_indices);
 	}
+
+	// 1) XMVECTOR 배열로 변환 (CreateFromPoints 에 필요)
+	std::vector<XMVECTOR> points;
+	points.reserve(_vertices.size());
+	for (auto& v : _vertices)
+	{
+		// w = 1.0f
+		points.push_back(XMVectorSet(v.x, v.y, v.z, 1.0f));
+	}
+
+
 }
 
 void ObjObject::Update(double deltaTime)

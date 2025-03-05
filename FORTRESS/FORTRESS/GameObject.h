@@ -92,7 +92,7 @@ public:
 class CubeObject : public GameObject
 {
 public:
-	CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale);
+	CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color = FVector3(0,0,0));
 	void Update(double deltaTime) {};
 	
 };
@@ -113,12 +113,12 @@ public:
 
 	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
 
-	void FireProjectile(FVector3 firePosition, float angle, float speed) {
+	void FireProjectile(FVector3& firePosition, float angle, float speed) {
 		_isFired = true;
 
 		// 초기 발사 위치 (예제: 현재 오브젝트 위치)
 		if (!&_tf) return;
-		_tf.SetPosition({0,0,0});
+		_tf.SetPosition(firePosition);
 		_position = _tf.GetPosition();
 
 		_velocity.x = speed * cos(XMConvertToRadians(angle)); // X 방향 속도
