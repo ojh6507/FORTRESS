@@ -10,5 +10,6 @@ public:
 private:
 	ImGuiContext* _context;
 	ImGuiIO* _io;
+	HWND hWnd;
 };
 
