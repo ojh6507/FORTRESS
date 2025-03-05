@@ -57,7 +57,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player1->UpdatAllBoundingBox(XMMatrixIdentity());
     player1->Reload(ProjectileObject1);
     player1->SetFirePoint(playerFirePoint);
-    player1->SetPosition({ -500,0, 1 });
+    player1->SetPosition({ -450,0, 1 });
 
     
     player1->Reload(ProjectileObject1);
@@ -93,7 +93,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2FirePoint->SetParent(player2Barrel);
     player2->Reload(ProjectileObject2);
     player2->SetFirePoint(player2FirePoint);
-    player2->SetPosition({ 500,0, 1 });
+    player2->SetPosition({ 450,0, 1 });
     player2->SetDir(-1);
     player2->UpdatAllBoundingBox(XMMatrixIdentity());
    
@@ -149,14 +149,17 @@ void GameScene::ColisionCheck()
     for (int i = 0; i < 2; ++i) {
         if (player1->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
             if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player1) {
-                player1->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+                FVector3 ddist = dynamic_cast<Projectile*>(gameObjects[i])->GetPosition() - player1->GetPosition();
+            
+                player1->TakeDamage(5, FVector3(-20.f *ddist.x,20.f, 0.0f));
                 player2->SuccessHitEnemy();
                 dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
             }
         }
         if (player2->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
             if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player2) {
-                player2->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+                FVector3 ddist = dynamic_cast<Projectile*>(gameObjects[i])->GetPosition() - player2->GetPosition();
+                player2->TakeDamage(5, FVector3(-20.0f * ddist.x, 20.0f, 0.0f));
                 player1->SuccessHitEnemy();
                 dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
             }

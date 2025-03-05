@@ -12,7 +12,7 @@ private:
     FVector3 velocity;
 
     FVector3 knockbackVelocity = FVector3(0.0f, 0.0f, 0.0f);
-    float knockbackDamping = 0.9f;
+    float knockbackDamping = 0.91f;
 
     Projectile* projectile;
     PlayerFirePoint* firePoint;
@@ -82,7 +82,7 @@ public:
     void TakeDamage(float damage, FVector3 knockbackDirection);
     void Knockback(FVector3 knockbackDirection) {
         knockbackDirection = knockbackDirection.Normalized();
-        knockbackVelocity = knockbackDirection * 100;
+        knockbackVelocity = knockbackDirection * 120;
         if (_child) _child->Knockback(knockbackDirection);
     }
     void SetChild(Player* child) {
