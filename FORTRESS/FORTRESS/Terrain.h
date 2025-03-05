@@ -2,86 +2,115 @@
 #include "GameObject.h"
 #include <array>
 #include <cstddef>
+#include <DirectXCollision.h>
 
 constexpr byte AIR = 0;
 constexpr byte DIRT = 1;
 constexpr byte STONE = 2;
 
-
-constexpr unsigned int MAP_WIDTH = 800;
+constexpr UINT MAP_WIDTH = 800;
 constexpr float MAP_RATIO = 0.5;
-constexpr unsigned int MAP_HEIGHT = static_cast<unsigned int>(MAP_WIDTH * MAP_RATIO);
-constexpr unsigned int MAP_SIZE = MAP_WIDTH * MAP_HEIGHT;
+constexpr UINT MAP_HEIGHT = static_cast<UINT>(MAP_WIDTH * MAP_RATIO);
+constexpr UINT MAP_SIZE = MAP_WIDTH * MAP_HEIGHT;
 
+constexpr float OCTAVE_NUM_SAMPLEPOINT_MULTIPLIER = 1.4;
+constexpr float OCTAVE_AMPLITUDE_MULTIPLIER = 0.6; 
 struct MapCoord
 {
-    unsigned int x;
-    unsigned int y;
+    UINT x;
+    UINT y;
 };
 
-class Terrain : protected GameObject
+struct MapCoordFloat
+{
+    float x;
+    float y;
+};
+
+class Terrain : public GameObject
 {
 public:
-    Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, unsigned int width, unsigned int height, float scale);
-    
+    Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT width, UINT height, float scale, FVector3 pos = {0, 0, 0});
     ~Terrain();
 
-    void Update();
-    void Render();
+    float Scale;
+
+    void Update(double deltaTime);
+    //void Render();
     //void SetOffset(float x, float y);
     
-    float GetNormal(float x, float y, float scanInterval);
-    
+    float GetNormalDownward(XMFLOAT3 scanlinePos, float scanInterval);
+    float GetNormalDownwardSimple(XMFLOAT3 scanlinePos);
 
-    bool CheckCollisionCircle(float _posX, float _posY, float _radius);
-    bool CheckCollisionAABB(float _minX, float _minY, float _maxX, float _maxY, float _posX, float _posY);
+    float FindSurfaceUpward(XMFLOAT3 pos);
+    float FindSurfaceDownward(XMFLOAT3 pos);
+
+    bool CheckCollision(BoundingOrientedBox obox);
+    bool CheckCollision(BoundingSphere sphere);
+    bool CheckCollision(BoundingBox box);
+
+    void Destroy(XMFLOAT3 pos, float radius);
 
     // renderings
     void UpdateMapTexture();
     void GetMapTexture();
 
-    void GeneratePlain();
+    void GeneratePlainMap();
+    void GenerateRandomMap();
+    void GeneratePerlinMap(UINT amplitude, UINT period, UINT octaves = 1);
 
+    XMFLOAT3 RevertToTerrainSpace(XMFLOAT3 worldPos);
+
+    void DestroyOnClickDebug();
 
 private:
-    byte* Map;
-    unsigned int Width;
-    unsigned int Height;
-    float Scale;
+    /// <summary>
+    /// internal함수는 모두 terrain 좌표계에 맞춰서 작동함.
+    /// </summary>
+    byte* Map; // Map[x][y] 형식 : y축 방향 먼저 저장
+    UINT Width;
+    UINT Height;
 
-    ID3D11Texture2D* MapTexture;
-    ID3D11ShaderResourceView* MapTextureRSV;
+    float WidthMinusDelta;
+    float HeightMinusDelta;
+
     //Vertex
+    void GenerateVerticesNaive();
+    void GenerateIndicesNaive();
 
-    byte GetValue(unsigned int x, unsigned int y) const;
-    void SetValue(unsigned int x, unsigned int y, bool state);
+    float GetNormalSimpleInternal(MapCoord point) const;
+
+    UINT FindSurfaceUpwardInternal(UINT x, float y) const;
+    UINT FindSurfaceDownwardInternal(UINT x, float y) const;
+
+    byte GetValue(UINT x, UINT y) const;
+    void SetValue(UINT x, UINT y, bool state);
     
-    unsigned int FindSurfaceUpward(unsigned int x, float y) const;
-    unsigned int FindSurfaceDownward(unsigned int x, float y) const;
+    bool IsSurface(MapCoord point) const;
+    bool IsInsideMap(MapCoord point) const;
+    bool IsInsideMap(MapCoordFloat point) const;
 
-    bool IsSurface(unsigned int x, unsigned int y) const;
-    
+    bool CheckCollisionCircleInternal(float xPos, float yPos, float radius);
+    bool CheckCollisionAABBInternal(float xMin, float yMin, float xMax, float yMax);
+    bool CheckCollisionOBBInternal(XMFLOAT2 c0, XMFLOAT2 c1, XMFLOAT2 c2, XMFLOAT2 c3);
 
-
-    // test
-    ID3D11Buffer* vertexBuffer = nullptr;
-    ID3D11Buffer* indexBuffer = nullptr;
 };
 
 
 
-struct Vertex
-{
-    float x, y, z;
-    float u, v;
-};
-
-Vertex quadVertices[] = {
-    {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f},
-    {-1.0f,  1.0f, 0.0f, 0.0f, 0.0f},
-    { 1.0f, -1.0f, 0.0f, 1.0f, 1.0f},
-    { 1.0f,  1.0f, 0.0f, 1.0f, 0.0f} 
-};
-
-uint32_t quadIndices[] = {
-     0, 1, 2, 2, 1, 3   };
+//struct Vertex
+//{
+//    float x, y, z;
+//    float u, v;
+//};
+//
+//Vertex quadVertices[] = {
+//    {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f},
+//    {-1.0f,  1.0f, 0.0f, 0.0f, 0.0f},
+//    { 1.0f, -1.0f, 0.0f, 1.0f, 1.0f},
+//    { 1.0f,  1.0f, 0.0f, 1.0f, 0.0f} 
+//};
+//
+//uint32_t quadIndices[] = {
+//     0, 1, 2, 2, 1, 3   };
+//
