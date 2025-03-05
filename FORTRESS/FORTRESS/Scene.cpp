@@ -105,7 +105,9 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
     // Player UI
     player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1);
+    player1_UI->ingameManager = ingameManager;
     player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, player2);
+    player2_UI->ingameManager = ingameManager;
 }
 
 GameScene::~GameScene()

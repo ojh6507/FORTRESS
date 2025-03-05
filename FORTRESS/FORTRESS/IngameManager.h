@@ -21,6 +21,7 @@ public:
 	
 	void Update(double deltaTime) override;
 	void ChangeState(IngameState* state);
+	void GameOver(int winPlayerIndex);
 
 	std::vector<Player*> players;
 
@@ -74,7 +75,7 @@ public:
 class GameOverState : public IngameState {
 	using Super = IngameState;
 public:
-	GameOverState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
+	GameOverState(IngameManager* context, int winPlayerIndex) : Super(context, winPlayerIndex) {};
 	void Reserve() override;
 	void Update() override;
 };
