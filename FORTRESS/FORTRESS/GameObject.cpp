@@ -68,7 +68,7 @@ void GameObject::Render() {
 void GameObject::UpdateBoundingBox()
 {
 	_boundingBox.Center = XMFLOAT3(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
-	_boundingBox.Extents = XMFLOAT3(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z);
+	_boundingBox.Extents = XMFLOAT3(_boundingBox.Extents.x * _tf.GetScale().x, _boundingBox.Extents.y * _tf.GetScale().y, _boundingBox.Extents.z * _tf.GetScale().z);
 }
 
 
@@ -252,7 +252,7 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 			_tf.GetRotation().z));
 
 		DirectX::BoundingBox::CreateFromPoints(_boundingBox, positions.size(), positions.data(), sizeof(XMFLOAT3));
-		_originBoundingBox = _boundingBox;
+		
 		UpdateBoundingBox();
 		_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
 		_vertexBuffer->Create(_vertices);
@@ -275,5 +275,8 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 
 void ObjObject::Update(double deltaTime)
 {
+	float val = fmod(_tf.GetRotation().x + float(60 * deltaTime), 360);
+	
+	_tf.SetRotation({val,180,0});
 	//UpdateBoundingBox();
 }

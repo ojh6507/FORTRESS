@@ -201,8 +201,7 @@ void PlayerFirePoint::UpdateOffset()
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
 
 		if (dir == -1) {
-			parentAngle += XMConvertToRadians(360.0f);
-			OutputDebugString(L"11\n");
+			parentAngle += XMConvertToRadians(180.0f);
 		}
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);

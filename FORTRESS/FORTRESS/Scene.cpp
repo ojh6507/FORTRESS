@@ -7,12 +7,16 @@
 #include "MainMenu.h"
 #include "IngameManager.h"
 
+extern GameFramework gGameFramework;
+
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     //ObjObject* objObject = new ObjObject(device, deviceContext, L"2.obj");
     ObjObject* arrowObject = new ObjObject(device, deviceContext, L"arrow.obj");
-    arrowObject->SetPostion({ -250,-200,0 });
-    arrowObject->SetRotation({ 90,0,0 });
+    arrowObject->SetPostion({  0,-0,0 });
+    arrowObject->SetRotation({ 90,180,0 });
+    arrowObject->SetScale({ .8,1.1f,1 }); 
+    arrowObject->UpdateBoundingBox();
 	//GameObject* gameObject = new _test_concrete_GameObject(device, deviceContext);
 	//gameObjects.push_back(gameObject);
     
@@ -100,10 +104,6 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ingameManager->players.push_back(playerBody);
     ingameManager->players.push_back(player2Body);
 
-
-    CubeObject* p = new CubeObject(device, deviceContext, { 1,1,1 });
-    gameObjects.push_back(p);
-
     // Player UI
     player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1);
     player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, player2);
@@ -111,6 +111,8 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 GameScene::~GameScene()
 {
+    delete player1_UI;
+    delete player2_UI;
 }
 
 
@@ -176,7 +178,6 @@ void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
 void MenuScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
 {
     Scene::Render(camera, deviceContext);
-    numbersObject[playerCount]->Render();
 }
 
 void MenuScene::Update(double deltaTime)
@@ -191,10 +192,9 @@ void MenuScene::PickingObjects(Camera* pCamera)
     XMFLOAT4X4 tempProjectionMatrix = pCamera->GetProjectionMatrix();
 
     Input::Instance()->GetMouseRay(rayOrigin, rayDir, XMLoadFloat4x4(&tempViewMatrix), XMLoadFloat4x4(&tempProjectionMatrix));
-
+    rayOrigin = pCamera->GetPosition();
     int pickedIndex = -1;
     float min_dist = FLT_MAX;
-
     for (int i = 0; i < gameObjects.size(); ++i) {
         float dist = FLT_MAX;
         if (gameObjects[i]->IntersectRay2D(rayOrigin, rayDir, dist) && dist < min_dist) {
@@ -204,6 +204,8 @@ void MenuScene::PickingObjects(Camera* pCamera)
     }
 
     if (pickedIndex != -1) {
-       
+        
+        gGameFramework.GetSceneManager()->ChangeScene(new GameScene(gGameFramework.GetGraphics()->GetDevice(), gGameFramework.GetGraphics()->GetDeviceContext()));
+
     }
 }

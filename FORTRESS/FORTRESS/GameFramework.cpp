@@ -7,20 +7,12 @@ void GameFramework::FrameAdvance(double deltaTime)
 		sceneManager->Top()->PickingObjects(camera);
 	}
 	guiController->NewFrame();
-
-	if (Input::Instance()->IsKeyReleased(DIK_1)) {
-		GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
-		sceneManager->ChangeScene(gameScene);
-	}
-	if (Input::Instance()->IsKeyReleased(DIK_2)) {
-		MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
-		sceneManager->ChangeScene(menuScene);
-	}	
-
 	graphics->RenderBegin();
-	sceneManager->Top()->Update(deltaTime);
+	if (sceneManager->Top()) {
+		sceneManager->Top()->Update(deltaTime);
+		sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
+	}
 	guiController->RenderFrame();
-	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	graphics->RenderEnd();
 
 
