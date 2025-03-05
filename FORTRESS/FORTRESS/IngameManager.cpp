@@ -39,10 +39,8 @@ IngameState::IngameState(IngameManager* context, GameObject* turnedPlayer) {
 
 
 void InitReadyState::Reserve() {
-	setTimeout([this]() {
-		_context->StartTimer();
-		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
-	}, 5000);
+	_context->StartTimer();
+	
 }
 
 void InitReadyState::Update()
@@ -50,16 +48,17 @@ void InitReadyState::Update()
 	ImGui::Begin("test");
 	ImGui::Text("Ready");
 	ImGui::End();
+
+	if (_context->GetTimerTime() > 5000) {
+		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
+	}
 }
 
 
 
 
 void MoveAndShotState::Reserve() {
-	// player who has turn moves and shots
-	setTimeout([this]() {
-		_context->ChangeState(new WaitingAfterShotState(_context, _playerHasTurn));
-	}, IngameManager::TURNTIME * 1000.0);
+	_context->StartTimer();
 }
 
 void MoveAndShotState::Update()
@@ -68,24 +67,28 @@ void MoveAndShotState::Update()
 	ImGui::Text("Move&Shot");
 	ImGui::Text((std::to_string(_context->GetTimerTime() / 1000.0) + "s").c_str());
 	ImGui::End();
+
+	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0) {
+		_context->ChangeState(new WaitingAfterShotState(_context, _playerHasTurn));
+	}
 }
 
 
 
 
 void WaitingAfterShotState::Reserve() {
-	setTimeout([this]() {
-		_context->StartTimer();
-		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
-	}, 3000);
+	_context->StartTimer();
 }
 
 void WaitingAfterShotState::Update()
 {
 	ImGui::Begin("test");
 	ImGui::Text("Waiting");
-	
 	ImGui::End();
+
+	if (_context->GetTimerTime() > 3000) {
+		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
+	}
 }
 
 
