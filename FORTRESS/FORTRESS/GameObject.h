@@ -54,6 +54,8 @@ public:
 	}
 	void UpdateBoundingBox();
 
+	bool CheckCollision(GameObject* other);
+
 
 protected:
 	Transform _tf;

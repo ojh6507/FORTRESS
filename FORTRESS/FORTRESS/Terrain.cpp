@@ -11,11 +11,35 @@ T clip(const T& n, const T& lower, const T& upper) {
 void GeneratePerlinNoise1D(size_t numPoints, size_t numSameplePoints, float* heightMap, float scale = 0.5);
 
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT width, UINT height, float scale, FVector3 pos)
-    : GameObject(device, deviceContext), Width(width), Height(height), Scale(scale), 
+    //: GameObject(device, deviceContext), 
+    : Width(width), Height(height), Scale(scale), 
     WidthMinusDelta(nextafterf(static_cast<float>(width), static_cast<float>(width-1))), HeightMinusDelta(nextafterf(static_cast<float>(height), static_cast<float>(height - 1)))
 {
     // Scale은 1로 고정.
     assert(Scale == 1.f);
+
+
+
+    if (device == nullptr)
+        return;
+
+    _vertexShader = new VertexShader(device);
+    _vertexShader->Create(L"Shader.hlsl", "VS", "vs_5_0");
+
+    _pixelShader = new PixelShader(device);
+    _pixelShader->Create(L"Shader.hlsl", "PS", "ps_5_0");
+
+    _inputLayout = new InputLayout(device);
+    _inputLayout->Create(FVertexSimple::descs, _vertexShader->GetBlob());
+
+    _constantBuffer = new ConstantBuffer<VS_CB_GAMEOBJECT_INFO>(device, deviceContext);
+    _constantBuffer->Create();
+
+    _rasterizerState = new RasterizerState(device);
+    _rasterizerState->Create();
+
+
+
     // stick to leftbottom corner
     if (pos.x == 0 && pos.y == 0 && pos.z == 0)
     {
@@ -43,6 +67,21 @@ Terrain::~Terrain()
 {
     //if (MapTextureRSV) MapTextureRSV->Release();
     //if (MapTexture) MapTexture->Release();
+    if (_vertexBuffer)
+        delete _vertexBuffer;
+    if (_indexBuffer)
+        delete _indexBuffer;
+    if (_vertexShader)
+        delete _vertexShader;
+    if (_pixelShader)
+        delete _pixelShader;
+    if (_inputLayout)
+        delete _inputLayout;
+    if (_constantBuffer)
+        delete _constantBuffer;
+    if (_rasterizerState)
+        delete _rasterizerState;
+
     delete[] Map;
 }
 
@@ -51,6 +90,34 @@ void Terrain::Update(double deltaTime)
     DestroyOnClickDebug();
 
     //UpdateMesh();
+}
+
+void Terrain::Render()
+{
+    if (_vertexBuffer == nullptr)
+        return;
+    if (_deviceContext == nullptr)
+        return;
+
+    _deviceContext->IASetInputLayout(_inputLayout->Get());
+    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    _deviceContext->VSSetShader(_vertexShader->Get(), nullptr, 0);
+    _deviceContext->RSSetState(_rasterizerState->Get());
+    _deviceContext->PSSetShader(_pixelShader->Get(), nullptr, 0);
+
+    UINT32 stride, offset;
+    ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
+    stride = _vertexBuffer->GetStride();
+    offset = _vertexBuffer->GetOffset();
+    _deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+
+    _deviceContext->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+
+    _constantBuffer->CopyData(VS_CB_GAMEOBJECT_INFO{ _tf.GetWorldMatrix() });
+    ID3D11Buffer* constantBuffer = _constantBuffer->Get();
+    _deviceContext->VSSetConstantBuffers(2, 1, &constantBuffer);
+
+    _deviceContext->DrawIndexed(_indexBuffer->GetCount(), 0, 0);
 }
 
 //void Terrain::Render()
@@ -528,9 +595,13 @@ void Terrain::UpdateMesh()
 
     GenerateVerticesNaive();
     GenerateIndicesNaive();
+    
+    if(_vertexBuffer->Get() != nullptr)
+        _vertexBuffer->Get()->Release();
+    if (_indexBuffer->Get() != nullptr)
+        _indexBuffer->Get()->Release();
 
     _vertexBuffer->Create(_vertices);
-
     _indexBuffer->Create(_indices);
 }
 
@@ -655,7 +726,7 @@ void Terrain::DestroyOnClickDebug()
     static int x = -200;
     if (Input::Instance()->IsMouseButtonPressed(0))
     {
-        Destroy({ (float)x,-200,0 }, 20);
+        Destroy({ (float)x, -300,0 }, 20);
         x += 100;
     }
 }

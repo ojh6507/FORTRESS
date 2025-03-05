@@ -80,6 +80,16 @@ void GameObject::UpdateBoundingBox()
 	_boundingBox = transformedBox; 
 }
 
+bool GameObject::CheckCollision(GameObject* other)
+{
+	if (this->_boundingBox.Intersects(other->_boundingBox))
+	{
+		assert(1);
+		return true;
+	}
+	return false;
+}
+
 
 
 void _test_concrete_GameObject::Update(double deltaTime) {

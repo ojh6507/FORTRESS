@@ -5,6 +5,7 @@
 //#include "sphere.h"
 #include "MainMenu.h"
 #include "IngameManager.h"
+#include "Terrain.h"
 
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -105,7 +106,8 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2->SetFirePoint(player2FirePoint);
     player2->SetPosition({500,0, 1});
     
-    
+    //Terrain* terrain = new Terrain(device, deviceContext, 2000, 400, 1);
+    //gameObjects.push_back(terrain);
     
     
     IngameManager* ingameManager = IngameManager::Instance();

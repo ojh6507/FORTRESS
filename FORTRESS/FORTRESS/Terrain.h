@@ -26,7 +26,7 @@ struct MapCoordFloat
     float y;
 };
 
-class Terrain : public GameObject
+class Terrain// : public GameObject
 {
 public:
     Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT width, UINT height, float scale, FVector3 pos = {0, 0, 0});
@@ -35,7 +35,7 @@ public:
     float Scale;
 
     void Update(double deltaTime);
-    //void Render();
+    void Render();
     //void SetOffset(float x, float y);
     
     float GetNormalDownward(XMFLOAT3 scanlinePos, float scanInterval);
@@ -60,6 +60,33 @@ public:
     XMFLOAT3 RevertToTerrainSpace(XMFLOAT3 worldPos);
 
     void DestroyOnClickDebug();
+
+
+protected:
+    Transform _tf;
+    VertexBuffer<FVertexSimple>* _vertexBuffer;
+    IndexBuffer* _indexBuffer;
+
+    std::vector<FVertexSimple> _vertices;
+    std::vector<UINT32> _indices;
+
+    ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
+
+    BoundingOrientedBox _boundingBox;
+    BoundingOrientedBox _originBoundingBox;
+
+private:
+    ID3D11Device* _device;
+    ID3D11DeviceContext* _deviceContext;
+
+    InputLayout* _inputLayout;
+
+    VertexShader* _vertexShader;
+    PixelShader* _pixelShader;
+
+    RasterizerState* _rasterizerState;
+    SamplerState* _samplerState;
+
 
 private:
     /// <summary>
