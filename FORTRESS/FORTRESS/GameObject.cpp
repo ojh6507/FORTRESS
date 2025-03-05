@@ -5,33 +5,33 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 	_vertices.resize(4);
 
-	_vertices[0].x = -0.1f;
-	_vertices[0].y = 0.1f;
-	_vertices[0].z = 0.f;
+	_vertices[0].x = -40.1f;
+	_vertices[0].y = 40.1f;
+	_vertices[0].z = 40.f;
 	_vertices[0].r = 1.f;
 	_vertices[0].g = 1.f;
 	_vertices[0].b = 1.f;
 	_vertices[0].a = 1.f;
 
-	_vertices[1].x = 0.1f;
-	_vertices[1].y = 0.1f;
-	_vertices[1].z = 0.f;
+	_vertices[1].x = 40.1f;
+	_vertices[1].y = 40.1f;
+	_vertices[1].z = 40.f;
 	_vertices[1].r = 1.f;
 	_vertices[1].g = 1.f;
 	_vertices[1].b = 1.f;
 	_vertices[1].a = 1.f;
 
-	_vertices[2].x = 0.1f;
-	_vertices[2].y = -0.1f;
-	_vertices[2].z = 0.f;
+	_vertices[2].x = 40.1f;
+	_vertices[2].y = -40.1f;
+	_vertices[2].z = 40.f;
 	_vertices[2].r = 1.f;
 	_vertices[2].g = 1.f;
 	_vertices[2].b = 1.f;
 	_vertices[2].a = 1.f;
 
-	_vertices[3].x = -0.1f;
-	_vertices[3].y = -0.1f;
-	_vertices[3].z = 0.f;
+	_vertices[3].x = -40.1f;
+	_vertices[3].y = -40.1f;
+	_vertices[3].z = 40.f;
 	_vertices[3].r = 1.f;
 	_vertices[3].g = 1.f;
 	_vertices[3].b = 1.f;
@@ -62,10 +62,9 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_inputLayout = new InputLayout(device);
 	_inputLayout->Create(FVertexSimple::descs, _vertexShader->GetBlob());
 
-	std::vector<Transform> _tf;
-	_tf.push_back(Transform());
-	_constantBuffer = new ConstantBuffer<Transform>(device, deviceContext);
-	_constantBuffer->Create(_tf);
+
+	_constantBuffer = new ConstantBuffer<VS_CB_GAMEOBJECT_INFO>(device, deviceContext);
+	_constantBuffer->Create();
 
 	_rasterizerState = new RasterizerState(device);
 	_rasterizerState->Create();
@@ -82,19 +81,19 @@ GameObject::~GameObject() {
 	delete _rasterizerState;
 }
 
-void GameObject::Update() {
+void GameObject::Update(float deltaTime) {
 
 	if (Input::Instance()->IsKeyPressed(DIK_W)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 0.05f, 0.f));	
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 10.0f, 0.f));	
 	}
 	if (Input::Instance()->IsKeyPressed(DIK_A)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(-0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(-10.0f, 0.f, 0.f));
 	}
 	if (Input::Instance()->IsKeyPressed(DIK_S)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -0.05f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -10.0f, 0.f));
 	}
 	if (Input::Instance()->IsKeyPressed(DIK_D)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(10.0f, 0.f, 0.f));
 	}
 }
 
@@ -113,9 +112,9 @@ void GameObject::Render() {
 
 	_deviceContext->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	_constantBuffer->CopyData(_tf);
+	_constantBuffer->CopyData(VS_CB_GAMEOBJECT_INFO{_tf.GetWorldMatrix()});
 	ID3D11Buffer* constantBuffer = _constantBuffer->Get();
-	_deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
+	_deviceContext->VSSetConstantBuffers(2, 1, &constantBuffer);
 
 	_deviceContext->DrawIndexed(_indexBuffer->GetCount(), 0, 0);
 }

@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Graphics.h"
 #include "Scene.h"
+#include "Camera.h"
 
 class GameFramework
 {
@@ -18,6 +19,7 @@ public:
 	Input* input;
 
 private:
+	Camera* camera;
 	Graphics* graphics;
 	SceneManager* sceneManager;
 };

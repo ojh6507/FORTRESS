@@ -3,9 +3,9 @@
 void GameFramework::FrameAdvance()
 {
 	Input::Instance()->Frame();
-	sceneManager->Top()->Update();
+	sceneManager->Top()->Update(0.666666f);
 	graphics->RenderBegin();
-	sceneManager->Top()->Render();
+	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	graphics->RenderEnd();
 }
 
@@ -21,6 +21,15 @@ bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	sceneManager = new SceneManager();
 	GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
 	sceneManager->PushScene(gameScene);
+
+	camera = new Camera();
+	camera->GenerateProjectionMatrix(0.1f, 100.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+
+	camera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+	camera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	camera->CreateShaderVariables(graphics->GetDevice(), graphics->GetDeviceContext());
+	camera->SetPosition(XMFLOAT3(0, 0, -1));
+	camera->ResetOrientationVectors();
 	return true;
 }
 

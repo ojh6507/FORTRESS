@@ -1,13 +1,19 @@
 #pragma once
+
+struct VS_CB_GAMEOBJECT_INFO {
+	XMFLOAT4X4 m_xmf4x4World;
+};
+
 class GameObject {
 public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~GameObject();
 
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 
 private:
+	GameObject* child;
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
 
@@ -24,5 +30,5 @@ private:
 	SamplerState* _samplerState;
 	
 	Transform _tf;
-	ConstantBuffer<Transform>* _constantBuffer;
+	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
 };

@@ -1,40 +1,44 @@
 // Shader.hlsl
-cbuffer constants : register(b0)
+cbuffer cbCameraInfo : register(b1)
 {
-	float3 Offset;
-    float Scale;
-}
+    matrix gmtxView : packoffset(c0);
+    matrix gmtxProjection : packoffset(c4);
+    float3 gvCameraPosition : packoffset(c8);
+};
 
+cbuffer cbGameObjectInfo : register(b2)
+{
+    matrix gmtxGameObject;
+}
 
 struct VS_INPUT
 {
-    float4 position : POSITION; // Input position from vertex buffer
-    float4 color : COLOR;       // Input color from vertex buffer
+    float3 position : POSITION;
+    float4 color : COLOR;
 };
 
 struct PS_INPUT
 {
-    float4 position : SV_POSITION; // Transformed position to pass to the pixel shader
-    float4 color : COLOR;          // Color to pass to the pixel shader
+    float4 position : SV_POSITION;
+    float3 positionW : POSITION;
+    float4 color : COLOR;
 };
 
 PS_INPUT VS(VS_INPUT input)
 {
     PS_INPUT output;
-    
-    // Pass the position directly to the pixel shader (no transformation)
-    //output.position = input.position;
-    float3 scaledPos = input.position.xyz;
-    float3 finalPos = scaledPos + Offset;
-    output.position = float4(finalPos, input.position.w);
-    // Pass the color to the pixel shader
+
+    float4 worldPos = mul(float4(input.position, 1.0f), gmtxGameObject);
+    output.positionW = worldPos.xyz;
+    output.position = mul(worldPos, gmtxView);
+    output.position = mul(output.position, gmtxProjection);
+
     output.color = input.color;
-    
+
     return output;
 }
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-    // Output the color directly
     return input.color;
 }

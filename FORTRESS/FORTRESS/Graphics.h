@@ -15,8 +15,8 @@ public:
 private:
 
 	HWND _hWnd;
-	UINT32 _width = 800;
-	UINT32 _height = 600;
+	UINT32 _width = FRAME_BUFFER_WIDTH;
+	UINT32 _height = FRAME_BUFFER_HEIGHT;
 	
 	// Device & swapChain
 	ID3D11Device* _device = nullptr;
@@ -39,6 +39,5 @@ private:
 	void ReleaseDeviceAndSwapChain();
 	void CreateRenderTargetView();
 	void ReleaseRenderTargetView();
-	void SetViewPort();
 };
 

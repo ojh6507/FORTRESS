@@ -3,7 +3,6 @@
 Graphics::Graphics(HWND hWnd): _hWnd(hWnd) {
 	CreateDeviceAndSwapChain();
 	CreateRenderTargetView();
-	SetViewPort();
 }
 
 Graphics::~Graphics() {
@@ -14,7 +13,6 @@ Graphics::~Graphics() {
 void Graphics::RenderBegin() {
 	_deviceContext->OMSetRenderTargets(1, &_renderTargetView, nullptr);
 	_deviceContext->ClearRenderTargetView(_renderTargetView, _clearColor);
-	_deviceContext->RSSetViewports(1, &_viewport);
 }
 
 void Graphics::RenderEnd() {
@@ -26,8 +24,8 @@ void Graphics::CreateDeviceAndSwapChain() {
 
 	DXGI_SWAP_CHAIN_DESC desc = {};
 	{
-		desc.BufferDesc.Width = _width;							// 버퍼 크기
-		desc.BufferDesc.Height = _height;
+		desc.BufferDesc.Width = FRAME_BUFFER_WIDTH;							// 버퍼 크기
+		desc.BufferDesc.Height = FRAME_BUFFER_HEIGHT;
 		desc.BufferDesc.RefreshRate.Numerator = 60;				// 주사율
 		desc.BufferDesc.RefreshRate.Denominator = 1;
 		desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	// 컬러 포맷
@@ -102,11 +100,3 @@ void Graphics::ReleaseRenderTargetView() {
 	}
 }
 
-void Graphics::SetViewPort() {
-	_viewport.TopLeftX = 0.f;
-	_viewport.TopLeftY = 0.f;
-	_viewport.Width = static_cast<float>(_width);
-	_viewport.Height = static_cast<float>(_height);
-	_viewport.MinDepth = 0.f;
-	_viewport.MaxDepth = 1.f;
-}

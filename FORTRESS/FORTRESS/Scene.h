@@ -2,11 +2,11 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include <stack>
-
+class Camera;
 class GameFramework;
 class Scene {
 public:
-    Scene(){}
+    Scene() {}
     Scene(ID3D11Device* device, ID3D11DeviceContext* deviceContext) {}
     virtual ~Scene() { Destroy(); }
 
@@ -17,16 +17,11 @@ public:
         gameObjects.clear();
     }
 
-    virtual void Render() {
-        for (auto& obj : gameObjects) {
-           
-            obj->Render();
-        }
-    }
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) {};
 
-    virtual void Update() {
+    virtual void Update(float detaTime) {
         for (auto& obj : gameObjects) {
-            obj->Update();
+            obj->Update(detaTime);
         }
     }
 
@@ -37,20 +32,13 @@ protected:
 class MenuScene : public Scene {
 public:
     
-    virtual void Render() override {
-        
-    }
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) override {};
 };
 
 class GameScene : public Scene {
 public:
     GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-    virtual void Render()  override {
-        for (auto& obj : gameObjects) {
-            
-            obj->Render();
-        }
-    }
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) override;
 };
 
 class SceneManager {
