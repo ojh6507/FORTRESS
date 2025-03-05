@@ -38,4 +38,17 @@ struct FVector3
 		z -= rhs.z;
 		return *this;
 	}
+
+	float Magnitude() const
+	{
+		return std::sqrt(x * x + y * y + z * z);
+	}
+	FVector3 Normalized() const
+	{
+		float length = Magnitude();
+		if (length != 0)
+			return *this / length;
+
+		return FVector3();
+	}
 };
