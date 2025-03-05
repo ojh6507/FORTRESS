@@ -3,7 +3,6 @@
 #include "Player.h"
 #include "PlayerUI.h"
 #include "GameFramework.h"
-#include "Player.h"
 //#include "sphere.h"
 #include "MainMenu.h"
 #include "IngameManager.h"
@@ -11,8 +10,8 @@
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     //ObjObject* objObject = new ObjObject(device, deviceContext, L"2.obj");
-    numbersObject.reserve(4);
-    for (int i = 0; i < 4; ++i) {
+    numbersObject.reserve(2);
+    for (int i = 0; i < 2; ++i) {
         std::wstring ws = std::to_wstring(i+1) + L".obj";
         ObjObject* objObject = new ObjObject(device, deviceContext, ws.c_str());
         objObject->SetPostion({ 0,0,0 });
@@ -42,14 +41,16 @@ MenuScene::~MenuScene()
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	Projectile* ProjectileObject = new Projectile(device, deviceContext);
-    ProjectileObject->OutOfScreen();
-
-    gameObjects.push_back(ProjectileObject);
-    player1 = new Player(device, deviceContext, { 0,0,0 });
-    Player* playerBody = new Player(device, deviceContext, { 3, 1, 1 });
-    PlayerHead* playerHead = new PlayerHead(device, deviceContext, {2, 1, 1}, FVector3(0.0f, 55.0f, 0.0f));
-    PlayerBarrel* playerBarrel = new PlayerBarrel(device, deviceContext, {3.f, .3, 1}, FVector3(50.0f, 15.0f, 0.0f));
+	Projectile* ProjectileObject1 = new Projectile(device, deviceContext);
+    ProjectileObject1->OutOfScreen();
+    gameObjects.push_back(ProjectileObject1);
+    
+    FVector3 playerColor = { 1.f, 0.4f, 0.4f };
+    player1 = new Player(device, deviceContext, { 0,0,0 }, playerColor);
+    Player* playerBody = new Player(device, deviceContext, { 2.3, 0.7, 1 }, playerColor);
+    PlayerHead* playerHead = new PlayerHead(device, deviceContext, {1.4, 1, 1}, FVector3(0.0f, 30.0f, 0.0f), playerColor);
+    PlayerBarrel* playerBarrel = new PlayerBarrel(device, deviceContext, {2.4f, .3, 1}, FVector3(50.0f, 15.0f, 0.0f), playerColor);
+    PlayerFirePoint* playerFirePoint = new PlayerFirePoint(device, deviceContext, {0.2f, .4, 1}, FVector3(80.0f, 0.0f, 0.0f), playerColor);
     
     playerBody->SetChild(playerHead);
     playerBarrel->SetParent(playerHead);
@@ -58,11 +59,57 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
+    playerBarrel->SetChild(playerFirePoint);
+    playerFirePoint->SetParent(playerBarrel);
+    player1->Reload(ProjectileObject1);
+    player1->SetFirePoint(playerFirePoint);
+    player1->SetPosition({-500,0, 1});
+    
+    
+    
+    FVector3 player2Color = { 0.f, 1.f, 0.0f };
+    player2 = new Player(device, deviceContext, { 0, 0, 0 },player2Color);
 
     player1->Reload(ProjectileObject);
+    // �ٵ�, ���, �跲, ���̾�����Ʈ �� ���� ���� ����
+    Player* player2Body = new Player(device, deviceContext, { 2.3f, 0.7f, 1.0f }, 
+                                                             player2Color);
+    PlayerHead* player2Head = new PlayerHead(device, deviceContext, { 1.4f, 1.0f, 1.0f }, 
+                                                                    FVector3(0.0f, 30.0f, 0.0f),
+                                                                    player2Color);
+    PlayerBarrel* player2Barrel = new PlayerBarrel(device, deviceContext, { 2.4f, 0.3f, 1.0f },
+                                                                           FVector3(50.0f, 15.0f, 0.0f),
+                                                                           player2Color);
+    PlayerFirePoint* player2FirePoint = new PlayerFirePoint(device, deviceContext, { 0.2f, 0.4f, 1.0f }, 
+                                                                                    FVector3(80.0f, 0.0f, 0.0f), 
+                                                                                    player2Color);
     
-    IngameManager* ingameManager = new IngameManager();
+    Projectile* ProjectileObject2 = new Projectile(device, deviceContext);
+    ProjectileObject2->OutOfScreen();
+
+    gameObjects.push_back(ProjectileObject2);
+
+    player2Body->SetChild(player2Head);
+    player2Barrel->SetParent(player2Head);
+
+    player2->SetChild(player2Body);
+
+    player2Head->SetParent(player2Body);
+    player2Head->SetChild(player2Barrel);
+    player2Barrel->SetChild(player2FirePoint);
+    player2FirePoint->SetParent(player2Barrel);
+    player2->Reload(ProjectileObject2);
+    player2->SetFirePoint(player2FirePoint);
+    player2->SetPosition({500,0, 1});
+    
+    IngameManager* ingameManager = IngameManager::Instance();
     gameObjects.push_back(ingameManager);
+    ingameManager->players.push_back(playerBody);
+    ingameManager->players.push_back(player2Body);
+
+
+    CubeObject* p = new CubeObject(device, deviceContext, { 1,1,1 });
+    gameObjects.push_back(p);
 
     // Player UI
     player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
@@ -81,6 +128,7 @@ void GameScene::Update(double deltaTime)
 {
     Scene::Update(deltaTime);
     player1->Update(deltaTime);
+    player2->Update(deltaTime);
     player1_UI->Update(deltaTime);
 }
 
@@ -88,6 +136,7 @@ void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
 {
     Scene::Render(camera, deviceContext);
     player1->Render();
+    player2->Render();
 }
 
 void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)

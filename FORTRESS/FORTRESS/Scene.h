@@ -56,6 +56,7 @@ public:
     Player* player2;
     PlayerUI* player1_UI;
     PlayerUI* player2_UI;
+    bool turn = true;
 };
 
 class SceneManager {

@@ -156,10 +156,8 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MainMenu.h" />
-    <ClInclude Include="PlayerUI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SetTimeout.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="States.h" />
     <ClInclude Include="stdafx.h" />
@@ -190,9 +188,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="MainMenu.cpp" />
-    <ClCompile Include="PlayerUI.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SetTimeout.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="States.cpp" />
     <ClCompile Include="Terrain.cpp" />
