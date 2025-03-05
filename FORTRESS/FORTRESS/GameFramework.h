@@ -22,5 +22,6 @@ private:
 	Camera* camera;
 	Graphics* graphics;
 	SceneManager* sceneManager;
+	int playerCount;
 };
 

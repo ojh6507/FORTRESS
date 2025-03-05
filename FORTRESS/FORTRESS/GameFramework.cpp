@@ -3,17 +3,35 @@
 void GameFramework::FrameAdvance(double deltaTime)
 {
 	Input::Instance()->Frame();
-	guiController->NewFrame();
+	
+	if (Input::Instance()->IsKeyReleased(DIK_1)) {
+		GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
+		sceneManager->ChangeScene(gameScene);
+	}
+	if (Input::Instance()->IsKeyReleased(DIK_2)) {
+		MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
+		sceneManager->ChangeScene(menuScene);
+	}	
+	if (Input::Instance()->IsKeyReleased(DIK_UPARROW)) {
+		sceneManager->Top()->SetPlayerCount(std::clamp(++playerCount, -1, 3));
+	}
+	if (Input::Instance()->IsKeyReleased(DIK_DOWNARROW)) {
+		sceneManager->Top()->SetPlayerCount(std::clamp(--playerCount, -1, 3));
+	}
+	
 	sceneManager->Top()->Update(deltaTime);
 	graphics->RenderBegin();
 	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	guiController->RenderFrame();
 	graphics->RenderEnd();
+
+
 }
 
 void GameFramework::OnDestroy()
 {
 	delete sceneManager;
+	delete camera;
 	delete graphics;
 	delete guiController;
 }
@@ -22,8 +40,9 @@ bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 	graphics = new Graphics(hMainWnd);
 	sceneManager = new SceneManager();
-	GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
-	sceneManager->PushScene(gameScene);
+	MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
+
+	sceneManager->PushScene(menuScene);
 	guiController = new GuiController(hMainWnd, graphics);
 
 	camera = new Camera();
