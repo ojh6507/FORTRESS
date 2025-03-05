@@ -2,11 +2,12 @@
 #include "Camera.h"
 #include "GameFramework.h"
 //#include "sphere.h"
+#include "MainMenu.h"
 
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 
-	GameObject* gameObject = new _test_concrete_GameObject(device, deviceContext);
+    GameObject* gameObject = new MainMenu(device, deviceContext);
 	gameObjects.push_back(gameObject);
 
 }

@@ -149,6 +149,7 @@
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="MovableObject.h" />
     <ClInclude Include="Resource.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputLayout.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Missile.cpp" />
     <ClCompile Include="MovableObject.cpp" />
     <ClCompile Include="Scene.cpp" />
