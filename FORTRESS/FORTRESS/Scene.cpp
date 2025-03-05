@@ -10,40 +10,28 @@
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     //ObjObject* objObject = new ObjObject(device, deviceContext, L"2.obj");
-    numbersObject.reserve(2);
-    for (int i = 0; i < 2; ++i) {
-        std::wstring ws = std::to_wstring(i+1) + L".obj";
-        ObjObject* objObject = new ObjObject(device, deviceContext, ws.c_str());
-        objObject->SetPostion({ 0,0,0 });
-        objObject->SetScale({ 10,10,10 });
-        objObject->SetRotation({ 0,180,0 });
-        numbersObject.push_back(objObject);
-    }
-
     ObjObject* arrowObject = new ObjObject(device, deviceContext, L"arrow.obj");
     arrowObject->SetPostion({ -250,-200,0 });
     arrowObject->SetRotation({ 90,0,0 });
 	//GameObject* gameObject = new _test_concrete_GameObject(device, deviceContext);
 	//gameObjects.push_back(gameObject);
-
-    ObjObject* arrowObject2 = new ObjObject(device, deviceContext, L"arrow.obj");
-    arrowObject2->SetPostion({ 250,-200,0 });
-    arrowObject2->SetRotation({ 90,180,0 });
-
     
     gameObjects.push_back(arrowObject);
-    gameObjects.push_back(arrowObject2);
 
 }
 MenuScene::~MenuScene()
 {
-    for (auto& obj : numbersObject) delete obj;
+   
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
     Projectile* ProjectileObject1 = new Projectile(device, deviceContext);
     ProjectileObject1->OutOfScreen();
     gameObjects.push_back(ProjectileObject1);
+
+    Projectile* ProjectileObject2 = new Projectile(device, deviceContext);
+    ProjectileObject2->OutOfScreen();
+    gameObjects.push_back(ProjectileObject2);
 
     FVector3 playerColor = { 1.f, 0.4f, 0.4f };
     player1 = new Player(device, deviceContext, { 0,0,0 }, playerColor);
@@ -62,6 +50,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerHead->SetChild(playerBarrel);
     playerBarrel->SetChild(playerFirePoint);
     playerFirePoint->SetParent(playerBarrel);
+    player1->UpdatAllBoundingBox(XMMatrixIdentity());
     player1->Reload(ProjectileObject1);
     player1->SetFirePoint(playerFirePoint);
     player1->SetPosition({ -500,0, 1 });
@@ -88,11 +77,6 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
         FVector3(-90.0f, 0.0f, 0.0f),
         player2Color);
 
-    Projectile* ProjectileObject2 = new Projectile(device, deviceContext);
-    ProjectileObject2->OutOfScreen();
-
-    gameObjects.push_back(ProjectileObject2);
-
     player2Body->SetChild(player2Head);
     player2Barrel->SetParent(player2Head);
 
@@ -107,6 +91,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player2->SetFirePoint(player2FirePoint);
     player2->SetPosition({ 500,0, 1 });
     player2->SetDir(-1);
+    player2->UpdatAllBoundingBox(XMMatrixIdentity());
    
     
     IngameManager* ingameManager = IngameManager::Instance();
@@ -146,6 +131,7 @@ void GameScene::Update(double deltaTime)
         player2->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
     if (Input::Instance()->IsKeyPressed(DIK_K))
         player2->SuccessHitEnemy();
+    ColisionCheck();
 }
 
 void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
@@ -153,6 +139,27 @@ void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
     Scene::Render(camera, deviceContext);
     player1->Render();
     player2->Render();
+}
+
+void GameScene::ColisionCheck()
+{
+    for (int i = 0; i < 2; ++i) {
+        if (player1->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
+            if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player1) {
+                player1->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+                player2->SuccessHitEnemy();
+                dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
+            }
+        }
+        if (player2->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
+            if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player2) {
+                player2->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+                player1->SuccessHitEnemy();
+                dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
+            }
+        }
+        
+    }
 }
 
 void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
@@ -197,6 +204,6 @@ void MenuScene::PickingObjects(Camera* pCamera)
     }
 
     if (pickedIndex != -1) {
-        playerCount = (pickedIndex == 1) ? std::clamp((playerCount + 1), 0, 3) : std::clamp((playerCount - 1), 0, 3);
+       
     }
 }

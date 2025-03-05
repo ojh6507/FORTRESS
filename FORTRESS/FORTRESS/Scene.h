@@ -42,8 +42,6 @@ public:
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
     virtual void Update(double deltaTime); 
     virtual void PickingObjects(Camera* pCamera);
-private:
-    std::vector<GameObject*> numbersObject;
 };
 
 class GameScene : public Scene {
@@ -52,6 +50,7 @@ public:
     virtual ~GameScene();
     virtual void Update(double deltaTime);
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
+    virtual void ColisionCheck();
     Player* player1;
     Player* player2;
     PlayerUI* player1_UI;

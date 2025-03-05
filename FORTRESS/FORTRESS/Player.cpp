@@ -6,15 +6,40 @@ void Player::Render()
 	GameObject::Render();
 	if (_child) _child->Render();
 }
+void Player::UpdatAllBoundingBox(const XMMATRIX& parentMatrix)
+{
+
+	// 2. 현재 객체의 위치 변환 (AABB는 크기와 위치만 반영)
+	XMFLOAT3 s = XMFLOAT3{ _tf.GetScale().x,_tf.GetScale().y,_tf.GetScale().z };
+	XMVECTOR scale = XMLoadFloat3(&s);
+	XMFLOAT3 p = XMFLOAT3{ _tf.GetPosition().x,_tf.GetPosition().y,_tf.GetPosition().z };
+	XMVECTOR position = XMLoadFloat3(&p);
+
+	// 부모 변환을 적용한 새로운 중심 좌표
+	XMVECTOR worldCenter = XMVector3Transform(position, parentMatrix);
+
+	// 3. AABB 크기 업데이트 (회전은 적용하지 않음)
+	XMVECTOR extents = XMLoadFloat3(&_originBoundingBox.Extents);
+	extents = XMVectorMultiply(extents, scale); // 크기 조정
+
+	// 4. 최종 AABB 설정 (중심 + 크기)
+	XMStoreFloat3(&_boundingBox.Center, worldCenter);
+	XMStoreFloat3(&_boundingBox.Extents, extents);
+
+
+	if (_child)
+		_child->UpdatAllBoundingBox(parentMatrix);
+
+}
+
 
 void Player::Update(double deltaTime)
 {
 
 	bIsGround = false;
 	ComputeIsGround();
-
-	UpdateBoundingBox();
-	
+	XMFLOAT4X4 worldMatrx = _tf.GetWorldMatrix();
+	UpdatAllBoundingBox(XMLoadFloat4x4(&worldMatrx));
 	if (!bIsGround) {
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
@@ -176,7 +201,8 @@ void PlayerFirePoint::UpdateOffset()
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
 
 		if (dir == -1) {
-			parentAngle += XMConvertToRadians(180.0f);
+			parentAngle += XMConvertToRadians(360.0f);
+			OutputDebugString(L"11\n");
 		}
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);

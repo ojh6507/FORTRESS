@@ -24,37 +24,16 @@ public:
 	bool IntersectRay2D(const XMFLOAT3& rayOrigin, const XMFLOAT3& rayDir, float& outDist)
 	{
 		UpdateBoundingBox();
-		float distance = FLT_MAX;
-		XMVECTOR rayOriginVec = XMLoadFloat3(&rayOrigin);
-		XMVECTOR rayDirVec = XMVector3Normalize(XMLoadFloat3(&rayDir));
+		XMFLOAT3 modifiedRayOrigin = XMFLOAT3(rayOrigin.x, rayOrigin.y, 0.0f);
+		XMFLOAT3 modifiedRayDir = XMFLOAT3(rayDir.x, rayDir.y, 0.0f);
 
-		// **Z 좌표를 무시하고 2D 좌표만 사용**
-		XMFLOAT2 rayOrigin2D = XMFLOAT2(rayOrigin.x, rayOrigin.y);
-		XMFLOAT2 obbCenter2D = XMFLOAT2(_boundingBox.Center.x, _boundingBox.Center.y);
-		XMFLOAT2 obbExtents2D = XMFLOAT2(_boundingBox.Extents.x, _boundingBox.Extents.y);
-
-		
-		if ((abs(rayOrigin2D.x - obbCenter2D.x) <= obbExtents2D.x) &&
-			(abs(rayOrigin2D.y - obbCenter2D.y) <= obbExtents2D.y)) {
-			outDist = 0;
-			return true;
-		}
-
-		// **OBB와의 충돌 검사**
-		BoundingOrientedBox transformedBox;
-		_boundingBox.Transform(transformedBox, XMMatrixIdentity()); // 변환 적용
-
-		// **2D에서 X, Y만 비교하여 충돌 검사**
-		if ((abs(rayOrigin2D.x - transformedBox.Center.x) <= transformedBox.Extents.x) &&
-			(abs(rayOrigin2D.y - transformedBox.Center.y) <= transformedBox.Extents.y)) {
-			outDist = 0;
-			return true;
-		}
-
-		return false;
+		return _boundingBox.Intersects(XMLoadFloat3(&modifiedRayOrigin), XMLoadFloat3(&modifiedRayDir), outDist);
 	}
+
 	void UpdateBoundingBox();
 
+	BoundingBox _boundingBox;
+	BoundingBox _originBoundingBox;
 
 protected:
 	Transform _tf;
@@ -66,8 +45,6 @@ protected:
 	
 	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
 
-	BoundingOrientedBox _boundingBox;
-	BoundingOrientedBox _originBoundingBox;
 	
 private:
 	ID3D11Device* _device;
@@ -130,7 +107,8 @@ public:
 
 	Player* motherPlayer;
 
-	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
+	void OutOfScreen() { _tf.SetPosition(FVector3(999999, 999999, 0)); }
+
 
 	void FireProjectile(Player& player, FVector3& firePosition, float angle, float speed) {
 		_isFired = true;

@@ -67,17 +67,8 @@ void GameObject::Render() {
 
 void GameObject::UpdateBoundingBox()
 {
-	XMMATRIX worldMatrix = XMMatrixScaling(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z) *
-		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
-			XMConvertToRadians(_tf.GetRotation().x),
-			XMConvertToRadians(_tf.GetRotation().y),
-			XMConvertToRadians(_tf.GetRotation().z))) *
-		XMMatrixTranslation(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
-
-	BoundingOrientedBox originalBox = _originBoundingBox;
-	BoundingOrientedBox transformedBox;
-	originalBox.Transform(transformedBox, worldMatrix); 
-	_boundingBox = transformedBox; 
+	_boundingBox.Center = XMFLOAT3(_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z);
+	_boundingBox.Extents = XMFLOAT3(_tf.GetScale().x, _tf.GetScale().y, _tf.GetScale().z);
 }
 
 
@@ -137,10 +128,15 @@ Projectile::Projectile(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	_indexBuffer->Create(_indices);
 	_tf.SetPosition({-300, -100, 0});
 	_tf.SetScale({ 0.5f, 0.5f, 0.5f });
+
+	_originBoundingBox.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	_originBoundingBox.Extents = DirectX::XMFLOAT3(20.0f, 20.0f, 1.0f);
+	_boundingBox = _originBoundingBox;
 }
 
 void Projectile::Update(double deltaTime)
 {
+
 	if (!_isOutOfScreen)
 	{
 		collisionBound.Center = {_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z };
@@ -190,6 +186,20 @@ CubeObject::CubeObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	_indexBuffer->Create(_indices);
 
 	myColor = color;
+	XMFLOAT3 v0 = XMFLOAT3(_vertices[0].x, _vertices[0].y, _vertices[0].z);
+	XMVECTOR minVec = XMLoadFloat3(&v0);
+	XMVECTOR maxVec = minVec;
+
+	for (size_t i = 1; i < _vertices.size(); i++)
+	{
+		XMFLOAT3 vf = XMFLOAT3(_vertices[i].x, _vertices[i].y, _vertices[i].z);
+		XMVECTOR v = XMLoadFloat3(&vf);
+		minVec = XMVectorMin(minVec, v);
+		maxVec = XMVectorMax(maxVec, v);
+	}
+
+	BoundingBox::CreateFromPoints(_originBoundingBox, minVec, maxVec);
+	_boundingBox = _originBoundingBox;
 }
 
 
@@ -241,8 +251,7 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 			_tf.GetRotation().x,
 			_tf.GetRotation().z));
 
-		DirectX::BoundingBox::CreateFromPoints(bbox, positions.size(), positions.data(), sizeof(XMFLOAT3));
-		BoundingOrientedBox::CreateFromBoundingBox(_boundingBox, bbox);
+		DirectX::BoundingBox::CreateFromPoints(_boundingBox, positions.size(), positions.data(), sizeof(XMFLOAT3));
 		_originBoundingBox = _boundingBox;
 		UpdateBoundingBox();
 		_vertexBuffer = new VertexBuffer<FVertexSimple>(device);
