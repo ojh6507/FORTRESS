@@ -4,6 +4,8 @@
 #include "GameFramework.h"
 #include "Player.h"
 //#include "sphere.h"
+#include "MainMenu.h"
+#include "IngameManager.h"
 
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -60,6 +62,9 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     
     player->Reload(ProjectileObject);
     
+    IngameManager* ingameManager = new IngameManager();
+    gameObjects.push_back(ingameManager);
+
 }
 
 GameScene::~GameScene()

@@ -16,7 +16,7 @@ public:
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	Input* input;
+	GuiController* guiController;
 
 private:
 	Camera* camera;

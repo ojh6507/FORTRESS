@@ -48,6 +48,7 @@ using namespace DirectX::PackedVector;
 #include "FVector3.h"
 #include "VertexData.h"
 #include "Transform.h"
+#include "SetTimeout.h"
 
 #include "Input.h"
 
@@ -58,6 +59,10 @@ using namespace DirectX::PackedVector;
 #include "Shader.h"
 #include "States.h"
 
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+#include "GuiController.h"
 
 namespace MathVector3
 {

@@ -1,148 +1,224 @@
-ï»¿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="¼Ò½º ÆÄÀÏ">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
+    <Filter Include="Çì´õ ÆÄÀÏ">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="¸®¼Ò½º ÆÄÀÏ">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼\Framework">
+    <Filter Include="¼Ò½º ÆÄÀÏ\Framework">
       <UniqueIdentifier>{5dd73487-8f1e-4038-bb66-bc0f0e27e7ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper">
+    <Filter Include="¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper">
       <UniqueIdentifier>{4530a7a6-61ad-42bc-9b14-a092daca9aed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{9574262c-02ab-4355-bab2-2194fbd8a851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="¼Ò½º ÆÄÀÏ\ImGui">
+      <UniqueIdentifier>{3679dd66-0fcc-4131-bdb3-776207022852}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="FORTRESS.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="GameFramework.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="InputLayout.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="States.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="VertexData.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClInclude>
     <ClInclude Include="FVector3.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\imgui-master\imgui-master\imstb_rectpack.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\imgui-master\imgui-master\imstb_textedit.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\imgui-master\imgui-master\imstb_truetype.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiController.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+    <ClInclude Include="IngameManager.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+    <ClInclude Include="SetTimeout.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FORTRESS.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="GameFramework.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="States.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework\DirectXWrapper</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework\DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="VertexData.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼\Framework</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiController.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="IngameManager.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="SetTimeout.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FORTRESS.rc">
-      <Filter>ë¦¬ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¸®¼Ò½º ÆÄÀÏ</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>ë¦¬ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¸®¼Ò½º ÆÄÀÏ</Filter>
     </Image>
     <Image Include="FORTRESS.ico">
-      <Filter>ë¦¬ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¸®¼Ò½º ÆÄÀÏ</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

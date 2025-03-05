@@ -26,8 +26,8 @@ public:
             obj->Update(deltaTime);
         }
     }
+
     virtual void PickingObjects(Camera* pCamera) {}
-    
 protected:
     std::vector<GameObject*> gameObjects;
     int playerCount = 0;
@@ -84,6 +84,7 @@ public:
 
     void ClearScenes() {
         while (!sceneStack.empty()) {
+            delete sceneStack.top();
             sceneStack.pop();
         }
     }

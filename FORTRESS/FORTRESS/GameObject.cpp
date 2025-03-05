@@ -2,6 +2,8 @@
 #include "GameObject.h"
 
 GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext): _device(device), _deviceContext(deviceContext) {
+	if (device == nullptr)
+		return;
 
 	_vertexShader = new VertexShader(device);
 	_vertexShader->Create(L"Shader.hlsl", "VS", "vs_5_0");
@@ -20,16 +22,28 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 
 GameObject::~GameObject() {
-	delete _vertexBuffer;
-	delete _indexBuffer;
-	delete _vertexShader;
-	delete _pixelShader;
-	delete _inputLayout;
-	delete _constantBuffer;
-	delete _rasterizerState;
+	if (_vertexBuffer)
+		delete _vertexBuffer;
+	if (_indexBuffer)
+		delete _indexBuffer;
+	if (_vertexShader)
+		delete _vertexShader;
+	if (_pixelShader)
+		delete _pixelShader;
+	if (_inputLayout)
+		delete _inputLayout;
+	if (_constantBuffer)
+		delete _constantBuffer;
+	if (_rasterizerState)
+		delete _rasterizerState;
 }
 
 void GameObject::Render() {
+	if (_vertexBuffer == nullptr)
+		return;
+	if (_deviceContext == nullptr)
+		return;
+
 	_deviceContext->IASetInputLayout(_inputLayout->Get());
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_deviceContext->VSSetShader(_vertexShader->Get(), nullptr, 0);
@@ -217,6 +231,7 @@ ObjObject::ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, c
 					_indices.push_back(faceIndices[i + 1]); // 세 번째 정점
 				}
 			}
+
 		}
 		BoundingBox bbox;
 		XMFLOAT4 quaternion;

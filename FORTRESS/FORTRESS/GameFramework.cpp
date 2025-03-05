@@ -6,6 +6,8 @@ void GameFramework::FrameAdvance(double deltaTime)
 	if (Input::Instance()->IsMouseButtonReleased(0)) {
 		sceneManager->Top()->PickingObjects(camera);
 	}
+	guiController->NewFrame();
+
 	if (Input::Instance()->IsKeyReleased(DIK_1)) {
 		GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(gameScene);
@@ -14,10 +16,13 @@ void GameFramework::FrameAdvance(double deltaTime)
 		MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(menuScene);
 	}	
-	
+
 	
 	sceneManager->Top()->Update(deltaTime);
+
 	graphics->RenderBegin();
+	sceneManager->Top()->Update(deltaTime);
+	guiController->RenderFrame();
 	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	graphics->RenderEnd();
 
@@ -29,6 +34,7 @@ void GameFramework::OnDestroy()
 	delete sceneManager;
 	delete camera;
 	delete graphics;
+	delete guiController;
 }
 
 bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
@@ -38,6 +44,7 @@ bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	MenuScene* menuScene = new MenuScene(graphics->GetDevice(), graphics->GetDeviceContext());
 
 	sceneManager->PushScene(menuScene);
+	guiController = new GuiController(hMainWnd, graphics);
 
 	camera = new Camera();
 	camera->GenerateProjectionMatrix(0.1f, 100.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);

@@ -12,6 +12,8 @@ TCHAR							szTitle[MAX_LOADSTRING];
 TCHAR							szWindowClass[MAX_LOADSTRING];
 
 GameFramework					gGameFramework;
+double							gFrameElapsedTime = 0;		// milisecond
+double							gGameElapsedTime = 0;
 
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
@@ -36,14 +38,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	const int TARGET_FPS = 60;
 	const double TARGET_FRAMETIME = 1000.0 / TARGET_FPS;
-	LARGE_INTEGER frequency, frameStartTime, frameEndTime;
+	LARGE_INTEGER frequency, frameStartTime, frameUpdateTime, frameEndTime;
 	
-	double frameElapsedTime = 0;	// milisecond
+	
 	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&frameStartTime);
 
 	while (1)
 	{
-		QueryPerformanceCounter(&frameStartTime);
+		QueryPerformanceCounter(&frameUpdateTime);
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -53,16 +56,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::DispatchMessage(&msg);
 			}
 		}
-
-		gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
-		std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
+		gGameFramework.FrameAdvance(gFrameElapsedTime / 1000.0);
+		std::string debugstr = std::to_string(gFrameElapsedTime / 1000.0);
 		debugstr += '\n';
 
 		do {
 			Sleep(0);
 			QueryPerformanceCounter(&frameEndTime);
-			frameElapsedTime = (frameEndTime.QuadPart - frameStartTime.QuadPart) * 1000.0 / frequency.QuadPart;
-		} while (frameElapsedTime < TARGET_FRAMETIME);
+			gFrameElapsedTime = (frameEndTime.QuadPart - frameUpdateTime.QuadPart) * 1000.0 / frequency.QuadPart;
+			gGameElapsedTime = (frameEndTime.QuadPart - frameStartTime.QuadPart) * 1000.0 / frequency.QuadPart;
+		} while (gFrameElapsedTime < TARGET_FRAMETIME);
 	}
 	gGameFramework.OnDestroy();
 
