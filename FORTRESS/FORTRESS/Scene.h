@@ -78,6 +78,7 @@ public:
 
     void ClearScenes() {
         while (!sceneStack.empty()) {
+            delete sceneStack.top();
             sceneStack.pop();
         }
     }

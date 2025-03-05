@@ -4,7 +4,10 @@ template <typename T>
 class Buffer {
 public:
 	Buffer(ID3D11Device* device) : _device(device) {};
-	virtual ~Buffer() { _buffer->Release(); };
+	virtual ~Buffer() { 
+		if (_buffer)
+			_buffer->Release(); 
+	};
 
 	ID3D11Buffer* Get() { return _buffer; }
 	UINT32 GetStride() { return _stride; }
