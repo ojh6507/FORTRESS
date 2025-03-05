@@ -16,7 +16,6 @@ void Player::Update(double deltaTime)
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
 			Move(FVector3(0.0f, velocity.y, 0.0f) * deltaTime);
-
 		}
 	}
 	else
@@ -31,6 +30,7 @@ void Player::Update(double deltaTime)
 	else
 	{
 		knockbackVelocity = FVector3(0.0f, 0.0f, 0.0f);
+
 	}
 
 	// **Player input**
@@ -38,17 +38,16 @@ void Player::Update(double deltaTime)
 		Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
 	else if (Input::Instance()->IsKeyDown(DIK_D))
 		Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
-
-
 	
 	if (Input::Instance()->IsMouseButtonDown(1))
 		RotateZ(deltaTime);
 	if (Input::Instance()->IsMouseButtonPressed(0))
 		Fire(0, _tf.GetRotation().z, 500);
 
-	if (Input::Instance()->IsMouseButtonDown(1))
+	if (Input::Instance()->IsKeyPressed(DIK_L))
 		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
-
+	if (Input::Instance()->IsKeyPressed(DIK_K))
+		SuccessHitEnemy();
 
 	if (_child) {
 		_child->UpdateOffset();

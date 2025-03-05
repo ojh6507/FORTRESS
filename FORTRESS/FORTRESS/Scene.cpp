@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
+#include "PlayerUI.h"
 #include "GameFramework.h"
 #include "Player.h"
 //#include "sphere.h"
@@ -45,7 +46,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ProjectileObject->OutOfScreen();
 
     gameObjects.push_back(ProjectileObject);
-    player = new Player(device, deviceContext, { 0,0,0 });
+    player1 = new Player(device, deviceContext, { 0,0,0 });
     Player* playerBody = new Player(device, deviceContext, { 3, 1, 1 });
     PlayerHead* playerHead = new PlayerHead(device, deviceContext, {2, 1, 1}, FVector3(0.0f, 55.0f, 0.0f));
     PlayerBarrel* playerBarrel = new PlayerBarrel(device, deviceContext, {3.f, .3, 1}, FVector3(50.0f, 15.0f, 0.0f));
@@ -53,17 +54,22 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     playerBody->SetChild(playerHead);
     playerBarrel->SetParent(playerHead);
 
-    player->SetChild(playerBody);
+    player1->SetChild(playerBody);
 
     playerHead->SetParent(playerBody);
     playerHead->SetChild(playerBarrel);
 
-    
-    player->Reload(ProjectileObject);
+    player1->Reload(ProjectileObject);
     
     IngameManager* ingameManager = new IngameManager();
     gameObjects.push_back(ingameManager);
 
+    // Player UI
+    player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+    //gameObjects.push_back(ui_player1);
+
+    /*player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, 1.0f, 0.0f, ImVec4(0.0f, 1.0f, 1.0f, 1.0f));*/
+    //gameObjects.push_back(ui_player2);
 }
 
 GameScene::~GameScene()
@@ -74,13 +80,14 @@ GameScene::~GameScene()
 void GameScene::Update(double deltaTime)
 {
     Scene::Update(deltaTime);
-    player->Update(deltaTime);
+    player1->Update(deltaTime);
+    player1_UI->Update(deltaTime);
 }
 
 void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
 {
     Scene::Render(camera, deviceContext);
-    player->Render();
+    player1->Render();
 }
 
 void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
