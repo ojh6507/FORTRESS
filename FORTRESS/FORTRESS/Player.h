@@ -8,10 +8,13 @@ class Player :
 private:
     FVector3 velocity;
 
+    FVector3 knockbackVelocity = FVector3(0.0f, 0.0f, 0.0f);
+    float knockbackDamping = 0.9f;
+
     bool isMoveMode;
     bool bIsDead;
     bool bIsGround;
-    const float gravityAcceleration = -40.0f;
+    const float gravityAcceleration = -80.0f;
     float hp;
     float powerUpGage;
 
@@ -51,7 +54,7 @@ public:
 
     void ComputeIsGround();
 
-    void Move(FVector3 velocity, double deltaTime = 1);
+    void Move(FVector3 velocity);
     void RotateZ(float anglePerSecond, double deltaTime = 1);
     void Fire(int projectileType, FVector3 direction, float power);
     void SuccessHitEnemy();
@@ -68,15 +71,15 @@ inline void Player::ComputeIsGround()
         if ((vertexLocalPosition.y * _tf.GetScale().y) + _tf.GetPosition().y < - FRAME_BUFFER_HEIGHT / 2)
         {
             bIsGround = true;
-            break;
+            return;
         }
     }
 }
 
-inline void Player::Move(FVector3 velocity, double deltaTime)
+inline void Player::Move(FVector3 velocity)
 {
     if (isMoveMode)
-        _tf.SetPosition(_tf.GetPosition() + velocity * deltaTime);
+        _tf.SetPosition(_tf.GetPosition() + velocity);
 }
 
 inline void Player::RotateZ(float anglePerSecond, double deltaTime)
@@ -103,8 +106,8 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
     SetHP(GetHP() - damage);
 
     // 넉백
-    knockbackDirection += FVector3(0, 10, 0);
-    knockbackDirection.Normalized();
-    Move(knockbackDirection.Normalized() * 10.0f);
+    knockbackDirection = knockbackDirection.Normalized();
+    knockbackVelocity = knockbackDirection * 50.0f * damage; // 넉백 초기 속도 (크기 조정 가능)
 }
+
 

@@ -39,6 +39,10 @@ struct FVector3
 		return *this;
 	}
 
+	float MagnitudeSquared() const
+	{
+		return (x * x + y * y + z * z);
+	}
 	float Magnitude() const
 	{
 		return std::sqrt(x * x + y * y + z * z);
