@@ -2,6 +2,7 @@
 #include "IngameManager.h"
 
 const double IngameManager::TURNTIME = 10.0;
+IngameManager* IngameManager::_instance = nullptr;
 extern double gGameElapsedTime;
 
 IngameManager::IngameManager() : GameObject(nullptr, nullptr), _startTimerTime(-1), _timerState(false) {
@@ -10,6 +11,7 @@ IngameManager::IngameManager() : GameObject(nullptr, nullptr), _startTimerTime(-
 }
 
 IngameManager::~IngameManager() {
+	_instance = nullptr;
 	delete _state;
 }
 
@@ -43,7 +45,7 @@ double IngameManager::GetTimerTime() {
 
 
 
-IngameState::IngameState(IngameManager* context, GameObject* turnedPlayer) {
+IngameState::IngameState(IngameManager* context, Player* turnedPlayer) {
 	_context = context;
 	_playerHasTurn = turnedPlayer;
 }
@@ -64,7 +66,7 @@ void InitReadyState::Update()
 
 	if (_context->GetTimerTime() > 5000) {
 		_context->StopTimer();
-		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
+		_context->ChangeState(new MoveAndShotState(_context, _context->players[0]));
 	}
 }
 
@@ -73,6 +75,7 @@ void InitReadyState::Update()
 
 void MoveAndShotState::Reserve() {
 	_context->StartTimer();
+	_context->players[0]->SetMoveMode(true);
 }
 
 void MoveAndShotState::Update()
@@ -82,7 +85,9 @@ void MoveAndShotState::Update()
 	ImGui::Text((std::to_string(_context->GetTimerTime() / 1000.0) + "s").c_str());
 	ImGui::End();
 
-	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0) {
+	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0 ||
+		!_playerHasTurn->IsMoveMode()
+		) {
 		_context->StopTimer();
 		_context->ChangeState(new WaitingAfterShotState(_context, _playerHasTurn));
 	}
@@ -93,6 +98,7 @@ void MoveAndShotState::Update()
 
 void WaitingAfterShotState::Reserve() {
 	_context->StartTimer();
+	_context->players[0]->SetMoveMode(false);
 }
 
 void WaitingAfterShotState::Update()
@@ -103,6 +109,7 @@ void WaitingAfterShotState::Update()
 
 	if (_context->GetTimerTime() > 3000) {
 		_context->StopTimer();
+		
 		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
 	}
 }

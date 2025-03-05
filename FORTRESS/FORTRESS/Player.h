@@ -16,6 +16,7 @@ private:
     bool isMoveMode;
     bool bIsDead;
     bool bIsGround;
+
     const float gravityAcceleration = -80.0f;
     float hp;
     float powerUpGage;
@@ -24,7 +25,7 @@ private:
 public:
     Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
         : CubeObject(device, deviceContext, scale), velocity(0.0f, 0.0f, 0.0f),
-        isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
+        isMoveMode(false), bIsDead(false), hp(100), powerUpGage(0) {}
 
     virtual ~Player() {
         if (_child) delete _child;
@@ -81,6 +82,7 @@ public:
     void Reload(Projectile* newProjectTile) {
         projectile = newProjectTile;
     }
+    
 protected:
     Player* _parent;
     Player* _child;
@@ -105,8 +107,9 @@ inline void Player::ComputeIsGround()
 
 inline void Player::Move(FVector3 velocity)
 {
-    if (isMoveMode)
+    //if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
+        OutputDebugString((std::to_wstring(_tf.GetPosition().x) + L"\n").c_str());
 
 }
 

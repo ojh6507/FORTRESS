@@ -34,21 +34,23 @@ void Player::Update(double deltaTime)
 	}
 
 	// **Player input**
-	if (Input::Instance()->IsKeyDown(DIK_A))
-		Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
-	else if (Input::Instance()->IsKeyDown(DIK_D))
-		Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
+	if (isMoveMode) {
+		if (Input::Instance()->IsKeyDown(DIK_A)) 
+			Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
+			
+		else if (Input::Instance()->IsKeyDown(DIK_D))
+			Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
 
-
-	
-	if (Input::Instance()->IsMouseButtonDown(1))
-		RotateZ(deltaTime);
-	if (Input::Instance()->IsMouseButtonPressed(0))
-		Fire(0, _tf.GetRotation().z, 500);
+		if (Input::Instance()->IsMouseButtonDown(1))
+			RotateZ(deltaTime);
+		if (Input::Instance()->IsMouseButtonPressed(0)) {
+			Fire(0, _tf.GetRotation().z, 500);
+			SetMoveMode(false);
+		}		
+	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))
 		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
-
 
 	if (_child) {
 		_child->UpdateOffset();

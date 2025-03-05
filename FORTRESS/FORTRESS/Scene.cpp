@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "Player.h"
 #include "GameFramework.h"
-#include "Player.h"
 //#include "sphere.h"
 #include "MainMenu.h"
 #include "IngameManager.h"
@@ -61,8 +60,9 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     
     player->Reload(ProjectileObject);
     
-    IngameManager* ingameManager = new IngameManager();
+    IngameManager* ingameManager = IngameManager::Instance();
     gameObjects.push_back(ingameManager);
+    ingameManager->players.push_back(player);
 
 }
 
