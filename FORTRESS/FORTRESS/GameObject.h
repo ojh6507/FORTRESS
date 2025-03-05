@@ -113,7 +113,7 @@ public:
 
 	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
 
-	void FireProjectile(FVector3& firePosition, float angle, short dir, float speed) {
+	void FireProjectile(FVector3& firePosition, float angle, float speed) {
 		_isFired = true;
 
 		// 초기 발사 위치 (예제: 현재 오브젝트 위치)
@@ -121,8 +121,8 @@ public:
 		_tf.SetPosition(firePosition);
 		_position = _tf.GetPosition();
 
-		_velocity.x = speed * cos(XMConvertToRadians(angle)) * dir; // X 방향 속도
-		_velocity.y = speed * sin(XMConvertToRadians(angle)) * dir; // Y 방향 속도
+		_velocity.x = speed * cos(XMConvertToRadians(angle)); // X 방향 속도
+		_velocity.y = speed * sin(XMConvertToRadians(angle)); // Y 방향 속도
 	}
 
 	void UpdateProjectile(double deltaTime) {

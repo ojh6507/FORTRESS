@@ -11,7 +11,9 @@ void Player::Update(double deltaTime)
 {
 	bIsGround = false;
 	ComputeIsGround();
+
 	UpdateBoundingBox();
+	
 	if (!bIsGround) {
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
@@ -45,7 +47,7 @@ void Player::Update(double deltaTime)
 		RotateZ(deltaTime);
 	if (Input::Instance()->IsMouseButtonPressed(0)) {
 		UpdateFirePoint();
-		Fire(0, angle,dir, 500);
+		Fire(0, angle, 500);
 	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))
@@ -78,12 +80,13 @@ void PlayerBarrel::RotateZ(double deltaTime)
 	
 	float minAngle, maxAngle;
 	if (dir != -1) {
+
 		minAngle = -2.0f;
 		maxAngle = 45.0f;
 	}
 	else {
-		minAngle = 900.f;
-		maxAngle = 270.0f;
+		minAngle = 180.f - 40.0f;
+		maxAngle = 180.f + 2.0f;
 	}
 
 	// 현재 각도가 최대값 이상일 경우 자동으로 내려감
@@ -118,7 +121,7 @@ void PlayerBarrel::UpdateOffset()
 	if (_parent) {
 		FVector3 parentPos = _parent->GetPosition();
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
-
+		
 		float cosA = cosf(parentAngle);
 		float sinA = sinf(parentAngle);
 
@@ -166,8 +169,11 @@ void PlayerFirePoint::UpdateOffset()
 {
     if (_parent) {
         FVector3 parentPos = _parent->GetPosition();
-        float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
+		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
 
+		if (dir == -1) {
+			parentAngle += XMConvertToRadians(180.0f);
+		}
         float cosA = cosf(parentAngle);
         float sinA = sinf(parentAngle);
 

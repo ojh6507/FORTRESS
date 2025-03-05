@@ -68,7 +68,7 @@ public:
     void Move(FVector3 velocity);
 
     virtual void RotateZ(double deltaTime = 1);
-    void Fire(int projectileType, float angle, short direction, float power);
+    void Fire(int projectileType, float angle, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
     void SetChild(Player* child) {
@@ -92,8 +92,12 @@ public:
         _tf.SetPosition(pos);
         if (_child) _child->SetPosition(pos);
     };
-    void SetDir(short d) {
+    virtual void SetDir(short d) {
         dir = d;
+        if (_child) {
+            _child->SetDir(d);
+            _child->UpdateOffset();
+        }
     }
     Player* _parent;
 protected:
@@ -127,11 +131,11 @@ inline void Player::Move(FVector3 velocity)
 
 }
 
-inline void Player::Fire(int projectileType,float angle, short direction, float power)
+inline void Player::Fire(int projectileType,float angle, float power)
 {
     // 발사체 생성
     if(projectile)
-        projectile->FireProjectile(firePosition, angle, direction, power);
+        projectile->FireProjectile(firePosition, angle, power);
     // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
 }
 

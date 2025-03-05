@@ -78,10 +78,10 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
         FVector3(0.0f, 30.0f, 0.0f),
         player2Color);
     PlayerBarrel* player2Barrel = new PlayerBarrel(device, deviceContext, { 2.4f, 0.3f, 1.0f },
-        FVector3(-70.0f, 15.0f, 0.0f),
+        FVector3(-50.0f, 15.0f, 0.0f),
         player2Color);
     PlayerFirePoint* player2FirePoint = new PlayerFirePoint(device, deviceContext, { 0.2f, 0.4f, 1.0f },
-        FVector3(-95.0f, 0.0f, 0.0f),
+        FVector3(-90.0f, 0.0f, 0.0f),
         player2Color);
 
     Projectile* ProjectileObject2 = new Projectile(device, deviceContext);
