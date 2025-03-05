@@ -37,7 +37,6 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 MenuScene::~MenuScene()
 {
-    for (auto& obj : gameObjects) delete obj;
     for (auto& obj : numbersObject) delete obj;
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -69,10 +68,6 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 GameScene::~GameScene()
 {
-    delete player;
-    for (auto& obj : gameObjects) {
-        delete obj;
-    }
 }
 
 
