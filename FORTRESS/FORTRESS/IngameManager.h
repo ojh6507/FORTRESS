@@ -34,21 +34,21 @@ private:
 
 class IngameState {
 public:
-	IngameState(IngameManager* context, Player* turnedPlayer);
+	IngameState(IngameManager* context, int turnedPlayerIndex);
 	virtual ~IngameState() {};
 	virtual void Reserve() abstract;
 	virtual void Update() abstract;
 
 protected:
 	IngameManager* _context;
-	Player* _playerHasTurn;
+	int _turnedPlayerIdx;
 };
 
 
 class InitReadyState: public IngameState {
 	using Super = IngameState;
 public:
-	InitReadyState(IngameManager* context, Player* turnedPlayer) : Super(context, turnedPlayer) {};
+	InitReadyState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -56,7 +56,7 @@ public:
 class MoveAndShotState : public IngameState {
 	using Super = IngameState;
 public:
-	MoveAndShotState(IngameManager* context, Player* turnedPlayer) : Super(context, turnedPlayer) {};
+	MoveAndShotState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -64,7 +64,7 @@ public:
 class WaitingAfterShotState : public IngameState {
 	using Super = IngameState;
 public:
-	WaitingAfterShotState(IngameManager* context, Player* turnedPlayer) : Super(context, turnedPlayer) {};
+	WaitingAfterShotState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -72,7 +72,7 @@ public:
 class GameOverState : public IngameState {
 	using Super = IngameState;
 public:
-	GameOverState(IngameManager* context, Player* turnedPlayer) : Super(context, turnedPlayer) {};
+	GameOverState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };

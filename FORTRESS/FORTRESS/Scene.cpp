@@ -109,6 +109,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     IngameManager* ingameManager = IngameManager::Instance();
     gameObjects.push_back(ingameManager);
     ingameManager->players.push_back(playerBody);
+    ingameManager->players.push_back(player2Body);
 
 
     CubeObject* p = new CubeObject(device, deviceContext, { 1,1,1 });

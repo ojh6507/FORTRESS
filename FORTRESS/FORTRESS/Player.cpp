@@ -43,15 +43,15 @@ void Player::Update(double deltaTime)
 		else if (Input::Instance()->IsKeyDown(DIK_D))
 			Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
 
-		}		
+		if (Input::Instance()->IsMouseButtonDown(1))
+			RotateZ(deltaTime);
+	}		
+
 	
-	if (Input::Instance()->IsMouseButtonDown(1))
-		RotateZ(deltaTime);
-	if (Input::Instance()->IsMouseButtonPressed(0)) {
+	if (Input::Instance()->IsMouseButtonPressed(0) && isMoveMode) {
 		UpdateFirePoint();
 		Fire(0, angle, 500);
 		SetMoveMode(false);
-
 	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))

@@ -129,7 +129,7 @@ inline void Player::Move(FVector3 velocity)
 inline void Player::Fire(int projectileType, float direction, float power)
 {
     // �߻�ü ����
-    if(projectile)
+    if (projectile)
         projectile->FireProjectile(firePosition, direction, power);
     // �߻�ü ���� �ڱ��ڽ� ����, �߻�ü�� ���� ������� Ȯ���� �ڽ��� �߻��� Player���� ��� ����
 }

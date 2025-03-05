@@ -6,7 +6,7 @@ IngameManager* IngameManager::_instance = nullptr;
 extern double gGameElapsedTime;
 
 IngameManager::IngameManager() : GameObject(nullptr, nullptr), _startTimerTime(-1), _timerState(false) {
-	_state = new InitReadyState(this, nullptr);
+	_state = new InitReadyState(this, 0);
 	_state->Reserve();
 }
 
@@ -45,9 +45,9 @@ double IngameManager::GetTimerTime() {
 
 
 
-IngameState::IngameState(IngameManager* context, Player* turnedPlayer) {
+IngameState::IngameState(IngameManager* context, int turnedPlayer) {
 	_context = context;
-	_playerHasTurn = turnedPlayer;
+	_turnedPlayerIdx = turnedPlayer;
 }
 
 
@@ -66,7 +66,7 @@ void InitReadyState::Update()
 
 	if (_context->GetTimerTime() > 5000) {
 		_context->StopTimer();
-		_context->ChangeState(new MoveAndShotState(_context, _context->players[0]));
+		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
 	}
 }
 
@@ -75,7 +75,7 @@ void InitReadyState::Update()
 
 void MoveAndShotState::Reserve() {
 	_context->StartTimer();
-	_context->players[0]->SetMoveMode(true);
+	_context->players[_turnedPlayerIdx]->SetMoveMode(true);
 }
 
 void MoveAndShotState::Update()
@@ -86,10 +86,10 @@ void MoveAndShotState::Update()
 	ImGui::End();
 
 	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0 ||
-		!_playerHasTurn->IsMoveMode()
+		!_context->players[_turnedPlayerIdx]->IsMoveMode()
 		) {
 		_context->StopTimer();
-		_context->ChangeState(new WaitingAfterShotState(_context, _playerHasTurn));
+		_context->ChangeState(new WaitingAfterShotState(_context, _turnedPlayerIdx));
 	}
 }
 
@@ -98,7 +98,7 @@ void MoveAndShotState::Update()
 
 void WaitingAfterShotState::Reserve() {
 	_context->StartTimer();
-	_context->players[0]->SetMoveMode(false);
+	_context->players[_turnedPlayerIdx]->SetMoveMode(false);
 }
 
 void WaitingAfterShotState::Update()
@@ -108,9 +108,9 @@ void WaitingAfterShotState::Update()
 	ImGui::End();
 
 	if (_context->GetTimerTime() > 3000) {
+		_turnedPlayerIdx = (_turnedPlayerIdx + 1) % _context->players.size();
 		_context->StopTimer();
-		
-		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
+		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
 	}
 }
 
