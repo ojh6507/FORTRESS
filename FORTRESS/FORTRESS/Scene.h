@@ -17,28 +17,35 @@ public:
         gameObjects.clear();
     }
 
-    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) {};
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
 
     virtual void Update(double deltaTime) {
         for (auto& obj : gameObjects) {
             obj->Update(deltaTime);
         }
     }
-
+    void SetPlayerCount(int cnt) {
+        playerCount = cnt % 2 + 1;
+    }
 protected:
     std::vector<GameObject*> gameObjects;
+    int playerCount = 0;
 };
 
 class MenuScene : public Scene {
 public:
     
-    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) override {};
+    MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
+    virtual void Update(double deltaTime);
+private:
+    std::vector<GameObject*> numbersObject;
 };
 
 class GameScene : public Scene {
 public:
     GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-    virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext) override;
+   
 };
 
 class SceneManager {
