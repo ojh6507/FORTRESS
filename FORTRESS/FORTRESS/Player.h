@@ -16,20 +16,18 @@ private:
 
     Projectile* projectile;
     PlayerFirePoint* firePoint;
-    bool isMoveMode;
-    bool bIsDead;
-    bool bIsGround;
+    bool isMoveMode = false;
+    bool bIsDead = false;
+    bool bIsGround = false;
 
-    const float gravityAcceleration = -80.0f;
-    float hp;
-    float powerUpGage;
+    const float gravityAcceleration = -150.0f;
+    float hp = 100;
+    float powerUpGage = 0;
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
     Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
-        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f),
-        isMoveMode(false), bIsDead(false), hp(100), powerUpGage(0) {}
-
+        : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f) {}
 
     virtual ~Player() {
         if (_child) delete _child;
@@ -123,7 +121,6 @@ inline void Player::Move(FVector3 velocity)
 {
     //if (isMoveMode)
         _tf.SetPosition(_tf.GetPosition() + velocity);
-
 }
 
 inline void Player::Fire(int projectileType, float direction, float power)
@@ -146,9 +143,9 @@ inline void Player::TakeDamage(float damage, FVector3 knockbackDirection)
 
     SetHP(GetHP() - damage);
 
-    // �˹�
     knockbackDirection = knockbackDirection.Normalized();
-    knockbackVelocity = knockbackDirection * 50.0f * damage; // �˹� �ʱ� �ӵ� (ũ�� ���� ����)
+    knockbackVelocity = knockbackDirection * 50.0f * damage;
+    if (_child) _child->TakeDamage(damage, knockbackDirection);
 }
 
 

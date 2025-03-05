@@ -65,13 +65,12 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player1->SetFirePoint(playerFirePoint);
     player1->SetPosition({-500,0, 1});
     
-    
-    
+    player1->Reload(ProjectileObject1);
+
+    // Spawn Player2
     FVector3 player2Color = { 0.f, 1.f, 0.0f };
     player2 = new Player(device, deviceContext, { 0, 0, 0 },player2Color);
 
-    player1->Reload(ProjectileObject);
-    // �ٵ�, ���, �跲, ���̾�����Ʈ �� ���� ���� ����
     Player* player2Body = new Player(device, deviceContext, { 2.3f, 0.7f, 1.0f }, 
                                                              player2Color);
     PlayerHead* player2Head = new PlayerHead(device, deviceContext, { 1.4f, 1.0f, 1.0f }, 
@@ -112,11 +111,8 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     gameObjects.push_back(p);
 
     // Player UI
-    player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-    //gameObjects.push_back(ui_player1);
-
-    /*player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, 1.0f, 0.0f, ImVec4(0.0f, 1.0f, 1.0f, 1.0f));*/
-    //gameObjects.push_back(ui_player2);
+    player1_UI = new PlayerUI(device, deviceContext, 0.0f, 1, player1);
+    player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, player2);
 }
 
 GameScene::~GameScene()
@@ -130,6 +126,17 @@ void GameScene::Update(double deltaTime)
     player1->Update(deltaTime);
     player2->Update(deltaTime);
     player1_UI->Update(deltaTime);
+    player2_UI->Update(deltaTime);
+
+    if (Input::Instance()->IsKeyPressed(DIK_O))
+        player1->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+    if (Input::Instance()->IsKeyPressed(DIK_I))
+        player1->SuccessHitEnemy();
+
+    if (Input::Instance()->IsKeyPressed(DIK_L))
+        player2->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+    if (Input::Instance()->IsKeyPressed(DIK_K))
+        player2->SuccessHitEnemy();
 }
 
 void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)

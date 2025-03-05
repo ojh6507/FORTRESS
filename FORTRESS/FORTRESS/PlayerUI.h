@@ -16,14 +16,25 @@ public:
 
     // 생성자
     PlayerUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float scale, 
-        int id, Player* p, ImVec4 color)
+        int id, Player* p)
         : CubeObject(device, deviceContext, scale), 
-        playerID(id), player(p), profileColor(color) { }
+        playerID(id), player(p) 
+    { 
+        profileColor = ImVec4(player->GetColor().x, player->GetColor().y, player->GetColor().z, 1.0f);
+    }
 
     // UI 표시 함수
     void ShowPlayerUI()
     {
-        ImGui::Begin(playerID == 1 ? "Player 1" : "Player 2");
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX));
+
+        ImGui::Begin(playerID == 1 ? "Player 1" : "Player 2", nullptr,
+            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+        ImVec2 windowSize = ImGui::GetWindowSize();
+
+        ImVec2 windowPos = (playerID == 1) ? ImVec2(10, 10) : ImVec2(ImGui::GetIO().DisplaySize.x - windowSize.x - 10, 10);
+        ImGui::SetWindowPos(windowPos);
 
         // Player Profile (단색 사각형)
         ImGui::Text("Player %d", playerID);

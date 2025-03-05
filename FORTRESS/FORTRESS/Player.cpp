@@ -23,7 +23,7 @@ void Player::Update(double deltaTime)
 	else
 		velocity.y = 0.0f;
 
-	// **�˹� (���� ���� ����)**
+	// **Knockback**
 	if (knockbackVelocity.MagnitudeSquared() > 0.01f)
 	{
 		Move(knockbackVelocity * deltaTime);
@@ -32,7 +32,6 @@ void Player::Update(double deltaTime)
 	else
 	{
 		knockbackVelocity = FVector3(0.0f, 0.0f, 0.0f);
-
 	}
 
 	// **Player input**
@@ -53,10 +52,10 @@ void Player::Update(double deltaTime)
 		SetMoveMode(false);
 	}
 
-	if (Input::Instance()->IsKeyPressed(DIK_L))
-		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
-	if (Input::Instance()->IsKeyPressed(DIK_K))
-		SuccessHitEnemy();
+	//if (Input::Instance()->IsKeyPressed(DIK_L))
+	//	TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
+	//if (Input::Instance()->IsKeyPressed(DIK_K))
+	//	SuccessHitEnemy();
 
 	if (_child) {
 		_child->UpdateOffset();
