@@ -3,13 +3,15 @@
 #include "FVector3.h"
 
 class Player :
-    public GameObject
+    public CubeObject
 {
 private:
     FVector3 velocity;
 
     FVector3 knockbackVelocity = FVector3(0.0f, 0.0f, 0.0f);
     float knockbackDamping = 0.9f;
+
+    Projectile* projectile;
 
     bool isMoveMode;
     bool bIsDead;
@@ -22,8 +24,10 @@ private:
 
 public:
     Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
-        : GameObject(device, deviceContext), velocity(0.0f, 0.0f, 0.0f),
-        isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
+        : CubeObject(device, deviceContext), velocity(0.0f, 0.0f, 0.0f),
+        isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {
+        
+    }
     ~Player() {}
 
     // Getter
@@ -32,6 +36,10 @@ public:
     bool IsDead() const { return bIsDead; }
     float GetHP() const { return hp; }
     float GetPowerUpGage() const { return powerUpGage; }
+    FVector3 GetFirePosition() const
+    {
+        return _tf.GetPosition() + FVector3(0, 20 * _tf.GetScale().y, 0);
+    }
 
     // Setter
     void SetVelocity(const FVector3& newVelocity) { velocity = newVelocity; }
@@ -56,9 +64,13 @@ public:
 
     void Move(FVector3 velocity);
     void RotateZ(float anglePerSecond, double deltaTime = 1);
-    void Fire(int projectileType, FVector3 direction, float power);
+    void Fire(int projectileType, float direction, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
+    void Reload(Projectile* newProjectTile)
+    {
+        projectile = newProjectTile;
+    }
 };
 
 inline void Player::ComputeIsGround()
@@ -70,6 +82,10 @@ inline void Player::ComputeIsGround()
         //if (magnitude * sin(_tf.GetRotation().z) + _tf.GetPosition().y < -FRAME_BUFFER_HEIGHT / 2)
         if ((vertexLocalPosition.y * _tf.GetScale().y) + _tf.GetPosition().y < - FRAME_BUFFER_HEIGHT / 2)
         {
+
+
+
+
             bIsGround = true;
             return;
         }
@@ -87,9 +103,10 @@ inline void Player::RotateZ(float anglePerSecond, double deltaTime)
     _tf.SetRotation(_tf.GetRotation() + FVector3(0, 0, anglePerSecond * deltaTime));
 }
 
-inline void Player::Fire(int projectileType, FVector3 direction, float power)
+inline void Player::Fire(int projectileType, float direction, float power)
 {
     // 발사체 생성
+    projectile->FireProjectile(GetFirePosition(), direction, power);
     // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
 }
 

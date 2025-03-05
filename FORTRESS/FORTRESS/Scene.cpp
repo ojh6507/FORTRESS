@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "GameFramework.h"
+#include "Player.h"
 //#include "sphere.h"
 
 MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -19,6 +20,8 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ObjObject* arrowObject = new ObjObject(device, deviceContext, L"arrow.obj");
     arrowObject->SetPostion({ -200,-200,0 });
     arrowObject->SetRotation({ 90,0,0 });
+	//GameObject* gameObject = new _test_concrete_GameObject(device, deviceContext);
+	//gameObjects.push_back(gameObject);
 
     ObjObject* arrowObject2 = new ObjObject(device, deviceContext, L"arrow.obj");
     arrowObject2->SetPostion({ 200,-200,0 });
@@ -29,9 +32,13 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 }
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-    //CubeObject* gameObject = new CubeObject(device, deviceContext);
 	Projectile* ProjectileObject = new Projectile(device, deviceContext);
+    ProjectileObject->OutOfScreen();
     gameObjects.push_back(ProjectileObject);
+
+    Player* player = new Player(device, deviceContext);
+    player->Reload(ProjectileObject);
+    gameObjects.push_back(player);
 
 }
 void Scene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)

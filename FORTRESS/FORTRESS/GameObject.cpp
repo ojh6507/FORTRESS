@@ -107,10 +107,10 @@ Projectile::Projectile(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 void Projectile::Update(double deltaTime)
 {
-	if (Input::Instance()->IsMouseButtonDown(0)) {
+	//if (Input::Instance()->IsMouseButtonDown(0)) {
 
-		FireProjectile();
-	}
+	//	FireProjectile();
+	//}
 	if(_isFired)
 		UpdateProjectile(deltaTime);
 }

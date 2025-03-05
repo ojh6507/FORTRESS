@@ -60,18 +60,21 @@ public:
 
 	FVector3 _velocity = { 0.0f, 0.0f, 0.0f };
 	FVector3 _position = { 0.0f, 0.0f, 0.0f };
-	FVector3 _acceleration = { -0.1f, -90.8f, 0.0f };
+	FVector3 _acceleration = { -10.1f, -150.8f, 0.0f };
 	bool _isFired = false;
-	
-	void FireProjectile() {
+
+	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
+
+	void FireProjectile(FVector3 firePosition, float angle, float speed) {
 		_isFired = true;
 
 		// 초기 발사 위치 (예제: 현재 오브젝트 위치)
+		_tf.SetPosition(firePosition);
 		_position = _tf.GetPosition();
 
 		// 초기 발사 속도와 각도 설정
-		float speed = 200.f;  // 발사 속도
-		float angle = 85.0f;  // 발사 각도 (도 단위)
+		//float speed = 200.f;  // 발사 속도
+		//float angle = 85.0f;  // 발사 각도 (도 단위)
 
 		_velocity.x = speed * cos(XMConvertToRadians(angle)); // X 방향 속도
 		_velocity.y = speed * sin(XMConvertToRadians(angle)); // Y 방향 속도
@@ -81,8 +84,8 @@ public:
 		_velocity.x +=  _acceleration.x * deltaTime;
 		_velocity.y +=  _acceleration.y * deltaTime;
 
-		_position.x += _velocity.x * deltaTime + 0.5f * _acceleration.x * deltaTime * deltaTime;
-		_position.y += _velocity.y * deltaTime + 0.5f * _acceleration.y * deltaTime * deltaTime;
+		_position.x += _velocity.x * deltaTime + 0.5f * _acceleration.x * deltaTime;
+		_position.y += _velocity.y * deltaTime + 0.5f * _acceleration.y * deltaTime;
 
 		_tf.SetPosition(_position);
 	}
