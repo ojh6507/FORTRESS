@@ -6,8 +6,11 @@ public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~GameObject();
 
-	virtual void Update(double deltaTime);
+	virtual void Update(double deltaTime) abstract;
 	void Render();
+
+protected:
+	Transform _tf;
 
 private:
 	ID3D11Device* _device;
@@ -25,6 +28,13 @@ private:
 	RasterizerState* _rasterizerState;
 	SamplerState* _samplerState;
 	
-	Transform _tf;
+	
 	ConstantBuffer<Transform>* _constantBuffer;
+};
+
+class _test_concrete_GameObject : public GameObject {
+	using Super = GameObject;
+public:
+	_test_concrete_GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : Super(device, deviceContext) {};
+	void Update(double deltaTime);
 };
