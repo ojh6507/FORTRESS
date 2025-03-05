@@ -132,10 +132,6 @@ void Projectile::Update(double deltaTime)
 		collisionBound.Center = {_tf.GetPosition().x, _tf.GetPosition().y, _tf.GetPosition().z };
 		collisionBound.Radius = _tf.GetScale().x * basicRadius;
 	}
-	//if (Input::Instance()->IsMouseButtonDown(0)) {
-
-	//	FireProjectile();
-	//}
 	if(_isFired)
 		UpdateProjectile(deltaTime);
 }

@@ -40,9 +40,7 @@ void Player::Update(double deltaTime)
 		Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
 
 
-	if (Input::Instance()->IsMouseButtonPressed(0)) {
-		RotateZ(deltaTime);
-	}
+	
 	if (Input::Instance()->IsMouseButtonDown(1))
 		RotateZ(deltaTime);
 	if (Input::Instance()->IsMouseButtonPressed(0))

@@ -26,7 +26,9 @@ public:
         : CubeObject(device, deviceContext, scale), velocity(0.0f, 0.0f, 0.0f),
         isMoveMode(true), bIsDead(false), hp(100), powerUpGage(0) {}
 
-    ~Player() {}
+    virtual ~Player() {
+        if (_child) delete _child;
+    }
 
     // Getter
     FVector3 GetVelocity() const { return velocity; }
@@ -63,7 +65,7 @@ public:
     void Move(FVector3 velocity);
 
     virtual void RotateZ(double deltaTime = 1);
-    void Fire(int projectileType, FVector3 direction, float power);
+    void Fire(int projectileType, float direction, float power);
     void SuccessHitEnemy();
     void TakeDamage(float damage, FVector3 knockbackDirection);
     void SetChild(Player* child) {
@@ -76,13 +78,13 @@ public:
     FVector3 GetRotation() {
         return _tf.GetRotation();
     }
+    void Reload(Projectile* newProjectTile) {
+        projectile = newProjectTile;
+    }
 protected:
     Player* _parent;
     Player* _child;
     float anglePerSecond = 10;
-    void Reload(Projectile* newProjectTile) {
-        projectile = newProjectTile;
-    }
 };
 
 inline void Player::ComputeIsGround()
@@ -111,7 +113,8 @@ inline void Player::Move(FVector3 velocity)
 inline void Player::Fire(int projectileType, float direction, float power)
 {
     // 발사체 생성
-    projectile->FireProjectile(GetFirePosition(), direction, power);
+    if(projectile)
+        projectile->FireProjectile(GetFirePosition(), direction, power);
     // 발사체 한테 자기자신 전달, 발사체가 적을 맞췄는지 확인후 자신을 발사한 Player에게 결과 전달
 }
 
@@ -140,7 +143,9 @@ public:
     PlayerBarrel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
         : Player(device, deviceContext, scale), offset{ relativeOffset } {
     }
-
+    virtual ~PlayerBarrel() {
+        if (_child) delete _child;
+    }
     virtual void RotateZ(double deltaTime = 1);
     virtual void UpdateOffset();
 };
@@ -151,7 +156,9 @@ public:
     PlayerHead(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 relativeOffset)
         : Player(device, deviceContext, scale), offset{ relativeOffset } {
     }
-
+    virtual ~PlayerHead() {
+        if (_child) delete _child;
+    }
     virtual void UpdateOffset();
     virtual void RotateZ(double deltaTime = 1);
 };

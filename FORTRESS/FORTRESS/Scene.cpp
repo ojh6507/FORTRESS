@@ -33,6 +33,11 @@ MenuScene::MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     gameObjects.push_back(arrowObject2);
 
 }
+MenuScene::~MenuScene()
+{
+    for (auto& obj : gameObjects) delete obj;
+    for (auto& obj : numbersObject) delete obj;
+}
 GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	Projectile* ProjectileObject = new Projectile(device, deviceContext);
@@ -56,6 +61,15 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player->Reload(ProjectileObject);
     
 }
+
+GameScene::~GameScene()
+{
+    delete player;
+    for (auto& obj : gameObjects) {
+        delete obj;
+    }
+}
+
 
 void GameScene::Update(double deltaTime)
 {

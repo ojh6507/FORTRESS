@@ -37,6 +37,7 @@ class MenuScene : public Scene {
 public:
     
     MenuScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+    virtual ~MenuScene();
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
     virtual void Update(double deltaTime); 
     virtual void PickingObjects(Camera* pCamera);
@@ -47,6 +48,7 @@ private:
 class GameScene : public Scene {
 public:
     GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+    virtual ~GameScene();
     virtual void Update(double deltaTime);
     virtual void Render(Camera* camera, ID3D11DeviceContext* deviceContext);
     Player* player;

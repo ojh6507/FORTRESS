@@ -9,7 +9,7 @@ struct VS_CB_GAMEOBJECT_INFO {
 class GameObject {
 public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	~GameObject();
+	virtual ~GameObject();
 
 	virtual void Update(double deltaTime) abstract;
 	virtual void Render();
@@ -117,7 +117,8 @@ public:
 		_isFired = true;
 
 		// 초기 발사 위치 (예제: 현재 오브젝트 위치)
-		_tf.SetPosition(firePosition);
+		if (!&_tf) return;
+		_tf.SetPosition({0,0,0});
 		_position = _tf.GetPosition();
 
 		_velocity.x = speed * cos(XMConvertToRadians(angle)); // X 방향 속도
@@ -139,6 +140,7 @@ class ObjObject : public GameObject
 {
 public:
 	ObjObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::wstring& filepath);
+
 	void Update(double deltaTime);
 
 	void SetPostion(FVector3 posistion) {
