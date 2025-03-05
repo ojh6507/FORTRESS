@@ -25,7 +25,7 @@ public:
         }
     }
     void SetPlayerCount(int cnt) {
-        playerCount = cnt % 2 + 1;
+        playerCount = cnt;
     }
 protected:
     std::vector<GameObject*> gameObjects;
