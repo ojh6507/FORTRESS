@@ -60,7 +60,7 @@ void InitReadyState::Reserve() {
 
 void InitReadyState::Update()
 {
-	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	/*ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
 	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
@@ -72,7 +72,33 @@ void InitReadyState::Update()
 	if (_context->GetTimerTime() > 5000) {
 		_context->StopTimer();
 		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
+	}*/
+
+	ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
+
+	// 가운데 정렬 함수
+	auto CenterText = [](const char* text, float offset = 8.0f) {
+		float textWidth = ImGui::CalcTextSize(text).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f + offset);
+		ImGui::Text("%s", text);
+		};
+
+	// "Ready" 중앙 정렬
+	CenterText("Ready");
+
+	ImGui::End();
+
+	if (_context->GetTimerTime() > 5000) {
+		_context->StopTimer();
+		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
 	}
+
 }
 
 void MoveAndShotState::Reserve() {
@@ -82,7 +108,7 @@ void MoveAndShotState::Reserve() {
 
 void MoveAndShotState::Update()
 {
-	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	/*ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
 	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
@@ -98,7 +124,38 @@ void MoveAndShotState::Update()
 		) {
 		_context->StopTimer();
 		_context->ChangeState(new WaitingAfterShotState(_context, _turnedPlayerIdx));
+	}*/
+
+	ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
+
+	// 가운데 정렬 함수
+	auto CenterText = [](const char* text, float offset = 8.0f) {
+		float textWidth = ImGui::CalcTextSize(text).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f + offset);
+		ImGui::Text("%s", text);
+		};
+
+	// 텍스트 중앙 정렬
+	CenterText("Move&Shot");
+
+	std::string timerText = std::to_string(_context->GetTimerTime() / 1000.0) + "s";
+	CenterText(timerText.c_str());
+
+	ImGui::End();
+
+	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0 ||
+		!_context->players[_turnedPlayerIdx]->IsMoveMode())
+	{
+		_context->StopTimer();
+		_context->ChangeState(new WaitingAfterShotState(_context, _turnedPlayerIdx));
 	}
+
 }
 
 void WaitingAfterShotState::Reserve() {
@@ -108,7 +165,7 @@ void WaitingAfterShotState::Reserve() {
 
 void WaitingAfterShotState::Update()
 {
-	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	/*ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
 	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
@@ -121,7 +178,34 @@ void WaitingAfterShotState::Update()
 		_turnedPlayerIdx = (_turnedPlayerIdx + 1) % _context->players.size();
 		_context->StopTimer();
 		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
+	}*/
+
+	ImGui::SetNextWindowSize(ImVec2(100, 70), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
+
+	// 가운데 정렬 함수
+	auto CenterText = [](const char* text, float offset = 8.0f) {
+		float textWidth = ImGui::CalcTextSize(text).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f + offset);
+		ImGui::Text("%s", text);
+		};
+
+	// "Waiting" 중앙 정렬
+	CenterText("Waiting");
+
+	ImGui::End();
+
+	if (_context->GetTimerTime() > 3000) {
+		_turnedPlayerIdx = (_turnedPlayerIdx + 1) % _context->players.size();
+		_context->StopTimer();
+		_context->ChangeState(new MoveAndShotState(_context, _turnedPlayerIdx));
 	}
+
 }
 
 void GameOverState::Reserve() {
