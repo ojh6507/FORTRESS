@@ -21,8 +21,8 @@
 #include <fstream>
 #include <vector>
 
-#define FRAME_BUFFER_WIDTH		1080
-#define FRAME_BUFFER_HEIGHT		720
+#define FRAME_BUFFER_WIDTH		800
+#define FRAME_BUFFER_HEIGHT		600
 
 
 // D3D 사용에 필요한 라이브러리들을 링크합니다.

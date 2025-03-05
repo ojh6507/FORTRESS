@@ -104,22 +104,22 @@ void GameObject::Render() {
 
 void _test_concrete_GameObject::Update(double deltaTime) {
 	if (Input::Instance()->IsKeyDown(DIK_W)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 1.0f, 0.f) * deltaTime);
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, 10.0f, 0.f) * deltaTime);
 	}
 	if (Input::Instance()->IsKeyPressed(DIK_A)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(-0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(-10.05f, 0.f, 0.f));
 	}
 	if (Input::Instance()->IsKeyDown(DIK_S)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -1.0f, 0.f) * deltaTime);
+		_tf.SetPosition(_tf.GetPosition() + FVector3(0.f, -10.0f, 0.f) * deltaTime);
 	}
 	if (Input::Instance()->IsKeyPressed(DIK_D)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(10.05f, 0.f, 0.f));
 	}
 
 	if (Input::Instance()->IsMouseButtonPressed(0)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(-0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(-10.05f, 0.f, 0.f));
 	}
 	if (Input::Instance()->IsMouseButtonReleased(1)) {
-		_tf.SetPosition(_tf.GetPosition() + FVector3(0.05f, 0.f, 0.f));
+		_tf.SetPosition(_tf.GetPosition() + FVector3(10.05f, 0.f, 0.f));
 	}
 }

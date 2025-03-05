@@ -15,16 +15,19 @@ public:
 
 protected:
 	Transform _tf;
-
-private:
-	GameObject* child;
-	ID3D11Device* _device;
-	ID3D11DeviceContext* _deviceContext;
+	VertexBuffer<FVertexSimple>* _vertexBuffer;
+	IndexBuffer* _indexBuffer;
 
 	std::vector<FVertexSimple> _vertices;
 	std::vector<UINT32> _indices;
-	VertexBuffer<FVertexSimple>* _vertexBuffer;
-	IndexBuffer* _indexBuffer;
+	
+	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
+	GameObject* child;
+
+private:
+	ID3D11Device* _device;
+	ID3D11DeviceContext* _deviceContext;
+
 	InputLayout* _inputLayout;
 
 	VertexShader* _vertexShader;
@@ -33,8 +36,6 @@ private:
 	RasterizerState* _rasterizerState;
 	SamplerState* _samplerState;
 	
-	Transform _tf;
-	ConstantBuffer<VS_CB_GAMEOBJECT_INFO>* _constantBuffer;
 
 };
 
