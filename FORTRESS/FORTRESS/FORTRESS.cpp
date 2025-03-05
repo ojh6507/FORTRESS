@@ -38,7 +38,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	const double TARGET_FRAMETIME = 1000.0 / TARGET_FPS;
 	LARGE_INTEGER frequency, frameStartTime, frameEndTime;
 	
-	double frameElapsedTime;	// milisecond
+	double frameElapsedTime = 0;	// milisecond
 	QueryPerformanceFrequency(&frequency);
 
 	while (1)
@@ -53,13 +53,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::DispatchMessage(&msg);
 			}
 		}
-		else
-		{
-			gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
-			std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
-			debugstr += '\n';
-			
-		}
+
+		gGameFramework.FrameAdvance(frameElapsedTime / 1000.0);
+		std::string debugstr = std::to_string(frameElapsedTime / 1000.0);
+		debugstr += '\n';
 
 		do {
 			Sleep(0);

@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include <sstream>
+
 #include <wrl.h>
 #include <shellapi.h>
 #include <assert.h>
@@ -21,7 +23,7 @@
 #include <fstream>
 #include <vector>
 
-#define FRAME_BUFFER_WIDTH		800
+#define FRAME_BUFFER_WIDTH		1080
 #define FRAME_BUFFER_HEIGHT		600
 
 
