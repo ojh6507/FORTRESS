@@ -3,7 +3,7 @@
 void GameFramework::FrameAdvance(double deltaTime)
 {
 	Input::Instance()->Frame();
-	
+	guiController->NewFrame();
 	if (Input::Instance()->IsKeyReleased(DIK_1)) {
 		GameScene* gameScene = new GameScene(graphics->GetDevice(), graphics->GetDeviceContext());
 		sceneManager->ChangeScene(gameScene);
@@ -18,11 +18,10 @@ void GameFramework::FrameAdvance(double deltaTime)
 	if (Input::Instance()->IsKeyReleased(DIK_DOWNARROW)) {
 		sceneManager->Top()->SetPlayerCount(std::clamp(--playerCount, -1, 3));
 	}
-	
-	sceneManager->Top()->Update(deltaTime);
 	graphics->RenderBegin();
-	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
+	sceneManager->Top()->Update(deltaTime);
 	guiController->RenderFrame();
+	sceneManager->Top()->Render(camera, graphics->GetDeviceContext());
 	graphics->RenderEnd();
 
 
