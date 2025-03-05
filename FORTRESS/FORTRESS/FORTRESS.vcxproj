@@ -156,6 +156,7 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="PlayerUI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="PlayerUI.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="States.cpp" />

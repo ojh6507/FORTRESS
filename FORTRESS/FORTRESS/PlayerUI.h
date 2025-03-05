@@ -12,70 +12,14 @@ public:
     float powerUp;
     ImVec4 profileColor;
 
-    // »ý¼ºÀÚ
-    PlayerUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float scale, 
-        int id, Player* p)
-        : CubeObject(device, deviceContext, scale), 
-        playerID(id), player(p) 
-    { 
-        profileColor = ImVec4(player->GetColor().x, player->GetColor().y, player->GetColor().z, 1.0f);
-    }
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    PlayerUI(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float scale, int id, Player* p);
 
-    // UI Ç¥½Ã ÇÔ¼ö
-    void ShowPlayerUI()
-    {
-        ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX));
+    // UI Ç¥ï¿½ï¿½ ï¿½Ô¼ï¿½
+    void ShowPlayerUI();
 
-        ImGui::Begin(playerID == 1 ? "Player 1" : "Player 2", nullptr,
-            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    void ShowGameOverUI();
 
-        ImVec2 windowSize = ImGui::GetWindowSize();
-
-        ImVec2 windowPos = (playerID == 1) ? ImVec2(10, 10) : ImVec2(ImGui::GetIO().DisplaySize.x - windowSize.x - 10, 10);
-        ImGui::SetWindowPos(windowPos);
-
-        // Player Profile (´Ü»ö »ç°¢Çü)
-        ImGui::Text("Player %d", playerID);
-        ImGui::ColorButton("Profile", profileColor, ImGuiColorEditFlags_NoTooltip, ImVec2(50, 50));
-
-        // HP Bar
-        ImGui::Text("HP:");
-        ImGui::ProgressBar(player->GetHP() / 100 , ImVec2(150, 20));
-
-        // PowerUp Gage
-        ImGui::Text("Power Up:");
-        ImGui::ProgressBar(player->GetPowerUpGage() / 100, ImVec2(150, 20));
-
-        ImGui::End();
-    }
-
-    void ShowGameOverUI()
-    {
-        ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
-
-        ImGui::Begin("GameOver", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-        ImVec2 windowSize = ImGui::GetWindowSize();
-        ImVec2 windowPos = ImVec2(
-            (ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 
-            (ImGui::GetIO().DisplaySize.y - windowSize.y) / 2
-        );
-        ImGui::SetWindowPos(windowPos);
-
-        ImGui::Text("Winner is Player %d!!", (playerID == 1) ? 2 : 1);
-        //ImGui::ColorButton("Profile", profileColor, ImGuiColorEditFlags_NoTooltip, ImVec2(50, 50));
-        if (ImGui::Button("Restart", ImVec2(150, 20)))
-        {
-            
-        }
-        ImGui::End();
-    }
-
-    void Update(double deltaTime) 
-    {
-        ShowPlayerUI();
-
-        if (player->IsDead())
-            ShowGameOverUI();
-    }
+    void Update(double deltaTime);
 };
 
