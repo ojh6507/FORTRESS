@@ -8,6 +8,7 @@ public:
 	static const double TURNTIME;
 
 	IngameManager();
+	~IngameManager();
 	// GameObject을(를) 통해 상속됨
 	void Update(double deltaTime) override;
 	void ChangeState(IngameState* state);
@@ -15,10 +16,12 @@ public:
 	std::vector<GameObject> players;
 
 	void StartTimer();
+	void StopTimer();
 	double GetTimerTime();
 private:
 	IngameState* _state;
 	double _startTimerTime;
+	bool _timerState;
 	
 };
 

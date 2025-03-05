@@ -4,27 +4,40 @@
 const double IngameManager::TURNTIME = 10.0;
 extern double gGameElapsedTime;
 
-IngameManager::IngameManager() : GameObject(nullptr, nullptr) {
+IngameManager::IngameManager() : GameObject(nullptr, nullptr), _startTimerTime(-1), _timerState(false) {
 	_state = new InitReadyState(this, nullptr);
 	_state->Reserve();
 }
 
+IngameManager::~IngameManager() {
+	delete _state;
+}
+
 void IngameManager::Update(double deltaTime) {
-	
 	_state->Update();
 }
 
 void IngameManager::ChangeState(IngameState* state) {
+	delete _state;
 	_state = state;
 	_state->Reserve();
 }
 
 void IngameManager::StartTimer() {
 	_startTimerTime = gGameElapsedTime;
+	_timerState = true;
+}
+
+void IngameManager::StopTimer() {
+	_startTimerTime = -1;
+	_timerState = false;
 }
 
 double IngameManager::GetTimerTime() {
-	return gGameElapsedTime - _startTimerTime;
+	if (_timerState)
+		return gGameElapsedTime - _startTimerTime;
+	else
+		return -1;
 }
 
 
@@ -50,6 +63,7 @@ void InitReadyState::Update()
 	ImGui::End();
 
 	if (_context->GetTimerTime() > 5000) {
+		_context->StopTimer();
 		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
 	}
 }
@@ -69,6 +83,7 @@ void MoveAndShotState::Update()
 	ImGui::End();
 
 	if (_context->GetTimerTime() > IngameManager::TURNTIME * 1000.0) {
+		_context->StopTimer();
 		_context->ChangeState(new WaitingAfterShotState(_context, _playerHasTurn));
 	}
 }
@@ -87,6 +102,7 @@ void WaitingAfterShotState::Update()
 	ImGui::End();
 
 	if (_context->GetTimerTime() > 3000) {
+		_context->StopTimer();
 		_context->ChangeState(new MoveAndShotState(_context, _playerHasTurn));
 	}
 }

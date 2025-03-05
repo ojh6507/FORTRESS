@@ -18,7 +18,7 @@ void GameFramework::FrameAdvance(double deltaTime)
 	}	
 
 	
-	sceneManager->Top()->Update(deltaTime);
+	//sceneManager->Top()->Update(deltaTime);
 
 	graphics->RenderBegin();
 	sceneManager->Top()->Update(deltaTime);
