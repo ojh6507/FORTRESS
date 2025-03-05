@@ -60,7 +60,13 @@ void InitReadyState::Reserve() {
 
 void InitReadyState::Update()
 {
-	ImGui::Begin("status");
+	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr,
+		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x- windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
 	ImGui::Text("Ready");
 	ImGui::End();
 
@@ -70,9 +76,6 @@ void InitReadyState::Update()
 	}
 }
 
-
-
-
 void MoveAndShotState::Reserve() {
 	_context->StartTimer();
 	_context->players[_turnedPlayerIdx]->SetMoveMode(true);
@@ -80,7 +83,14 @@ void MoveAndShotState::Reserve() {
 
 void MoveAndShotState::Update()
 {
-	ImGui::Begin("status");
+	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr,
+		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
+
 	ImGui::Text("Move&Shot");
 	ImGui::Text((std::to_string(_context->GetTimerTime() / 1000.0) + "s").c_str());
 	ImGui::End();
@@ -93,9 +103,6 @@ void MoveAndShotState::Update()
 	}
 }
 
-
-
-
 void WaitingAfterShotState::Reserve() {
 	_context->StartTimer();
 	_context->players[_turnedPlayerIdx]->SetMoveMode(false);
@@ -103,7 +110,13 @@ void WaitingAfterShotState::Reserve() {
 
 void WaitingAfterShotState::Update()
 {
-	ImGui::Begin("status");
+	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr,
+		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
 	ImGui::Text("Waiting");
 	ImGui::End();
 
@@ -114,16 +127,19 @@ void WaitingAfterShotState::Update()
 	}
 }
 
-
-
-
 void GameOverState::Reserve() {
 	_context->StartTimer();
 }
 
 void GameOverState::Update()
 {
-	ImGui::Begin("status");
+	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	ImGui::Begin("status", nullptr,
+		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
+	ImGui::SetWindowPos(windowPos);
 	ImGui::Text("GameOver");
 	
 	char s[256];
