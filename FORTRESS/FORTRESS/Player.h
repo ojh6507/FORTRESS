@@ -133,7 +133,7 @@ inline void Player::Move(FVector3 velocity)
 inline void Player::Fire(int projectileType,float angle, float power)
 {
     if (projectile)
-        projectile->FireProjectile(*this, firePosition, direction, power);
+        projectile->FireProjectile(*this, firePosition, angle, power);
 }
 
 inline void Player::SuccessHitEnemy()
