@@ -111,7 +111,6 @@ inline void Player::ComputeIsGround()
         //if (magnitude * sin(_tf.GetRotation().z) + _tf.GetPosition().y < -FRAME_BUFFER_HEIGHT / 2)
         if ((vertexLocalPosition.y * _tf.GetScale().y) + _tf.GetPosition().y < - FRAME_BUFFER_HEIGHT / 2)
         {
-
             bIsGround = true;
             return;
         }
@@ -126,10 +125,8 @@ inline void Player::Move(FVector3 velocity)
 
 inline void Player::Fire(int projectileType, float direction, float power)
 {
-    // �߻�ü ����
     if (projectile)
         projectile->FireProjectile(firePosition, direction, power);
-    // �߻�ü ���� �ڱ��ڽ� ����, �߻�ü�� ���� ������� Ȯ���� �ڽ��� �߻��� Player���� ��� ����
 }
 
 inline void Player::SuccessHitEnemy()

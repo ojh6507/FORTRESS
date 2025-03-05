@@ -61,8 +61,7 @@ void InitReadyState::Reserve() {
 void InitReadyState::Update()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
-	ImGui::Begin("status", nullptr,
-		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
 	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x- windowSize.x) / 2, 10);
@@ -84,8 +83,7 @@ void MoveAndShotState::Reserve() {
 void MoveAndShotState::Update()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
-	ImGui::Begin("status", nullptr,
-		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
 	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
@@ -111,8 +109,7 @@ void WaitingAfterShotState::Reserve() {
 void WaitingAfterShotState::Update()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
-	ImGui::Begin("status", nullptr,
-		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("status", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImVec2 windowSize = ImGui::GetWindowSize();
 	ImVec2 windowPos = ImVec2((ImGui::GetIO().DisplaySize.x - windowSize.x) / 2, 10);
@@ -133,7 +130,7 @@ void GameOverState::Reserve() {
 
 void GameOverState::Update()
 {
-	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
+	/*ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_Always);
 	ImGui::Begin("status", nullptr,
 		ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
@@ -145,5 +142,5 @@ void GameOverState::Update()
 	char s[256];
 	sprintf_s(s, 256, "player%d Win", 0);
 	ImGui::Text(s);
-	ImGui::End();
+	ImGui::End();*/
 }
