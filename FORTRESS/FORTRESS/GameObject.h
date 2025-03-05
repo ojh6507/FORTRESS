@@ -1,5 +1,7 @@
 #pragma once
 #include "stdafx.h"
+#include <DirectXCollision.h>
+
 struct VS_CB_GAMEOBJECT_INFO {
 	XMFLOAT4X4 m_xmf4x4World;
 };
@@ -62,6 +64,10 @@ public:
 	FVector3 _position = { 0.0f, 0.0f, 0.0f };
 	FVector3 _acceleration = { -10.1f, -150.8f, 0.0f };
 	bool _isFired = false;
+	bool _isOutOfScreen = false;
+
+	BoundingSphere collisionBound;
+	float basicRadius;
 
 	void OutOfScreen() { _tf.SetPosition(FVector3(FRAME_BUFFER_WIDTH * 2, FRAME_BUFFER_HEIGHT * 2, 0)); }
 
