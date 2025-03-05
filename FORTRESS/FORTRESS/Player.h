@@ -26,7 +26,7 @@ private:
     void SetIsDead(bool isDead) { bIsDead = isDead; }
 
 public:
-    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale)
+    Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FVector3 scale, FVector3 color)
         : CubeObject(device, deviceContext, scale, color), velocity(0.0f, 0.0f, 0.0f),
         isMoveMode(false), bIsDead(false), hp(100), powerUpGage(0) {}
 
