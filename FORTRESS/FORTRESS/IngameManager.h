@@ -1,44 +1,54 @@
 #pragma once
-#include "GameObject.h"
+#include "Player.h"
 
 class IngameState;
 class IngameManager : public GameObject {
 	using Super = GameObject;
+	static IngameManager* _instance;
+	IngameManager();
+	IngameManager(IngameManager& other): GameObject(nullptr, nullptr) {};
+	IngameManager& operator=(IngameManager& other) {};
+	~IngameManager();
 public:
 	static const double TURNTIME;
-
-	IngameManager();
-	// GameObject을(를) 통해 상속됨
+	static IngameManager* Instance() {
+		if (!_instance)
+			_instance = new IngameManager();
+		return _instance;
+	}
+	
 	void Update(double deltaTime) override;
 	void ChangeState(IngameState* state);
 
-	std::vector<GameObject> players;
+	std::vector<Player*> players;
 
 	void StartTimer();
+	void StopTimer();
 	double GetTimerTime();
 private:
 	IngameState* _state;
 	double _startTimerTime;
+	bool _timerState;
 	
 };
 
 class IngameState {
 public:
-	IngameState(IngameManager* context, GameObject* turnedPlayer);
+	IngameState(IngameManager* context, int turnedPlayerIndex);
 	virtual ~IngameState() {};
 	virtual void Reserve() abstract;
 	virtual void Update() abstract;
 
 protected:
 	IngameManager* _context;
-	GameObject* _playerHasTurn;
+	int _turnedPlayerIdx;
 };
 
 
 class InitReadyState: public IngameState {
 	using Super = IngameState;
 public:
-	InitReadyState(IngameManager* context, GameObject* turnedPlayer) : Super(context, turnedPlayer) {};
+	InitReadyState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -46,7 +56,7 @@ public:
 class MoveAndShotState : public IngameState {
 	using Super = IngameState;
 public:
-	MoveAndShotState(IngameManager* context, GameObject* turnedPlayer) : Super(context, turnedPlayer) {};
+	MoveAndShotState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -54,7 +64,7 @@ public:
 class WaitingAfterShotState : public IngameState {
 	using Super = IngameState;
 public:
-	WaitingAfterShotState(IngameManager* context, GameObject* turnedPlayer) : Super(context, turnedPlayer) {};
+	WaitingAfterShotState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };
@@ -62,7 +72,7 @@ public:
 class GameOverState : public IngameState {
 	using Super = IngameState;
 public:
-	GameOverState(IngameManager* context, GameObject* turnedPlayer) : Super(context, turnedPlayer) {};
+	GameOverState(IngameManager* context, int turnedPlayer) : Super(context, turnedPlayer) {};
 	void Reserve() override;
 	void Update() override;
 };

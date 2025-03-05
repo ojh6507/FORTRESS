@@ -9,9 +9,10 @@ void Player::Render()
 
 void Player::Update(double deltaTime)
 {
+
 	bIsGround = false;
 	ComputeIsGround();
-
+	UpdateBoundingBox();
 	if (!bIsGround) {
 		if (!_parent) {
 			velocity.y += gravityAcceleration * deltaTime;
@@ -22,7 +23,7 @@ void Player::Update(double deltaTime)
 	else
 		velocity.y = 0.0f;
 
-	// **³Ë¹é (°ø±â ÀúÇ× Æ÷ÇÔ)**
+	// **ï¿½Ë¹ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)**
 	if (knockbackVelocity.MagnitudeSquared() > 0.01f)
 	{
 		Move(knockbackVelocity * deltaTime);
@@ -34,21 +35,26 @@ void Player::Update(double deltaTime)
 	}
 
 	// **Player input**
-	if (Input::Instance()->IsKeyDown(DIK_A))
-		Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
-	else if (Input::Instance()->IsKeyDown(DIK_D))
-		Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
+	if (isMoveMode) {
+		if (Input::Instance()->IsKeyDown(DIK_A)) 
+			Move(FVector3(-50.0f, 0.0f, 0.0f) * deltaTime);
+			
+		else if (Input::Instance()->IsKeyDown(DIK_D))
+			Move(FVector3(50.0f, 0.0f, 0.0f) * deltaTime);
 
+		if (Input::Instance()->IsMouseButtonDown(1))
+			RotateZ(deltaTime);
+	}		
 
 	
-	if (Input::Instance()->IsMouseButtonDown(1))
-		RotateZ(deltaTime);
-	if (Input::Instance()->IsMouseButtonPressed(0))
-		Fire(0, _tf.GetRotation().z, 500);
+	if (Input::Instance()->IsMouseButtonPressed(0) && _shooter && isMoveMode) {
+		_shooter->UpdateFirePoint();
+		_shooter->Fire(0, _shooter->angle, 500);
+		SetMoveMode(false);
+	}
 
 	if (Input::Instance()->IsMouseButtonDown(1))
 		TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
-
 
 	if (_child) {
 		_child->UpdateOffset();
@@ -85,7 +91,7 @@ void PlayerBarrel::RotateZ(double deltaTime)
 		maxAngle = 225.0f;
 	}
 
-	// ÇöÀç °¢µµ°¡ ÃÖ´ë°ª ÀÌ»óÀÏ °æ¿ì ÀÚµ¿À¸·Î ³»·Á°¨
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ë°ª ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (newAngle > maxAngle) {
 		newAngle = maxAngle;
 		anglePerSecond = -fabs(anglePerSecond);
@@ -99,6 +105,18 @@ void PlayerBarrel::RotateZ(double deltaTime)
 	if (_child) _child->RotateZ(deltaTime);
 }
 
+void Player::SetFirePoint(PlayerFirePoint* pfire)
+{
+	firePoint = pfire;
+}
+
+void Player::UpdateFirePoint()
+{
+	if (firePoint) {
+		angle = firePoint->_parent->GetRotation().z;
+		firePosition = firePoint->GetPosition();
+	}
+}
 
 void PlayerBarrel::UpdateOffset()
 {
@@ -117,11 +135,12 @@ void PlayerBarrel::UpdateOffset()
 
 		_tf.SetPosition(parentPos + rotatedOffset);
 	}
+	if (_child) _child->UpdateOffset();
 }
 
 void PlayerHead::UpdateOffset()
 {
-	if (_parent) // ºÎ¸ð´Â PlayerBody
+	if (_parent) // ï¿½Î¸ï¿½ï¿½ PlayerBody
 	{
 		FVector3 parentPos = _parent->GetPosition();
 		float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
@@ -129,7 +148,7 @@ void PlayerHead::UpdateOffset()
 		float cosA = cosf(parentAngle);
 		float sinA = sinf(parentAngle);
 
-		// Â÷Ã¼ ±âÁØÀ¸·Î È¸Àü º¯È¯µÈ offset Àû¿ë
+		// ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ offset ï¿½ï¿½ï¿½ï¿½
 		FVector3 rotatedOffset = {
 			offset.x * cosA - offset.y * sinA,
 			offset.x * sinA + offset.y * cosA,
@@ -138,4 +157,40 @@ void PlayerHead::UpdateOffset()
 
 		_tf.SetPosition(parentPos + rotatedOffset);
 	}
+}
+
+void PlayerFirePoint::RotateZ(double deltaTime)
+{
+	if (_parent) {
+		float parentAngle = _parent->GetRotation().z; // Barrelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		_tf.SetRotation(FVector3(0, 0, parentAngle)); // FirePointï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ Barrelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
+	}
+}
+
+void PlayerFirePoint::UpdateOffset()
+{
+    if (_parent) {
+        FVector3 parentPos = _parent->GetPosition();
+        float parentAngle = XMConvertToRadians(_parent->GetRotation().z);
+
+        float cosA = cosf(parentAngle);
+        float sinA = sinf(parentAngle);
+
+        // ï¿½ï¿½ï¿½ï¿½ offset ï¿½ï¿½È¯
+        FVector3 rotatedOffset = {
+            offset.x * cosA - offset.y * sinA,
+            offset.x * sinA + offset.y * cosA,
+            0
+        };
+
+        // ï¿½Çºï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½: ï¿½ß¾Ó¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½)
+        FVector3 pivotOffset = {10.0f, 0.0f, 0.0f};  // ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Çºï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Ä¡
+        FVector3 rotatedPivotOffset = {
+            pivotOffset.x * cosA - pivotOffset.y * sinA,
+            pivotOffset.x * sinA + pivotOffset.y * cosA,
+            0
+        };
+
+        _tf.SetPosition(parentPos + rotatedOffset + rotatedPivotOffset);
+    }
 }
