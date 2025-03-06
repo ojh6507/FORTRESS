@@ -37,7 +37,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     ProjectileObject2->OutOfScreen();
     gameObjects.push_back(ProjectileObject2);
 
-    FVector3 playerColor = { 1.f, 0.4f, 0.4f };
+    FVector3 playerColor = { 1.f, 0.8f, 0.4f };
     player1 = new Player(device, deviceContext, { 0,0,0 }, playerColor);
     Player* playerBody = new Player(device, deviceContext, { 2.3, 0.7, 1 }, playerColor);
     PlayerHead* playerHead = new PlayerHead(device, deviceContext, { 1.4, 1, 1 }, FVector3(0.0f, 30.0f, 0.0f), playerColor);
@@ -63,7 +63,7 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player1->Reload(ProjectileObject1);
 
     // Spawn Player2
-    FVector3 player2Color = { 0.f, 1.f, 0.0f };
+    FVector3 player2Color = { 0.1f, 0.6f, 0.6f };
     player2 = new Player(device, deviceContext, { 0, 0, 0 }, player2Color);
 
 
@@ -108,12 +108,15 @@ GameScene::GameScene(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
     player1_UI->ingameManager = ingameManager;
     player2_UI = new PlayerUI(device, deviceContext, 0.0f, 2, player2);
     player2_UI->ingameManager = ingameManager;
+
+
 }
 
 GameScene::~GameScene()
 {
     delete player1_UI;
     delete player2_UI;
+  
 }
 
 
@@ -124,7 +127,7 @@ void GameScene::Update(double deltaTime)
     player2->Update(deltaTime);
     player1_UI->Update(deltaTime);
     player2_UI->Update(deltaTime);
-
+  
     if (Input::Instance()->IsKeyPressed(DIK_O))
         player1->TakeDamage(10, FVector3(-10.0f, 8.0f, 0.0f));
     if (Input::Instance()->IsKeyPressed(DIK_I))
@@ -142,29 +145,34 @@ void GameScene::Render(Camera* camera, ID3D11DeviceContext* deviceContext)
     Scene::Render(camera, deviceContext);
     player1->Render();
     player2->Render();
+ 
 }
 
 void GameScene::ColisionCheck()
 {
     for (int i = 0; i < 2; ++i) {
-        if (player1->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
-            if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player1) {
-                FVector3 ddist = dynamic_cast<Projectile*>(gameObjects[i])->GetPosition() - player1->GetPosition();
-            
-                player1->TakeDamage(5, FVector3(-20.f *ddist.x,20.f, 0.0f));
+
+        Projectile* projectile =  dynamic_cast<Projectile*>(gameObjects[i]);
+        if (!projectile) continue;
+        if (player1->CollisionEventByProjectile(projectile)) {
+            if (projectile->motherPlayer != player1) {
+                FVector3 ddist = projectile->GetPosition() - player1->GetPosition();
+                ddist = ddist.Normalized();
+                player1->TakeDamage(5, FVector3(-20.f * ddist.x, 10.f, 0.0f));
                 player2->SuccessHitEnemy();
-                dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
+                projectile->OutOfScreen();
             }
         }
-        if (player2->CollisionEventByProjectile(dynamic_cast<Projectile*>(gameObjects[i]))) {
-            if (dynamic_cast<Projectile*>(gameObjects[i])->motherPlayer != player2) {
-                FVector3 ddist = dynamic_cast<Projectile*>(gameObjects[i])->GetPosition() - player2->GetPosition();
-                player2->TakeDamage(5, FVector3(-20.0f * ddist.x, 20.0f, 0.0f));
+        if (player2->CollisionEventByProjectile(projectile)) {
+            if (projectile->motherPlayer != player2) {
+                FVector3 ddist = projectile->GetPosition() - player2->GetPosition();
+                ddist = ddist.Normalized();
+                player2->TakeDamage(5, FVector3(-20.0f * ddist.x, 10.f, 0.0f));
                 player1->SuccessHitEnemy();
-                dynamic_cast<Projectile*>(gameObjects[i])->OutOfScreen();
+                projectile->OutOfScreen();
             }
         }
-        
+
     }
 }
 
